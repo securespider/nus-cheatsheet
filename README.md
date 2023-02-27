@@ -8,7 +8,7 @@ This is a compilation of NUS SOC cheatsheets that I have modified/created
   - [CS2105 Introduction to Computer Networks](CS2105/cs2105-cheatsheet.pdf)
     - Modified from [Jason's Cheatsheets](https://github.com/jasonqiu212/nus-cheatsheets/tree/main/CS2105)❤️
   - [ACC1701x Accounting for Decision Makers](ACC1701x/acc1701x-cheatsheet.pdf)
-  - [CS2106](CS2106/cs2106-cheatsheet.pdf)
+  - [CS2106 Introduction to Operating Systems](CS2106/cs2106-cheatsheet.pdf)
 
 Feel free to fork or [contact me](vincent_pang@u.nus.edu) for any changes! Im actively looking for collaborators to expand database of cheatsheets for others
 
