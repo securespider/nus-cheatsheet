@@ -1,0 +1,733 @@
+\documentclass{article}
+\usepackage[a4paper, margin=3mm, landscape]{geometry}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{listings}
+\usepackage{soul}
+\usepackage{graphicx}
+
+\pdfinfo{
+    /Title (CS2105.pdf)
+    /Creator (TeX)
+    /Producer (pdfTeX 1.40.0)
+    /Author (Jason Qiu\\small in collaboration with Vincent Pang)
+    /Subject (CS2105)
+    /Keywords (CS2105, nus, cheatsheet, pdf)
+}
+
+\graphicspath{ {./img/} }
+
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\columnseprule}{0.25pt}
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+    {-1ex plus -.5ex minus -.2ex}%
+    {0.5ex plus .2ex}%x
+{\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+    {-1explus -.5ex minus -.2ex}%
+    {0.5ex plus .2ex}%
+{\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+    {-1ex plus -.5ex minus -.2ex}%
+    {1ex plus .2ex}%
+{\normalfont\small\bfseries}}%
+\makeatother
+
+% Adjust spacing for all itemize/enumerate
+\setlength{\leftmargini}{0.5cm}
+\setlength{\leftmarginii}{0.5cm}
+\setlist[itemize,1]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+\setlist[itemize,2]{leftmargin=2mm,labelindent=1mm,labelsep=1mm,label=$\bullet$}
+
+% Font
+\renewcommand{\familydefault}{\sfdefault}
+
+% Define colors for math formulas
+\definecolor{myblue}{cmyk}{1,.72,0,.38}
+\everymath\expandafter{\the\everymath \color{myblue}}
+
+% Custom command for keywords
+\definecolor{highlight}{RGB}{251,243,218}
+\newcommand{\keyword}[2][]{\sethlcolor{highlight}\hl{\textbf{#2}} #1 - }
+\newcommand{\ilkeyword}[1]{\sethlcolor{highlight}\hl{\textbf{#1}}}
+
+% Define colors and style for code
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codered}{HTML}{CC241D}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
+\lstdefinestyle{codestyle}{
+    backgroundcolor = \color{backcolor},
+    commentstyle = \color{codegray},
+    keywordstyle = \color{codered},
+    stringstyle = \color{codegreen},
+    basicstyle = \ttfamily,
+    breakatwhitespace = false,
+    showstringspaces = false,
+    breaklines = true,
+    showtabs = false,
+    tabsize = 2
+}
+\lstset{style = codestyle}
+
+% -----------------------------------------------------------------------
+\begin{document}
+\begin{multicols*}{3}
+\footnotesize
+
+% Title box
+\begin{center}
+    \fbox{
+        \parbox{0.8\linewidth}{
+            \centering \textcolor{black}{
+                {\Large\textbf{CS2105}} \\
+                \normalsize{AY22/23 Sem 2}} \\
+                {\footnotesize \textcolor{gray}{github.com/securespider}}
+        }
+    }
+\end{center}
+
+\section{01. Introduction}
+
+\begin{itemize}
+    \item \keyword{Network Edge}{Hosts (Clients and servers)}
+    \item \keyword{Access Networks}{Wired and wireless communication links}
+    \item \keyword{Network Core}{Network of interconnected routers}
+\end{itemize}
+
+\subsection{Network Core}
+
+\subsubsection{Packet-Switching}
+
+\begin{itemize}
+    \item Host breaks messages into packets of $L$ bits 
+    \item Transmits packets into access network at transmission rate $R$ (aka Link bandwidth, capacity)
+\end{itemize}
+
+\[\text{Packet Transmission Delay} = \frac{\text{Packet Size (bits)}}{\text{Transmission Rate (bits/sec)}}\]
+
+\begin{itemize}
+    \item \keyword{Store and Forward}{Entire packet must arrive at router before being transmitted to next link}
+\end{itemize}
+
+\subsubsection{Key Functions of Network Core}
+
+\begin{itemize}
+    \item \keyword{Routing}{Determines source-destination routes taken by packets (How we get the hashtable)}
+    \item \keyword{Forwarding}{Move packets from router's input to correct router output}
+\end{itemize}
+
+\subsubsection{Circuit Switching}
+
+\begin{itemize}
+    \item Resources reserved for call between source and destination
+    \item Pros: Better performance
+    \item Cons: More resources
+\end{itemize}
+
+\subsubsection{Internet Structure}
+\includegraphics[scale=0.15]{internet}
+
+\begin{itemize}
+    \item End systems connect to Internet via \textbf{Access Internet Service Providers (ISPs)}
+    \item ISPs connect to larger global ISPs (usually competitors)
+    \item Large ISPs connect via \textbf{peering links} or \textbf{internet exchange points (IXP)}
+    \item \keyword{IXP}{Physical place with routers from different ISPs}
+    \item \keyword{Regional Networks}{Smallers ISPs}
+    \item \keyword{Content Provider Networks}{Provide content close to end users}
+\end{itemize}
+
+\subsection{Loss, Delay, and Throughput}
+
+\subsubsection{Packet Loss}
+
+\begin{itemize}
+    \item If Arrival Rate $>$ Transmission Rate, packets will queue and can be dropped if queue fills up
+    \item Solutions: Lost packets can be retransmitted
+\end{itemize}
+
+\subsubsection{Packet Delay}
+
+\[d_{\text{nodal}} = d_{\text{proc}} + d_{\text{queue}} + d_{\text{trans}} + d_{\text{prop}}\]
+
+\begin{itemize}
+    \item \keyword{Nodal Processing}{($d_{\text{proc}}$) Check for bit errors and determine output link}
+    \item \keyword{Queueing Delay}{($d_{\text{queue}}$) Time at queue waiting for transmission, router congestion}
+    \item \keyword{Transmission Delay}{($d_{\text{trans}}$) Time to load packet onto link}
+    \begin{itemize}
+        \item $d_{\text{trans}} = \frac{L}{R}$ where $L$ is packet length and $R$ is link bandwidth
+    \end{itemize}
+    \item \keyword{Propagation Delay}{($d_{\text{prop}}$) Time for 1 bit to reach end of link}
+    \begin{itemize}
+        \item $d_{\text{prop}} = \frac{d}{s}$ where $d$ is length of link and $s$ is propagation speed
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Throughput}
+
+\begin{itemize}
+    \item Rate at which bits transferred between hosts
+    \begin{itemize}
+        \item Different from transmission rate (Theoretical upper bound)
+        \item Measures end-to-end, even through intermediaries
+        \item Irregardless of the size of packets
+    \end{itemize}
+    \item Average: Rate over long period of time
+    \item Instantaneous: Rate at given point in time
+\end{itemize}
+
+\subsection{Protocol Layers and Service Models}
+
+\begin{itemize}
+    \item \keyword{Protocol}{Defines format, order of messages sent and received, and actions taken on message transmission}
+    \item \keyword{Layering}{Each layer implements a service by doing something within layer and relying on services provided by layer below it}
+    \begin{itemize}
+        \item Explicit structure allows us to make sense of complex components
+        \item Easy maintenance (Like OOP, change in 1 layer should not affect others)
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Internet Protocol Stack}
+
+\begin{enumerate}
+    \item \keyword{Application}{eg. FTP, SMTP}
+    \item \keyword{Transport}{TCP, UDP}
+    \item \keyword{Network}{IP, Routing protocols}
+    \item \keyword{Link}{Ethernet, WiFi, PPP}
+    \item \keyword{Physical}{Wires, bits}
+\end{enumerate}
+\keyword{Encapsulation} Take information from a higher layer and adds a header to it, treating the higher layer information as data
+
+\subsection{Topology}
+	\includegraphics[scale=0.20]{topology}
+	\begin{itemize}
+		\item \keyword{Star}{Lowest cost and simplest}
+		\item \keyword{Mesh}{High redundancy, increased cost but highest transmission speeds}
+	\end{itemize}
+	
+\section{02. Application Layer}
+
+\begin{itemize}
+    \item Programs that run on end systems, and not on network-core devices
+\end{itemize}
+
+\subsection{Client-server Architecture}
+
+\begin{itemize}
+    \item Server: Always-on host, Permanent IP address
+    \item Clients: Communicates with server, Intermittently connected, Dynamic IP addresses, Do not communicate with each other directly
+\end{itemize}
+
+\subsection{P2P Architecture}
+
+\begin{itemize}
+    \item Peers request service from other peers and provide service in return
+    \item No always-on server, Intermittently connected, Dynamic IP addresses
+    \item \keyword{Self Scalability}{New peers offer new services and demands}
+\end{itemize}
+
+\subsection{Process}
+
+\begin{itemize}
+    \item \keyword{Process}{Program running in host}
+    \item \keyword{Inter-process Communication}{How 2 processes in 1 host communicate}
+    \item \keyword{Client Process}{Process that initiates communication}
+    \item \keyword{Server Process}{Process that waits to be contacted}
+    \item \keyword{Socket}{Process sends/receives messages to/from its socket (like a door)}
+    \begin{itemize}
+        \item Outside of socket, transport layer delivers message
+    \end{itemize}
+\end{itemize}
+
+\subsection{Addressing Processes}
+
+\begin{itemize}
+    \item Motivation: IP address is not enough to address process, since many processes can be running on same host
+    \begin{itemize}
+        \item \keyword{Identifier}{IP address and port number}
+        \item \keyword{IP}{32-bit address for identifying host}
+        \item \keyword{Port Number}{16-bit to identify specific process on host}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Services}
+\begin{itemize}
+	\item \keyword{Data Integrity}{Reliable data transfer}
+	\item \keyword{Timing}{Low delay/latency}
+	\item \keyword{Throughput}{Minimum amount of throughput for effectiveness}
+	\item \keyword{Security}{Encryption, data integrity}
+\end{itemize}
+
+\subsection{Transport Protocol Services}
+
+\begin{enumerate}
+    \item \keyword{TCP}{Transmission Control Protocol}
+    \begin{itemize}
+        \item Reliable transport
+        \item Flow control: Sender does not overwhelm receiver
+        \item Congestion control
+        \item Connection-oriented: Setup required between client and server
+    \end{itemize}
+    \item \keyword{UDP}{User Datagram Protocol}
+    \begin{itemize}
+        \item Unreliable data transfer
+        \item Fast
+    \end{itemize}
+\end{enumerate}
+
+\subsection{App-layer Protocol}
+
+\begin{itemize}
+    \item Types of messages exchanged (e.g. Request or response)
+    \item Message syntax: How fields are delineated
+    \item Messages semantics: Meaning of information in fields
+\end{itemize}
+
+\subsection{HTTP - 80}
+
+\begin{itemize}
+    \item \keyword{Hypertext Transfer Protocol}{Web's application layer protocol}
+    \item Motivation: Web page consists of objects (HTML, images). Need method to request/send web objects.
+    \item Follows client/server model
+    \item Uses TCP
+    \item \keyword{Stateless}{Server maintains no information about past requests}
+\end{itemize}
+
+\subsubsection{Non-persistent HTTP}
+
+\begin{itemize}
+    \item At most 1 object sent over TCP connection
+    \item Downloading multiple objects requires multiple TCP connections
+\end{itemize}
+
+\includegraphics[scale=0.15]{non-persistent-http}
+
+\begin{itemize}
+    \item Server closes TCP connection after sending file
+    \item \keyword{Return Trip Time}{(RTT) Time for small packet to travel from client to server and back}
+    \item Response Time: 2 RTT + File transmission time
+\end{itemize}
+
+\subsubsection{Persistent HTTP}
+
+\begin{itemize}
+    \item Multiple objects can be sent over single TCP connection
+    \item Server leaves TCP connection open after sending response
+    \item As little as one RTT for all referenced objects
+\end{itemize}
+
+\subsubsection{HTTP Request Message}
+
+\includegraphics[scale=0.12]{http-request}
+
+\begin{itemize}
+    \item To upload form input: \keyword{POST method}{Input uploaded via entity body} and \keyword{URL method}{Input uploaded in URL field of GET method}
+    \item \keyword{HTTP/1.0}{GET, POST, HEAD (Ask server to leave request object out of response)}
+    \item \keyword{HTTP/1.1}{GET, POST, HEAD, PUT, DELETE}
+\end{itemize}
+
+\subsubsection{HTTP Response Message}
+
+\includegraphics[scale=0.15]{http-response}
+
+\subsubsection{Cookies}
+
+\begin{itemize}
+    \item Maintains state on client side
+    \item Components: Cookie header for HTTP response, Cookie header for HTTP, request, Cookie file on user's host (Key-value pair), Database on server
+\end{itemize}
+
+\includegraphics[scale=0.12]{cookies}
+
+\subsubsection{Web Cache (Proxy Server)}
+
+\begin{itemize}
+    \item Goal: Fulfill request without involving origin server via caching
+    \item Browser sends all HTTP requests to cache
+    \item Pros: Faster, Reduces traffic to origin server
+    \item Cons: What if origin server updates?
+    \begin{itemize}
+        \item \keyword{Conditional GET}{Origin server doesn't send object if cache has updated version}
+        \item Cache: Specifies date of cached copy in HTTP request to origin
+        \item Origin Server: Response contains no object if cached object is updated
+    \end{itemize}
+\end{itemize}
+
+\subsection{Domain Name System}
+
+\begin{itemize}
+    \item Maps between IP address and name (e.g. yahoo.com)
+    \item Implemented using distributed and hierarchical databases
+    \item Application-layer protocol (Why?)
+    \begin{tabbing}
+    	\= Build complexity in edges to simplify inner core networks
+    \end{tabbing}
+    \item Uses UDP
+    \item \keyword{Local DNS Name Server}{Local cache of name-to-address mapping. Forwards query into hierarchy.}
+    \begin{itemize}
+        \item \keyword{Time to Live}{(TTL) Cached mappings disappear after some time}
+    \end{itemize}
+    \item \keyword{Root Name Server}{Contacted by local name server that cannot resolve name. Provides IP address of TLD servers.}
+    \item \keyword{Top-level Domain Server}{(TLD) Provides IP address of authoritative server}
+    \item \keyword{Authoritative DNS Server}{Organization's own DNS server. Provides mappings for organization's named hosts.}
+    \item Iterated query: "Not sure, ask this server"
+\end{itemize}
+
+\includegraphics[scale=0.07]{dns-iterative-query}
+
+\begin{itemize}
+    \item Recursive query: "Okay, let me find for you"
+    \begin{itemize}
+        \item Heavy load on upper levels of hierarchy
+    \end{itemize}
+\end{itemize}
+
+\includegraphics[scale=0.1]{dns-recursive-query}
+
+\subsection{DNS Caching}
+\keyword{Cache entry}{Cache record of recent name mapping}
+
+\begin{itemize}
+	\item Timeout after some time based on TTL
+	\item Best effort name-to-address translation (can be out-of-date)
+\end{itemize}
+
+\section{03. Socket Programming with UDP and TCP}
+
+\subsubsection{UDP Socket}
+
+\includegraphics[scale=0.14]{udp-socket}
+\includegraphics[scale=0.14]{udp}
+
+\begin{itemize}
+    \item No connection beforehand. Just send it.
+    \item Server has 1 socket to serve all clients
+    \item Sender attaches destination IP address and port number (\textbf{Stateless})
+    \item Unreliable datagram: Data may be lost or out-of-order
+    \begin{itemize}
+        \item \keyword{Datagram}{Group of bytes}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{TCP Socket}
+
+\includegraphics[scale=0.14]{tcp-socket}
+\includegraphics[scale=0.14]{tcp}
+
+\begin{itemize}
+    \item Client establishes connection to server via welcome socket
+    \item Server makes new socket for each client
+    \item Server identifies client via connection (\textbf{Stateful})
+    \item Reliable stream pipe: Data always in order
+\end{itemize}
+
+\section{04. UDP and Reliable Protocol}
+
+\subsection{Transport Layer Services}
+\begin{itemize}
+	\item Provide logical communication between processes in different hosts
+	\item Sender: Breaks app messages into segment
+	\item Receiver: Reassembles segments
+\end{itemize}
+
+\subsection{UDP}
+
+\begin{itemize}
+    \item On top of network layer, UDP adds:
+    \begin{enumerate}
+        \item Connectionless multiplexing/de-multiplexing
+        \begin{itemize}
+            \item UDP segments contain both source and destination ports
+            \item Multiplexing: Sent to target processes
+        \end{itemize}
+        \item Checksum
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{UDP Segment Header}
+
+\includegraphics[scale=0.19]{udp-segment-header}
+
+\subsubsection{Checksum}
+
+\begin{itemize}
+    \item Goal: Detect errors in received segment
+\end{itemize}
+
+\begin{enumerate}
+    \item Treat UDP segment as sequence of 16-bit integers
+    \item Add every 16-bit integer (Carry added back to result)
+    \item Invert to get UDP checksum (1's complement)
+    \item When receiving, sum segment again. All 1s if correct.
+\end{enumerate}
+
+\subsection{Reliable Data Transfer (rdt)}
+
+\begin{itemize}
+    \item Characteristics of unreliable channel will determine services provided by rdt
+\end{itemize}
+
+\includegraphics[scale=0.2]{rdt-interfaces}
+
+\subsubsection{rdt 2.0}
+
+\begin{itemize}
+    \item New problem: \keyword{Bit error}{May flip bits in packet}
+    \item Solution:
+    \begin{itemize}
+        \item Perform checksum to detect bit errors
+        \item \keyword{Stop and wait protocol}{Sender sends one packet at a time and wait for response}
+        \item \keyword{ACK}{Receiver tells sender that packet received is ok}
+        \item \keyword{NAK}{Receiver tells sender that packet received has errors (retransmission)}
+    \end{itemize}
+\end{itemize}
+
+\includegraphics[scale=0.2]{rdt-2.0}
+
+\includegraphics[scale=0.2]{rdt-2.0-fsm}
+
+\subsubsection{rdt 2.1}
+
+\begin{itemize}
+    \item New problem: ACK/NAK may be corrupted
+    \item Solution: Sender retransmits packet after receiving corrupted ACK/NAK
+    \item New problem: Duplicate packets during retransmission
+    \item Solution: Sender adds \textbf{sequence number} to each packet and receiver discards duplicate packet (Only 0 and 1 needed)
+\end{itemize}
+
+\includegraphics[scale=0.2]{rdt-2.1}
+
+\includegraphics[scale=0.2]{rdt-2.1-sender-fsm}
+
+\includegraphics[scale=0.2]{rdt-2.1-receiver-fsm}
+
+\subsubsection{rdt 2.2}
+
+\begin{itemize}
+    \item No NAK, only ACKs
+    \item Receiver sends ACK for last packet received. \textbf{ACK must include seq number of packet}.
+    \item Receiver send duplicate ACK to retransmit current packet
+\end{itemize}
+
+\subsubsection{rdt 3.0}
+
+\begin{itemize}
+    \item New problem: Lost packets
+    \item Solution: Sender waits for some time for ACK and retransmits packet
+    \begin{itemize}
+        \item What if duplicate packet? Sequence number handles this.
+        \item What if duplicate ACK? Do nothing.
+    \end{itemize}
+\end{itemize}
+
+\includegraphics[scale=0.2]{rdt-3.0-1}
+
+\includegraphics[scale=0.2]{rdt-3.0-2}
+
+\includegraphics[scale=0.2]{rdt-3.0-fsm}
+
+\subsubsection{Performance of rdt 3.0}
+
+\begin{itemize}
+    \item \keyword{Stop-and-wait protocol}{Sender sends 1 packet at a time, then waits for receiver response}
+    \item Performance is bad. Stop-and-wait protocol limits use of resources
+    \item \keyword{Utilization}{Fraction of time sender is busy sending}
+    \begin{itemize}
+        \item Given: 1 Gbps link, 15 ms prop. delay, 8000 bit packet
+        \item $D_{trans} = \frac{L}{R} = \frac{8000 bits}{10^9 bits / sec} = 8 microsecs$
+        \item $U_{sender} = \frac{D_{trans}}{RTT + D_{trans}} = \frac{0.008}{30.008} = 0.027\%$
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Pipelined Protocols}
+
+\begin{itemize}
+    \item \keyword{Pipelining}{Sender allows multiple not-yet-ACKed packets}
+    \begin{itemize}
+        \item Need more sequence numbers
+        \item Buffering at sender and receiver
+    \end{itemize}
+\end{itemize}
+Pipeline vs Parallel (HTTP)
+\begin{itemize}
+	\item Parallel connections need to retrieve HTML webpage first before retrieving data elements
+	\item Pipeline can retrieve HTML and data elements all at once
+
+\end{itemize}
+
+\subsection{Go-Back-N}
+
+\includegraphics[scale=0.17]{go-back-n}
+
+\begin{itemize}
+    \item Intuition: Sliding window
+    \item Sender:
+    \begin{itemize}
+        \item Timer for oldest in-flight packet
+        \item If timeout($n$), retransmit packet $n$ and other pkts in window
+    \end{itemize}
+    \item Receiver:
+    \begin{itemize}
+        \item \keyword{Cumulative ACK}{ACK for correct pkt with highest in-order sequence}
+        \item Discard out-of-order packets
+    \end{itemize}
+    \item Not efficient, since future packets discarded if out-of-order
+\end{itemize}
+
+\subsection{Selective Repeat}
+
+\includegraphics[scale=0.2]{selective-repeat}
+
+\begin{itemize}
+    \item Receiver individually ACKs correct pkts (Not accumulative) and sender maintains timer for each unACKed pkt
+    \item Sender:
+    \begin{itemize}
+        \item If timeout($n$), retransmit packet $n$ only
+        \item If ACK($n$) and $n$ is smallest unACKed pkt, slide window
+    \end{itemize}
+    \item Receiver:
+    \begin{itemize}
+        \item Once receive pkt $n$ in window, send ACK($n$). If out-of-order, buffer. If in-order, deliver and slide window
+        \item Once receive pkt $n$ outside of window, still send ACK($n$)
+    \end{itemize}
+\end{itemize}
+
+
+\section{05. TCP}
+\subsection{TCP Features}
+\begin{itemize}
+	\item \keyword{Point-to-point}{1 sender and 1 receiver}
+	\item \keyword{Connection-oriented}{Handshaking before exchange data}
+	\item \keyword{Full duplex}{Bi-directional data flow in connection}
+	\item Reliable, in order and pipelined
+	\item Buffers on both hosts
+	\item Limited by \textbf{Maximum Segment Size}
+\end{itemize}
+\subsection{Structure}
+\includegraphics[scale=0.3]{tcp-structure}
+\begin{enumerate}
+	\item Sequence \#
+	\begin{itemize}
+		\item Let receiver know if packet is retransmission or new data
+		\item Initial number randomly generated (Why?)
+		\begin{itemize}
+			\item Security
+			\item Prevent duplicate sequence numbers when link is used extensively
+		\end{itemize}
+		\item ACK \# = inital seq \# + data length in bytes
+	\end{itemize}
+	\item ACK number
+	\item \keyword{rwnd}{Receive window}
+	\begin{itemize}
+		\item Number of bytes the receiver is willing to accept
+		\item \keyword{Flow control}{Prevent overflow of receiver's buffer}
+	\end{itemize}
+	\item Flags - Connection establish or priority
+\end{enumerate}
+
+\subsection{Establish TCP connection}
+\includegraphics[scale=0.3]{tcp-estab}
+
+\subsection{Close TCP connection}
+\includegraphics[scale=0.3]{tcp-close}
+
+\subsection{RDT}
+\subsubsection{Features}
+\begin{itemize}
+	\item Pipelined segments
+	\item Cumulative ACKs (like GBN)
+	\item Single retransmission timer
+	\item Retransmit only missing packets (SR)
+\end{itemize}
+
+\subsubsection{Retransmission Scenarios}
+\includegraphics[scale=0.3]{tcp-acks}
+\\\includegraphics[scale=0.23]{tcp-retransmission1}
+\includegraphics[scale=0.23]{tcp-retransmission2}
+
+\columnbreak
+\subsubsection{RTT}
+\begin{itemize}
+	\item Problem: Estimate timeout value for retransmission
+	\item Solution: Average recent \keyword{SampleRTT}{Measured time from segment transmission until ACK}
+	\item EstimatedRTT = $(1-\alpha) *$ EstimatedRTT + $\alpha*$  SampleRTT
+	\begin{itemize}
+		\item Exponential weighted moving average
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Fast retransmission}
+\begin{itemize}
+	\item Send ACKs every other packet OR after timeout of packet
+	\item Retransmit unacked segment with \textbf{smallest seq \#} after receiving 4 ACKs for same data
+\end{itemize}
+
+\section{06: IP Addressing}
+
+\subsection{Function}
+\begin{enumerate}
+	\item \keyword{Forwarding}{Move packets from router input to output}
+	\item Routing
+	\begin{itemize}
+		\item Determine route taken by packets from source to destination
+		\item Plan trip from source to destination
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Planes}
+\begin{enumerate}
+	\item Data plane
+	\begin{itemize}
+		\item Local per router function
+		\item Determines how datagram forwarded to output port
+	\end{itemize}
+	\item Control plane
+	\begin{itemize}
+		\item Network wide logic
+		\item Routing algorithms
+	\end{itemize}
+\end{enumerate}
+\subsection{Subnet}
+\begin{itemize}
+	\item Network formed by directly interconnected host
+	\item Internal host can communicate without router
+	\item Connect to external networks with router
+	\item Same network prefix
+\end{itemize}
+
+\subsubsection{CIDR}
+\includegraphics[scale=0.2]{ip-cidr}
+\subsubsection{Subnet mask}
+\includegraphics[scale=0.2]{subnet-mask}
+
+\subsubsection{Hierachial addressing}
+\keyword{Route aggregation}{Advertise routing information by grouping similar IP addresses}
+\\Longest Prefix matching
+\begin{tabbing}
+	\= Routes to subnet with the greatest subnet portion of CIDR
+\end{tabbing}
+
+\subsection{DHCP}
+\keyword{Dynamic Host Configuration Protocol}{Lease IP address from network server when joining network}
+\begin{itemize}
+	\item Runs over UDP , Client \#:68
+	\item Router can act as DHCP
+	\item Server \#: 67, sends "DHCP ack" and "DHCP offer" 
+	\item Client \#: 68, sends "DHCP request" and "DHCP discover" 
+\end{itemize}
+
+\includegraphics[scale=0.28]{dhcp}
+\\What happens when multiple servers in network?
+\begin{itemize}
+	\item Transaction ID specifies the DHCP connection
+\end{itemize}
+
+\end{multicols*}
+\end{document}
