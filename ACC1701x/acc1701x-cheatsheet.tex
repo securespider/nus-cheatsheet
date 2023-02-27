@@ -1,0 +1,268 @@
+\documentclass{article}
+\usepackage[a4paper, margin=3mm, landscape]{geometry}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{listings}
+\usepackage{soul}
+\usepackage{graphicx}
+
+\pdfinfo{
+    /Title (ACC1701x.pdf)
+    /Creator (TeX)
+    /Producer (pdfTeX 1.40.0)
+    /Author (Vincent Pang)
+    /Subject (ACC1701x)
+    /Keywords (ACC1701x, nus, cheatsheet, pdf)
+}
+
+\graphicspath{ {./img/} }
+
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\columnseprule}{0.25pt}
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+    {-1ex plus -.5ex minus -.2ex}%
+    {0.5ex plus .2ex}%x
+{\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+    {-1explus -.5ex minus -.2ex}%
+    {0.5ex plus .2ex}%
+{\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+    {-1ex plus -.5ex minus -.2ex}%
+    {1ex plus .2ex}%
+{\normalfont\small\bfseries}}%
+\makeatother
+
+% Adjust spacing for all itemize/enumerate
+\setlength{\leftmargini}{0.5cm}
+\setlength{\leftmarginii}{0.5cm}
+\setlist[itemize,1]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+\setlist[itemize,2]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+
+% Font
+\renewcommand{\familydefault}{\sfdefault}
+
+% Define colors for math formulas
+\definecolor{myblue}{cmyk}{1,.72,0,.38}
+\everymath\expandafter{\the\everymath \color{myblue}}
+
+% Custom command for keywords
+\definecolor{highlight}{RGB}{251,243,218}
+\newcommand{\keyword}[2][]{\sethlcolor{highlight}\hl{\textbf{#2}} #1 - }
+\newcommand{\ilkeyword}[1]{\sethlcolor{highlight}\hl{\textbf{#1}}}
+
+% Define colors and style for code
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codered}{HTML}{CC241D}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
+\lstdefinestyle{codestyle}{
+    backgroundcolor = \color{backcolor},
+    commentstyle = \color{codegray},
+    keywordstyle = \color{codered},
+    stringstyle = \color{codegreen},
+    basicstyle = \ttfamily,
+    breakatwhitespace = false,
+    showstringspaces = false,
+    breaklines = true,
+    showtabs = false,
+    tabsize = 2
+}
+\lstset{style = codestyle}
+
+% -----------------------------------------------------------------------
+\begin{document}
+\begin{multicols*}{3}
+\footnotesize
+
+% Title box
+\begin{center}
+    \fbox{
+        \parbox{0.8\linewidth}{
+            \centering \textcolor{black}{
+                {\Large\textbf{ACC1701x}} \\
+                \normalsize{AY22/23 Sem 2}} \\
+                {\footnotesize \textcolor{gray}{github.com/securespider}}
+        }
+    }
+\end{center}
+
+\section{01. Financial Statements}
+\keyword{Consolidated Financial Statements}{Financial information about the group of companies including parent and subsidiaries}
+\\How does a parent company control subsidiary?
+\begin{itemize}
+	\item Own a controlling interest of subsidiary's share
+	\item Remaining shares are \keyword{Non controlling interest}{Separated, under book value}
+\end{itemize}
+\keyword{Associate Companies}{Interest in shares outside group that wields significant influence}
+\begin{itemize}
+	\item Includes one-line partial consolidation of associate company in book value
+	\item Recorded using equity method
+\end{itemize}
+
+\subsection{Consolidated Balance Sheet}
+Purpose
+\begin{itemize}
+	\item Report net worth of group \textbf{at specific date}
+\end{itemize}
+\subsubsection{Fundamental Accounting Equation} 
+\begin{description}
+	\item \textit{Assets = Liabilities + Equity}
+	\item[Assets]{Resource controlled by company (eg. cash, accounts receivable, inventory, land, equipment, buildings)}
+	\item[Liabilities]{Amount owed to others leading to outflow of resources (eg. accounts payable, expenses)}
+	\item[Equity]{Owner's claim on residual interest after deducting liabilities}
+\end{description}
+\subsubsection{Problems}
+\begin{enumerate}
+	\item Not market value
+	\begin{itemize}
+		\item Does not tell what the equity is worth in market
+		\item Market value = market share price * outstanding shares
+	\end{itemize}
+	\item Mixed measurement model - Mathematically dubious calculation 
+	\begin{itemize}
+		\item Property measured using \keyword{cost less depreciation}{amount originally paid less depreciation}, OR current market value
+	\end{itemize}
+\end{enumerate}
+\subsubsection{Motivation}
+\begin{enumerate}
+	\item Comparing
+	\begin{itemize}
+		\item Compare companies using \keyword{Market-to-book ratio}{$\dfrac{Market~value}{Total~equity}$}
+		\item Why are they not the same?
+		\begin{itemize}
+			\item Market takes into account future prospects not captured by book value
+		\end{itemize}
+	\end{itemize}
+	
+	\item Details
+	\begin{itemize}
+		\item Provides useful information
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Statement of Changes in Equity}
+Lists impact of events on changes in equity
+\subsubsection{Factors}
+\begin{enumerate}
+	\item Contributions from shareholders
+	\item Distributions to shareholders
+	\item Business income/expenses
+	\item \keyword{Capital maintenance adjustments}{Remeasurement of asset/liability value}
+\end{enumerate}
+
+\subsection{Statement of Comprehensive Income}
+\begin{itemize}
+	\item \keyword{Comprehensive Income}{Reflects changes of equity from non-owner sources and traditional income}
+	\item Show all operating and financial events that affect non-owners' interest in business
+	\item Includes unrealised gains and losses
+
+\end{itemize}
+
+\subsubsection{Income Statement}
+Includes information about business income and expenses for \textbf{the year}
+
+\subsection{Statement of Cash Flows}
+\keyword{Accrual Basis}{Record values when exchange of goods and services \textbf{NOT cash flows}}
+\subsubsection{Subsections}
+\begin{itemize}
+	\item Operating activities
+	\item Investing activities
+	\item \keyword{Financing activities}{Borrowing or issuing shares (eg. repayments, share buybacks)}
+\end{itemize}
+
+\subsection{Item Breakdown}
+\begin{description}
+	\item[Current assets/liabilities]{Likely to be converted to cash/settled within a year}
+	\item[PPE]{Property, plant and equipment used in business}
+	\item[Right-of-use assets]{Rented premises for business (Asset)}
+	\item[Lease liabilities]{Outstanding rental payments wrt ROU assets}
+	\item[Trade Receivables]{Outstanding dues from \textbf{credit} customers}
+	\item[Cost of Goods Sold(COGS)]{Amount paid to suppliers for goods sold to customers}
+	\item[Gross Profit]{= COGS - Sales}
+	\item[Interest Income and expense]{Profit from investing and financing activities}
+\end{description}
+
+\section{02. Ratios}
+\begin{itemize}
+	\item Comparing companies as investment opportunities
+	\item Comparing previous years to measure progress
+	\item Overcome difference in scale
+\end{itemize}
+
+\subsection{Profitability Ratios}
+\begin{itemize}
+	\item Measures performance of company over the year
+\end{itemize}
+\begin{description}
+	\item[Profit Margin]{$\dfrac{Net~Profits}{Net~sales~(revenue)}$}
+	\item[Return on total assets]{$\dfrac{Net~Profit}{Average~Total~Assets}$}
+	\item[Return on ordinary shareholders' equity]{$\dfrac{Net~Profit}{Average~total~equity}$}
+	\item[Earnings per share]{$\dfrac{Ordinary~shareholders~profits-Pref~Dividends}{Weighted~average~number~of~shares~during~year}$}
+\end{description}
+\subsubsection{Equity Categories}
+\begin{itemize}
+	\item \keyword{Share capital}{Amount collected when company originally issued shares}
+	\item \keyword{Retained earnings}{Accumulated profits - Amount paid as dividents}
+\end{itemize}
+
+\subsection{Liquidity and efficiency ratios}
+\begin{itemize}
+	\item Examine company capacity to meet short term debt obligation with current assets
+\end{itemize}
+\begin{description}
+	\item[Current ratio]{$\dfrac{Current~assets}{Current~liabilities}$}
+	\item[Acid Test ratio]{$\dfrac{Cash+Short~term~fin~assets+Current~receivables}{Current~liabilities}$}
+	\item[Accounts receivable turnover]{$\dfrac{Net~Sales}{Average~accounts~(Trade)~receivables}$}
+	\begin{itemize}
+		\item Receivables is \keyword{net}{Adjustment made for customers who may default}
+	\end{itemize}
+	\item[Inventory Turnover]{$\dfrac{Cost~of~goods~sold}{Average~inventory}$}
+	\item[Accounts payable turnover]{$\dfrac{Cost~of~goods~sold}{Average~accounts~(trade)~payable}$}
+	\item[Days' sales uncollected]{$\dfrac{Accounts~(Trade)~receivables,~net}{Net~sales}*365$}
+	\item[Days' sales in inventory]{$\dfrac{Ending~Inventory}{Cost~of~goods~sold}*365$}
+	\item[Days' purchases in accounts payable]{$\dfrac{Account~(trade)~payable}{Cost~of~goods~sold}*365$}
+	\item[Total Asset Turnover]{$\dfrac{Net~sales}{Average~total~assets}$}
+\end{description}
+
+\subsubsection{Prepaid flows}
+\begin{itemize}
+	\item \keyword{Prepaid Expense}{Payments made for services not yet received (Assets)}
+	\item \keyword{Unearned Revenue}{Advanced payments received from customers (Liabilities)}
+\end{itemize}
+
+\subsection{Solvency Ratios}
+\begin{itemize}
+	\item Identify the company's risk of going bankrupt
+	\item Gauge company chances of staying afloat
+\end{itemize}
+\begin{description}
+	\item[Debt Ratio]{$\dfrac{Total~liabilities}{Total~assets}$}
+	\item[Equity Ratio]{$\dfrac{Total~equity}{Total~assets}$}
+	\item[Times interest earned]{$\dfrac{Profit~before~interest~expense/tax}{Interes~expense}$}
+\end{description}
+
+\subsection{Market prospects ratio}
+\begin{itemize}
+	\item Help compare share price to other investments
+\end{itemize}
+
+\begin{description}
+	\item[Price-earnings ratio]{$\dfrac{Market~price~per~ordinary~share}{Earnings~per~share}$}
+	\item[Divident yield]{$\dfrac{Annual~cash~dividents~per~share}{Market~price~per~share}$}
+\end{description}
+
+\newpage
+\section{03. Accounting Equation}
+\keyword{Sole Proprietorship}{Business owned by a single party}
+\\\textbf{•}
+
+\end{multicols*}
+\end{document}
