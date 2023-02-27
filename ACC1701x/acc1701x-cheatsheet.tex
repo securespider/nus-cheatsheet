@@ -306,9 +306,68 @@ Represented via a T-account
 	\item[Permanent]{Capital accounts that track equity long-term}
 \end{description}
 \keyword{Journal entries}{Convenient format for recording transactions}
-
-
 %-----------------------------------------------------------------------------------------------------------------------
+\section{05. Adjusting and closing}
+\subsection{Adjusting entries}
+Record of transactions happening during period that were unrecorded (Why unrecorded)
+\begin{enumerate}
+	\item Frequent or continuous transactions - impractical to record 
+	\item Earning revenue/incurring expenses do not happen during cash payments (Prepayments/ accrued revenues and expenses)
+	\item \keyword{Depreciation}{Adjustment for age of a long-lived asset used in business}
+	\begin{tabbing}
+		\= \keyword{Accumulated Depreciation}{Contra asset storing negative adjustment}
+		\\\= Goes up on credit side and down on debit side\\
+		\= \keyword{Carrying value}{Remaining value of asset (cost - accumulated depreciation)}
+	\end{tabbing}
+\end{enumerate}
+
+\subsection{Closing entries}
+Clear the temporary accounts
+\\Capital(post-closing) = Capital(pre-closing) + Revenues - Expenses - Withdrawals
+\subsubsection{Steps}
+\begin{enumerate}
+	\item Close revenue accounts to income summary (Debit revenue, credit income summary)
+	\item Close expense accounts to income summary (Credit expense, debit income summary)
+	\item Close income summary to capital
+	\begin{itemize}
+		\item Debit $>$ Credit: Debit balance $\rightarrow$ Net loss (Credit income summary balance, debit capital)
+		\item Credit $>$ Debit: Credit balance $\rightarrow$ Net profit (Debit income summary balance, credit capital)
+	\end{itemize}
+	\item Close withdrawals account directly to Capital (Credit withdrawals, debit capital)
+\end{enumerate}
+%-----------------------------------------------------------------------------------------------------------------------
+\section{06. Inventory}
+\subsection{Sales and cost of goods sold}
+\subsubsection{Transactions}
+\begin{enumerate}
+	\item Earned revenue (Sales revenue and cash/accounts receievable increase)
+	\item Goods sold (Inventory and COGS expense decrease)
+\end{enumerate}
+\subsubsection{Perpetual System}
+\begin{itemize}
+	\item Tracks on every sale 
+	\item vs \keyword{Periodic}{Compare beginning + purchases and ending inventory}
+\end{itemize}
+\subsection{Shrinkage}
+Inventory is less than beginning (Unaccounted damage, loss)
+\subsubsection{Min(Cost, NRV)}
+\keyword{Cost}{Cost to acquire and make inventory available for sale}
+\begin{itemize}
+	\item Purchase price, NET of discounts or allowance
+	\item Shipping cost (\keyword{Freight-in}{borne by the buyer})
+	\item Taxes on purchase transaction (as long as not recoverable)
+\end{itemize}
+\keyword{Net Realizable Value}{Value that inventory can be sold, net reasonable cost to sell}
+\subsection{Cash flow assumption}
+\begin{itemize}
+	\item \keyword{Specific identification}{Unique items that have to be tracked and use actual original cost of item}
+	\item \keyword{Interchangeable goods}{Indistinguishable goods, typically in bulk}
+	\begin{enumerate}
+		\item FIFO
+		\item Weighted average cost - Cost of each good are the same at the time of sale
+	\end{enumerate}
+\end{itemize}
+
 
 %-----------------------------------------------------------------------------------------------------------------------
 \end{multicols*}
