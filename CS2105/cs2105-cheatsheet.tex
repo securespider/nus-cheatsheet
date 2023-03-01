@@ -93,6 +93,7 @@
         }
     }
 \end{center}
+% -----------------------------------------------------------------------
 
 \section{01. Introduction}
 
@@ -167,6 +168,7 @@
     \item \keyword{Propagation Delay}{($d_{\text{prop}}$) Time for 1 bit to reach end of link}
     \begin{itemize}
         \item $d_{\text{prop}} = \frac{d}{s}$ where $d$ is length of link and $s$ is propagation speed
+        \item Does not depend on packet size, number of packets or number of intermediate nodes
     \end{itemize}
 \end{itemize}
 
@@ -212,6 +214,7 @@
 		\item \keyword{Mesh}{High redundancy, increased cost but highest transmission speeds}
 	\end{itemize}
 	
+% -----------------------------------------------------------------------
 \section{02. Application Layer}
 
 \begin{itemize}
@@ -281,6 +284,9 @@
         \item Fast
     \end{itemize}
 \end{enumerate}
+\begin{itemize}
+	\item Does not guarantee minimum throughput and timing
+\end{itemize}
 
 \subsection{App-layer Protocol}
 
@@ -345,6 +351,14 @@
 \end{itemize}
 
 \includegraphics[scale=0.12]{cookies}
+\subsubsection{Error codes}
+\begin{description}
+	\item[200]{OK}
+	\item[301]{Moved permanently}
+	\item[400]{Bad request}
+	\item[404]{Resource not found}
+	\item[505]{HTTP Version Not Supported}
+\end{description}
 
 \subsubsection{Web Cache (Proxy Server)}
 
@@ -360,7 +374,7 @@
     \end{itemize}
 \end{itemize}
 
-\subsection{Domain Name System}
+\subsection{Domain Name System - 53}
 
 \begin{itemize}
     \item Maps between IP address and name (e.g. yahoo.com)
@@ -399,9 +413,10 @@
 	\item Best effort name-to-address translation (can be out-of-date)
 \end{itemize}
 
+% -----------------------------------------------------------------------
 \section{03. Socket Programming with UDP and TCP}
 
-\subsubsection{UDP Socket}
+\subsection{UDP Socket}
 
 \includegraphics[scale=0.14]{udp-socket}
 \includegraphics[scale=0.14]{udp}
@@ -416,7 +431,7 @@
     \end{itemize}
 \end{itemize}
 
-\subsubsection{TCP Socket}
+\subsection{TCP Socket}
 
 \includegraphics[scale=0.14]{tcp-socket}
 \includegraphics[scale=0.14]{tcp}
@@ -428,6 +443,13 @@
     \item Reliable stream pipe: Data always in order
 \end{itemize}
 
+\subsection{Remarks}
+\begin{itemize}
+	\item SOCK\_STREAM - TCP, SOCK\_DGRAM - UDP
+	\item Can only specify destination port numbers, source port numbers randomly assigned by OS
+\end{itemize}
+
+% -----------------------------------------------------------------------
 \section{04. UDP and Reliable Protocol}
 
 \subsection{Transport Layer Services}
@@ -452,8 +474,8 @@
 \end{itemize}
 
 \subsubsection{UDP Segment Header}
-
 \includegraphics[scale=0.19]{udp-segment-header}
+\\Note that length includes 8 byte header + body content
 
 \subsubsection{Checksum}
 
@@ -600,6 +622,7 @@ Pipeline vs Parallel (HTTP)
 \end{itemize}
 
 
+% -----------------------------------------------------------------------
 \section{05. TCP}
 \subsection{TCP Features}
 \begin{itemize}
@@ -612,16 +635,19 @@ Pipeline vs Parallel (HTTP)
 \end{itemize}
 \subsection{Structure}
 \includegraphics[scale=0.3]{tcp-structure}
+\\Header is 20-60 bytes long
 \begin{enumerate}
 	\item Sequence \#
 	\begin{itemize}
 		\item Let receiver know if packet is retransmission or new data
+		\item Value only measures the body length in bytes
 		\item Initial number randomly generated (Why?)
 		\begin{itemize}
 			\item Security
 			\item Prevent duplicate sequence numbers when link is used extensively
 		\end{itemize}
 		\item ACK \# = inital seq \# + data length in bytes
+		\item SYN \# = expected ACK (of sender)
 	\end{itemize}
 	\item ACK number
 	\item \keyword{rwnd}{Receive window}
@@ -633,10 +659,16 @@ Pipeline vs Parallel (HTTP)
 \end{enumerate}
 
 \subsection{Establish TCP connection}
+Creates n+1 sockets for n clients (additional 1 for listening)\\
 \includegraphics[scale=0.3]{tcp-estab}
 
 \subsection{Close TCP connection}
 \includegraphics[scale=0.3]{tcp-close}
+\\Why TIMED\_WAIT (2*\keyword{MSL}{Maximum segment lifespan})
+\begin{itemize}
+	\item Guarantee the port has been closed completely
+	\item Prevent delayed data segments from being received by other TCP connections
+\end{itemize}
 
 \subsection{RDT}
 \subsubsection{Features}
@@ -648,11 +680,11 @@ Pipeline vs Parallel (HTTP)
 \end{itemize}
 
 \subsubsection{Retransmission Scenarios}
-\includegraphics[scale=0.3]{tcp-acks}
+Send ACKs every other packet OR after timeout of packet OR receive gapped packet
+\includegraphics[scale=0.25]{tcp-acks}
 \\\includegraphics[scale=0.23]{tcp-retransmission1}
 \includegraphics[scale=0.23]{tcp-retransmission2}
 
-\columnbreak
 \subsubsection{RTT}
 \begin{itemize}
 	\item Problem: Estimate timeout value for retransmission
@@ -661,14 +693,28 @@ Pipeline vs Parallel (HTTP)
 	\begin{itemize}
 		\item Exponential weighted moving average
 	\end{itemize}
+	\item \keyword{DevRTT}{Margin due to deviation from Estimate RTT}
+	\begin{itemize}
+		\item $(1 - \beta) *$ DevRTT + $\beta *$ (Sample RTT - Estimated RTT)
+	\end{itemize}
+	\item \keyword{Timeout Interval}{EstimatedRTT + 4 * DevRTT}
+	\item $\alpha\approx\frac{1}{8}$, $\beta\approx\frac{1}{4}$
 \end{itemize}
 
 \subsubsection{Fast retransmission}
 \begin{itemize}
-	\item Send ACKs every other packet OR after timeout of packet
-	\item Retransmit unacked segment with \textbf{smallest seq \#} after receiving 4 ACKs for same data
+	\item Retransmit unacked segment \textbf{IMMEDIATELY} with \textbf{smallest seq \#} after receiving 4 ACKs for same data
 \end{itemize}
 
+\rule{8cm}{1pt}
+\section{Midterm tips}
+\begin{enumerate}
+	\item Bits are b and bytes are B (8 bits = byte)
+\end{enumerate}
+
+\rule{8cm}{1pt}
+
+% -----------------------------------------------------------------------
 \section{06: IP Addressing}
 
 \subsection{Function}
@@ -700,12 +746,16 @@ Pipeline vs Parallel (HTTP)
 	\item Internal host can communicate without router
 	\item Connect to external networks with router
 	\item Same network prefix
+	\item Valid subnet masks
+	\begin{itemize}
+		\item 254, 252, 248, 240, 224, 192, 128
+	\end{itemize}
 \end{itemize}
 
 \subsubsection{CIDR}
-\includegraphics[scale=0.2]{ip-cidr}
+\includegraphics[scale=0.25]{ip-cidr}
 \subsubsection{Subnet mask}
-\includegraphics[scale=0.2]{subnet-mask}
+\includegraphics[scale=0.25]{subnet-mask}
 
 \subsubsection{Hierachial addressing}
 \keyword{Route aggregation}{Advertise routing information by grouping similar IP addresses}
@@ -728,6 +778,8 @@ Pipeline vs Parallel (HTTP)
 \begin{itemize}
 	\item Transaction ID specifies the DHCP connection
 \end{itemize}
+
+
 
 \end{multicols*}
 \end{document}
