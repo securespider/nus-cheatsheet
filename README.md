@@ -18,6 +18,7 @@ Feel free to fork or [contact me](vincent_pang@u.nus.edu) for any changes!
 ## How to use
 
 You can go to the specific branches for specific modules or clone the whole repository for the cheatsheets of all the modules
+
 If you would like to add your own cheatsheets, you can fork from the main branch OR branch-cheatsheet-template
 
 ## Acknowledgements
