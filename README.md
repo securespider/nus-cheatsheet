@@ -13,7 +13,7 @@ This is a compilation of NUS SOC cheatsheets that I have modified/created
 - Cheatsheet template
     - Taken from [Jason Qiu](https://github.com/jasonqiu212)
 
-Feel free to fork or [contact me](vincent_pang@u.nus.edu) for any changes! Im actively looking for collaborators to expand database of cheatsheets for others
+Feel free to fork or [contact me](vincent_pang@u.nus.edu) for any changes! 
 
 ## How to use
 
