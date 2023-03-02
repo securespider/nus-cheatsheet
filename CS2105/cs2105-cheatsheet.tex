@@ -105,14 +105,6 @@
 
 \subsection{Network Core}
 
-\subsubsection{Packet-Switching}
-
-\begin{itemize}
-    \item Host breaks messages into packets of $L$ bits 
-    \item Transmits packets into access network at transmission rate $R$ (aka Link bandwidth, capacity)
-\end{itemize}
-
-\[\text{Packet Transmission Delay} = \frac{\text{Packet Size (bits)}}{\text{Transmission Rate (bits/sec)}}\]
 
 \begin{itemize}
     \item \keyword{Store and Forward}{Entire packet must arrive at router before being transmitted to next link}
@@ -125,19 +117,30 @@
     \item \keyword{Forwarding}{Move packets from router's input to correct router output}
 \end{itemize}
 
+\subsubsection{Packet-Switching}
+\begin{itemize}
+    \item Host breaks messages into packets of $L$ bits 
+    \item Transmits packets into access network at transmission rate $R$ (aka Link bandwidth, capacity)
+\end{itemize}
+
+\[\text{Packet Transmission Delay} = \frac{\text{Packet Size (bits)}}{\text{Transmission Rate (bits/sec)}}\]
+
 \subsubsection{Circuit Switching}
 
 \begin{itemize}
     \item Resources reserved for call between source and destination
+    \item End to end resources allocated and reserved
+    \item Set up and teardown required
+    \item Circuits like (guaranteed) performance cos circuit reserved per usage
     \item Pros: Better performance
-    \item Cons: More resources
+    \item Cons: More resources (Unable to share with other processes)
 \end{itemize}
 
 \subsubsection{Internet Structure}
 \includegraphics[scale=0.15]{internet}
 
 \begin{itemize}
-    \item End systems connect to Internet via \textbf{Access Internet Service Providers (ISPs)}
+    \item End systems connect to Internet via \textbf{Access Internet Service Providers (ISPs)} (autonomous systems $\rightarrow$ regional ISP $\rightarrow$ Access ISP $\rightarrow$ hosts)
     \item ISPs connect to larger global ISPs (usually competitors)
     \item Large ISPs connect via \textbf{peering links} or \textbf{internet exchange points (IXP)}
     \item \keyword{IXP}{Physical place with routers from different ISPs}
@@ -150,7 +153,7 @@
 \subsubsection{Packet Loss}
 
 \begin{itemize}
-    \item If Arrival Rate $>$ Transmission Rate, packets will queue and can be dropped if queue fills up
+    \item If Arrival Rate $>$ Transmission Rate, packets will queue and can be dropped if buffer fills up
     \item Solutions: Lost packets can be retransmitted
 \end{itemize}
 
@@ -180,7 +183,11 @@
         \item Different from transmission rate (Theoretical upper bound)
         \item Measures end-to-end, even through intermediaries
         \item Irregardless of the size of packets
+        \item Dealing with bottlenecks over n packets:
     \end{itemize}
+\end{itemize}
+\includegraphics[scale=0.1]{bottleneck}
+\begin{itemize}
     \item Average: Rate over long period of time
     \item Instantaneous: Rate at given point in time
 \end{itemize}
@@ -224,8 +231,8 @@
 \subsection{Client-server Architecture}
 
 \begin{itemize}
-    \item Server: Always-on host, Permanent IP address
-    \item Clients: Communicates with server, Intermittently connected, Dynamic IP addresses, Do not communicate with each other directly
+    \item Server: Always-on host, Permanent IP address, waits for incoming req and provides service to client
+    \item Clients: Communicates with server, Intermittently connected, Dynamic IP addresses, Do not communicate with each other directly, initate connection with server to request services
 \end{itemize}
 
 \subsection{P2P Architecture}
@@ -239,10 +246,7 @@
 \subsection{Process}
 
 \begin{itemize}
-    \item \keyword{Process}{Program running in host}
     \item \keyword{Inter-process Communication}{How 2 processes in 1 host communicate}
-    \item \keyword{Client Process}{Process that initiates communication}
-    \item \keyword{Server Process}{Process that waits to be contacted}
     \item \keyword{Socket}{Process sends/receives messages to/from its socket (like a door)}
     \begin{itemize}
         \item Outside of socket, transport layer delivers message
@@ -306,11 +310,12 @@
     \item \keyword{Stateless}{Server maintains no information about past requests}
 \end{itemize}
 
-\subsubsection{Non-persistent HTTP}
+\subsubsection{Non-persistent HTTP 1.0}
 
 \begin{itemize}
     \item At most 1 object sent over TCP connection
     \item Downloading multiple objects requires multiple TCP connections
+    \item New TCP connection for each web resource/object
 \end{itemize}
 
 \includegraphics[scale=0.15]{non-persistent-http}
@@ -343,6 +348,18 @@
 
 \includegraphics[scale=0.15]{http-response}
 
+
+\subsubsection{Error codes}
+\begin{description}
+	\item[200]{OK}
+	\item[301]{Moved permanently}
+	\item[304]{Not modified (during conditional GET)}
+	\item[400]{Bad request}
+	\item[404]{Resource not found}
+	\item[505]{HTTP Version Not Supported}
+\end{description}
+
+
 \subsubsection{Cookies}
 
 \begin{itemize}
@@ -351,14 +368,7 @@
 \end{itemize}
 
 \includegraphics[scale=0.12]{cookies}
-\subsubsection{Error codes}
-\begin{description}
-	\item[200]{OK}
-	\item[301]{Moved permanently}
-	\item[400]{Bad request}
-	\item[404]{Resource not found}
-	\item[505]{HTTP Version Not Supported}
-\end{description}
+
 
 \subsubsection{Web Cache (Proxy Server)}
 
@@ -369,21 +379,26 @@
     \item Cons: What if origin server updates?
     \begin{itemize}
         \item \keyword{Conditional GET}{Origin server doesn't send object if cache has updated version}
-        \item Cache: Specifies date of cached copy in HTTP request to origin
-        \item Origin Server: Response contains no object if cached object is updated
+        \item Cache: Specifies date of cached copy in HTTP request to origin (If-modified-since)
+        \item Origin Server: Response contains no object if cached object is updated (Empty content body)
     \end{itemize}
 \end{itemize}
 
 \subsection{Domain Name System - 53}
 
 \begin{itemize}
-    \item Maps between IP address and name (e.g. yahoo.com)
+    \item Maps between hostname (e.g. yahoo.com) and IP address
     \item Implemented using distributed and hierarchical databases
     \item Application-layer protocol (Why?)
     \begin{tabbing}
     	\= Build complexity in edges to simplify inner core networks
     \end{tabbing}
-    \item Uses UDP
+    \item Uses UDP (Much faster and smaller packet overhead)
+    \item Services provided
+    \begin{description}
+    	\item[Host/Email aliasing] {Additional name for complicated hostnames}
+    	\item[Load balancing] {Providing multiple IP addresses for the same URL}
+    \end{description}
     \item \keyword{Local DNS Name Server}{Local cache of name-to-address mapping. Forwards query into hierarchy.}
     \begin{itemize}
         \item \keyword{Time to Live}{(TTL) Cached mappings disappear after some time}
@@ -391,10 +406,13 @@
     \item \keyword{Root Name Server}{Contacted by local name server that cannot resolve name. Provides IP address of TLD servers.}
     \item \keyword{Top-level Domain Server}{(TLD) Provides IP address of authoritative server}
     \item \keyword{Authoritative DNS Server}{Organization's own DNS server. Provides mappings for organization's named hosts.}
-    \item Iterated query: "Not sure, ask this server"
 \end{itemize}
 
-\includegraphics[scale=0.07]{dns-iterative-query}
+\columnbreak
+\begin{itemize}
+	\item Iterated query: "Not sure, ask this server"    
+\end{itemize}
+\includegraphics[scale=0.08]{dns-iterative-query}
 
 \begin{itemize}
     \item Recursive query: "Okay, let me find for you"
@@ -411,6 +429,12 @@
 \begin{itemize}
 	\item Timeout after some time based on TTL
 	\item Best effort name-to-address translation (can be out-of-date)
+	\item \keyword{Resource record}{Mapping btw hostname and IP}
+	\item Format: <NAME, TYPE, VALUE, TTL>
+\end{itemize}
+\subsubsection{DNS Cache poisoning}
+\begin{itemize}
+	\item DNS spoofing attack - Rogue DNS records introduced in resolver's cache, leading to incorrect IP address reply
 \end{itemize}
 
 % -----------------------------------------------------------------------
@@ -454,7 +478,8 @@
 
 \subsection{Transport Layer Services}
 \begin{itemize}
-	\item Provide logical communication between processes in different hosts
+	\item Provide logical communication between processes in different hosts 
+	\item VS network: Process-to-process VS host-to-host
 	\item Sender: Breaks app messages into segment
 	\item Receiver: Reassembles segments
 \end{itemize}
@@ -467,7 +492,8 @@
         \item Connectionless multiplexing/de-multiplexing
         \begin{itemize}
             \item UDP segments contain both source and destination ports
-            \item Multiplexing: Sent to target processes
+            \item \keyword{Multiplexing}{Sent to target processes}
+            \item \keyword{Demultiplexing}{Delivering the received segments at the receiver side to the correct app layer processes}
         \end{itemize}
         \item Checksum
     \end{enumerate}
@@ -494,6 +520,7 @@
 
 \begin{itemize}
     \item Characteristics of unreliable channel will determine services provided by rdt
+    \item Cannot fix unordered packets
 \end{itemize}
 
 \includegraphics[scale=0.2]{rdt-interfaces}
@@ -598,7 +625,8 @@ Pipeline vs Parallel (HTTP)
     \item Receiver:
     \begin{itemize}
         \item \keyword{Cumulative ACK}{ACK for correct pkt with highest in-order sequence}
-        \item Discard out-of-order packets
+        \item Only ACK packets that arrive \textbf{in-order}
+        \item Discard \textbf{out-of-order} packets
     \end{itemize}
     \item Not efficient, since future packets discarded if out-of-order
 \end{itemize}
@@ -618,6 +646,7 @@ Pipeline vs Parallel (HTTP)
     \begin{itemize}
         \item Once receive pkt $n$ in window, send ACK($n$). If out-of-order, buffer. If in-order, deliver and slide window
         \item Once receive pkt $n$ outside of window, still send ACK($n$)
+        \item ACK m == packet m received but has no implication on receipt of other packets
     \end{itemize}
 \end{itemize}
 
@@ -631,7 +660,11 @@ Pipeline vs Parallel (HTTP)
 	\item \keyword{Full duplex}{Bi-directional data flow in connection}
 	\item Reliable, in order and pipelined
 	\item Buffers on both hosts
-	\item Limited by \textbf{Maximum Segment Size}
+	\item Limited by \textbf{Maximum Segment Size} $\approx$ 1460B
+	\begin{itemize}
+		\item Refers only to content length (no header)
+		\item Limited by \keyword{MTU}{Maximum transmission unit, size of largest IP transaction}
+	\end{itemize}
 \end{itemize}
 \subsection{Structure}
 \includegraphics[scale=0.3]{tcp-structure}
@@ -641,13 +674,13 @@ Pipeline vs Parallel (HTTP)
 	\begin{itemize}
 		\item Let receiver know if packet is retransmission or new data
 		\item Value only measures the body length in bytes
-		\item Initial number randomly generated (Why?)
+		\item Initial number randomly generated btw $0-(2^{32}-1)$ (Why?)
 		\begin{itemize}
 			\item Security
 			\item Prevent duplicate sequence numbers when link is used extensively
 		\end{itemize}
-		\item ACK \# = inital seq \# + data length in bytes
-		\item SYN \# = expected ACK (of sender)
+		\item ACK \# = next byte expected by receiver (inital seq \# + data length in bytes)
+		\item SYN \# = byte number of first byte(expected ACK (of sender) - data length)
 	\end{itemize}
 	\item ACK number
 	\item \keyword{rwnd}{Receive window}
@@ -779,7 +812,7 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 	\item Transaction ID specifies the DHCP connection
 \end{itemize}
 
-
+%------ remember to add in the private ip addresses
 
 \end{multicols*}
 \end{document}
