@@ -323,6 +323,7 @@
 \begin{itemize}
     \item Server closes TCP connection after sending file
     \item \keyword{Return Trip Time}{(RTT) Time for small packet to travel from client to server and back}
+    \item RTT is $2*d_{prop}$
     \item Response Time: 2 RTT + File transmission time
 \end{itemize}
 
@@ -458,7 +459,7 @@
 \subsection{TCP Socket}
 
 \includegraphics[scale=0.14]{tcp-socket}
-\includegraphics[scale=0.14]{tcp}
+\includegraphics[scale=0.18]{tcp}
 
 \begin{itemize}
     \item Client establishes connection to server via welcome socket
@@ -592,6 +593,7 @@
         \item Given: 1 Gbps link, 15 ms prop. delay, 8000 bit packet
         \item $D_{trans} = \frac{L}{R} = \frac{8000 bits}{10^9 bits / sec} = 8 microsecs$
         \item $U_{sender} = \frac{D_{trans}}{RTT + D_{trans}} = \frac{0.008}{30.008} = 0.027\%$
+        \item Pipelined Utilisation = U * window\_size
     \end{itemize}
 \end{itemize}
 
