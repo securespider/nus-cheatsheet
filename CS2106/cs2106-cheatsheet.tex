@@ -400,7 +400,107 @@ Instructions can only be done in kernel mode
 
 
 %--------------------------------------------------------------------------------------------------------------------
+\section{03. Process abstraction in Unix}
+Process information
+\begin{description}
+	\item[Pid]
+	\item[Process state]{Running, sleeping, stopped, \keyword{zombie}{Process that has stopped but resources not cleared}}
+	\item[Parent pid]
+	\item[Cumulative CPU time]{For scheduling}
+\end{description}
+
+\subsection{fork()}
+Process creation
+\begin{description}
+	\item[Package]{unistd.h and sys/types.h}
+	\item[return]{PID of newly created process(parent) and 0 (child process)}
+\end{description}
+\subsubsection{Behaviour}
+\begin{itemize}
+	\item Creates a child process
+	\begin{itemize}
+		\item \textbf{Copy} data of parent (Independent memory space)
+		\item Sane code, same address space
+		\item Differs by pid, ppid and fork() return value
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Implementation}
+Clone the parent process 
+\begin{enumerate}
+	\item Create address space of child process
+	\item allocate new pid to child and pass to parent
+	\item Create kernel process data structures
+	\item Copy kernel environment of parent process
+	\item Initialize child process context (pid, ppid, cpu_time = 0)
+	\item Copy memory regions from parent
+	\begin{itemize}
+		\item Very expensive operation
+		\item Code, data, stack
+	\end{itemize}
+	\item Acquire shared resources
+	\item Initialize hardware context for child process (copy parent registers)
+\end{enumerate}
+
+Problem: Memcopy is very expensive operation\\
+Solution: Copy on write
+\begin{itemize}
+	\item Only duplicate a memory location when it is written to
+\end{itemize}
+
+\subsection{exec()}
+Replace current executing process image
+\begin{itemize}
+	\item code and data replaced
+	\item PID intact
+\end{itemize}
+Format
+\begin{description}
+	\item[Param]{char *path, char *arg0...}
+	\begin{itemize}
+		\item Note that last term MUST be \textbf{NULL} indicating end of argument list
+	\end{itemize}
+	\item[header]{unistd.h}
+\end{description}
+
+\subsection{exit()}
+\begin{description}
+	\item[return]{Does not return anything}
+	\item[param]{Status to be returned to the wait call}
+\end{description}
+\begin{itemize}
+	\item Most system resource used by process are released on exit
+	\item return from main() implicitly calls exit(0)
+	\item Basic processes are not releasable
+	\begin{itemize}
+		\item Pid and status
+		\item Process accounting info
+	\end{itemize}
+\end{itemize}
+
+\subsection{wait()}
+Parent child synchronisation
+\begin{description}
+	\item[param]{&status - address to put return value}
+	\item[header]{sys/types.h and sys/wait.h}
+	\item[return]{pid of terminated process}
+\end{description}
+\begin{itemize}
+	\item Call is blocking - suspend operation until at least one child terminates
+	\item Cleans up remainder of child system resources (PID, status)
+	\item waitpid - used for waiting for specific child process
+\end{itemize}
+
+\subsection{Orphan and zombie process}
+\keyword{zombie}{Process that has exited but parent did not call wait}\\
+\keyword{Orphan}{Child process whose parent has been terminated}
+\begin{itemize}
+	\item Parenthood will be propagated up to init which may use wait() to clean up
+\end{itemize}
+
+
 %--------------------------------------------------------------------------------------------------------------------
+\section{04. Inter Process Communication}
 %--------------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------------------------------
 \end{multicols*}
