@@ -192,8 +192,213 @@ Difference
 	\item Better isolation btw kernel and services
 	\item Lower performance
 \end{itemize}
-\includegraphics[scale=0.2]{microkernel-os}
+\includegraphics[scale=0.32]{microkernel-os}
 %--------------------------------------------------------------------------------------------------------------------
+
+\section{02. Process abstraction}
+\subsection{Motivation}
+\begin{itemize}
+	\item Allow concurrent usage of hardware
+	\item Multiple programs sharing the same processors/IO
+\end{itemize}
+
+\subsection{Computer organisation}
+\includegraphics[scale=0.27]{computer-organisation}
+\subsubsection{Memory}
+\begin{itemize}
+	\item Storage for instruction and data
+	\item Managed by the OS
+	\item Normally accessed via load/store instructions
+\end{itemize}
+\subsubsection{Cache}
+\begin{itemize}
+	\item Fast and invisible to software
+	\item Duplicate part of the memory for faster access
+	\item Usually split into instruction and data cache
+\end{itemize}
+\subsubsection{Fetch}
+\begin{itemize}
+	\item Load instructions from memory
+	\item Location indicated by \textbf{Program Counter}
+\end{itemize}
+\subsubsection{Functional units}
+\begin{itemize}
+	\item Carry out instruction execution
+	\item Dedicated to specific instruction type
+\end{itemize}
+\subsubsection{Registers}
+\begin{itemize}
+	\item Internal storage for fastest access speed
+\end{itemize}
+
+\subsection{Information needed}
+\begin{itemize}
+	\item Memory context
+	\begin{itemize}
+		\item Code
+		\item Data
+	\end{itemize}
+	\item Hardware context
+	\begin{itemize}
+		\item Register
+		\item PC value
+		\item Frame Pointer
+	\end{itemize}
+	\item OS context
+	\begin{itemize}
+		\item Process properties
+		\item Resources used
+		\item Files
+	\end{itemize}
+\end{itemize}
+
+\subsection{Function calls}
+\subsubsection{Separation of text and data}
+Suppose a function f() calls g()
+\begin{itemize}
+	\item f is caller and g is callee
+\end{itemize}
+Steps of control flow
+\begin{enumerate}
+	\item Setup parameters
+	\item Trf ctrl to callee
+	\item Setup local var
+	\item Store any results
+	\item Return ctrl to caller
+\end{enumerate}
+\subsubsection{Issues}
+Control Flow
+\begin{itemize}
+	\item Need to jump to functional body when callee called
+	\item Need to resume to next instruction in caller after done
+\end{itemize}
+Data storage
+\begin{itemize}
+	\item Need to pass parameters to function
+	\item Need to capture return result
+	\item May have local variables
+\end{itemize}
+Additional
+\begin{itemize}
+	\item May lead to overriding of data in caller by callee (interference)
+	\item Calling g() multiple times may lead to insufficient space and overriding
+\end{itemize}
+
+
+\subsection{Stack memory}
+Memory to store function invocation
+\keyword{Stack Pointer}{Indicates the first free location in the stack region}\\
+\keyword{Frame Pointer}{Points to the frame and is used for traversing around the stack easily}\\
+\includegraphics[scale=0.13]{stack-frame}\\
+Information needed for function invocation - Stack frame
+\begin{itemize}
+	\item Return address of caller
+	\item Arguments for the function
+	\item Local variables
+	\item Stack and frame pointer of caller
+	\item GPR values (register spilling)
+\end{itemize}
+Callee stack frame will be on top of the caller
+
+
+\subsection{Dynamic memory (Heap)}
+Memory that the program/user specifies manually (eg. malloc, new)\\
+Problems:
+\begin{itemize}
+	\item Allocated only at runtime
+	\begin{itemize}
+		\item Size not known at program compilation time
+		\item Cannot specify a region in data 
+	\end{itemize}
+	\item No definite dellocation timing
+	\begin{itemize}
+		\item Must be freed explicitly by the program
+		\item Cannot place in stack region
+	\end{itemize}
+\end{itemize}
+Solution:\\
+Add a region "Heap for dynamic allocation\\
+Problems with heap memory:
+\begin{itemize}
+	\item Generation of holes in between data due to variable deallocation timing
+\end{itemize}
+
+%-----------------------------------------------------------------------------------------------------------------------
+\subsection{OS context}
+\subsubsection{Process identification}
+Features:
+\begin{itemize}
+	\item Distinguish processes from each other (Unique)
+	\item Communicated to the hardware
+\end{itemize}
+\subsubsection{Process state}
+\begin{itemize}
+	\item Denotes whether a process is running or not (Running vs waiting vs not running)
+\end{itemize}
+\includegraphics[scale=0.48]{process-model}
+
+\keyword{Process control block}{Table representing all processes}
+
+\subsection{Exceptions and interrupts}
+Exceptions
+\begin{itemize}
+	\item Synchronous (due to program execution)
+	\item Machine level instructions arise errors
+	\item Exception handler executed automatically in software
+\end{itemize}
+Interrupts
+\begin{itemize}
+	\item Asynchronous (Can happen anytime)
+	\item External events that cause execution to fail (hardware related errors)
+	\item Program execution suspended and \textbf{interrupt handler} executed automatically
+\end{itemize}
+
+\subsubsection{Instruction execution}
+\begin{enumerate}
+	\item Read byte from PC and decode instruction
+	\item Read 2 bytes to get the address/operands
+	\item Perform ALU operations
+	\item Store result into destination
+	\item Check if any interruptions
+\end{enumerate}
+Interrupts can happen at anytime, and will remain pending until step 5 where it is handled
+
+\subsubsection{Interruption handling}
+\begin{enumerate}
+	\item Push PC and status register into hardware
+	\item Disable interrupts
+	\item Read \keyword{Interrupt Vector Table}{Table where the OS stores address of all interrupt handlers}
+	\item Switch to kernel mode
+	\item Set PC to handler address and execute the instructions
+\end{enumerate}
+\begin{itemize}
+	\item OS populates the IVT table with address of interrupt routines
+	\item Hardware reads IVT to locate the handler
+\end{itemize}
+
+\subsection{System calls}
+\keyword{Application Program Interface}{Provides way of calling facilities/services in kernel}\\
+Instructions can only be done in kernel mode
+
+\subsubsection{Method}
+\begin{itemize}
+	\item Library version with the same name and same arguments
+	\item User friendly library version
+	\item using the function $long~syscall(long~number);$
+\end{itemize}
+\subsubsection{Mechanism}
+\begin{enumerate}
+	\item User invoke library call
+	\item Place call number in the designated location
+	\item Library call executes a special instruction (\textbf{TRAP/syscall}) to change user to kernel mode
+	\item (in kernel) syscall handler is determined (by a \textbf{dispatcher})
+	\item syscall handler is executed
+	\item Syscall handler ends and control returned to the library call
+	\item Return to user mode and continue normal function mechanism
+\end{enumerate}
+
+
+
 %--------------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------------------------------
