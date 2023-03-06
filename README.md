@@ -9,7 +9,7 @@ This is a compilation of NUS SOC cheatsheets that I have modified/created
     - Modified from [Jason's Cheatsheets](https://github.com/jasonqiu212/nus-cheatsheets/tree/main/CS2105)❤️
   - [ACC1701x Accounting for Decision Makers](ACC1701x/acc1701x-cheatsheet.pdf)
   - [CS2106 Introduction to Operating Systems](CS2106/cs2106-cheatsheet.pdf)
-  - [GEC1010/GEH1034](GEC1010/gec1010-cheatsheet.pdf)
+  - [GEC1010/GEH1034 Clean Energy and Storage](GEC1010/gec1010-cheatsheet.pdf)
 
 - Cheatsheet template
     - Taken from [Jason Qiu](https://github.com/jasonqiu212)
