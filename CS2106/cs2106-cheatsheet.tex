@@ -432,7 +432,7 @@ Clone the parent process
 	\item allocate new pid to child and pass to parent
 	\item Create kernel process data structures
 	\item Copy kernel environment of parent process
-	\item Initialize child process context (pid, ppid, cpu_time = 0)
+	\item Initialize child process context (pid, ppid, cpu\_time = 0)
 	\item Copy memory regions from parent
 	\begin{itemize}
 		\item Very expensive operation
@@ -448,7 +448,7 @@ Solution: Copy on write
 	\item Only duplicate a memory location when it is written to
 \end{itemize}
 
-\subsection{exec()}
+\subsection{exec(@param)}
 Replace current executing process image
 \begin{itemize}
 	\item code and data replaced
@@ -456,17 +456,17 @@ Replace current executing process image
 \end{itemize}
 Format
 \begin{description}
-	\item[Param]{char *path, char *arg0...}
+	\item[param]{char *path, char *arg0...}
 	\begin{itemize}
 		\item Note that last term MUST be \textbf{NULL} indicating end of argument list
 	\end{itemize}
 	\item[header]{unistd.h}
 \end{description}
 
-\subsection{exit()}
+\subsection{exit(status)}
 \begin{description}
 	\item[return]{Does not return anything}
-	\item[param]{Status to be returned to the wait call}
+	\item[param]{int status - returned to the wait call}
 \end{description}
 \begin{itemize}
 	\item Most system resource used by process are released on exit
@@ -478,10 +478,10 @@ Format
 	\end{itemize}
 \end{itemize}
 
-\subsection{wait()}
+\subsection{wait(\&status)}
 Parent child synchronisation
 \begin{description}
-	\item[param]{&status - address to put return value}
+	\item[param]{\&status - address to put return value}
 	\item[header]{sys/types.h and sys/wait.h}
 	\item[return]{pid of terminated process}
 \end{description}
@@ -492,7 +492,7 @@ Parent child synchronisation
 \end{itemize}
 
 \subsection{Orphan and zombie process}
-\keyword{zombie}{Process that has exited but parent did not call wait}\\
+\keyword{Zombie}{Process that has exited but parent did not call wait}\\
 \keyword{Orphan}{Child process whose parent has been terminated}
 \begin{itemize}
 	\item Parenthood will be propagated up to init which may use wait() to clean up
@@ -501,6 +501,139 @@ Parent child synchronisation
 
 %--------------------------------------------------------------------------------------------------------------------
 \section{04. Inter Process Communication}
+
+\subsection{Mechanism}
+\begin{itemize}
+	\item Shared memory
+	\item Message passing
+	\begin{itemize}
+		\item Pipes
+		\item Signal
+	\end{itemize}
+\end{itemize}
+
+\subsection{Shared memory}
+Communication through read/write to shared memory\\
+Advantages
+\begin{description}
+	\item[Efficient]{Only require OS to setup shared region once}
+	\item[Ease of use]{Simple reads and write to memory}
+	\begin{itemize}
+		\item Implicit communication
+		\item Can store any type of information
+	\end{itemize}
+\end{description}
+Disadvantages
+\begin{description}
+	\item[Limited to single machines]{Less efficient over different system}
+	\item[Requires synchronization]{Might have data races without synchronisation}
+\end{description}
+\keyword{Race condition}{System behaviour is dependent on the context/interleaving of process $\rightarrow$ unpredictable outcome}
+Steps of usage
+\begin{enumerate}
+	\item Create/locate a shared memory region M
+	\item Attach M to process memory space
+	\item Read from/write to M
+	\item Detach M from memory space after use
+	\item Destroy M
+	\begin{itemize}
+		\item Only one process need to do this
+		\item Can only destroy if M is not attached to any process
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Message Passing}
+Explicit communication through exchange of message
+\begin{description}
+	\item[Naming]{Have to identify the parties in the communication}
+	\item[Synchronisation]{Behaviour of sending/receiving operations}
+\end{description}
+\begin{itemize}
+	\item Messages have to be stored in kernel memory space
+	\item All sending/receiving operations have to be done through syscalls
+\end{itemize}
+\subsubsection{Direct communication}
+Sender/receiver explicitly name parties in communication
+\begin{itemize}
+	\item One link per pair of communicating processes
+	\item Need to know identity of other party
+\end{itemize}
+
+\subsubsection{Indirect communication}
+Messages sent to message storage (\textbf{Mailbox/Port})
+\begin{itemize}
+	\item Can be shared among a number of processes
+\end{itemize}
+
+\subsubsection{Synchronisation behaviour}
+Blocking
+\begin{itemize}
+	\item send and receive is blocked until a message has received/sent (other party is ready)
+\end{itemize}
+Non-blocking (asynchronous)
+\begin{itemize}
+	\item execute immediately and sends information to somebody OR returns empty handed
+\end{itemize}
+Typically, receive is synchronous and send is asynchronous\\
+BUT send just buffers the message and only sends the message when the receiver is receiving (no loss)\\
+Message buffers
+\begin{itemize}
+	\item Under OS control 
+	\item Decouples sender and receiver -\> less sensitive to variation in execution
+	\item Mailbox capacity declaration in advance
+\end{itemize}
+\textbf{Rendezvous}
+\begin{itemize}
+	\item Synchronous message passing 
+	\item Sender is blocked until receiver sends matching receive
+	\item No buffering needed
+\end{itemize}
+
+\subsubsection{Pros}
+\begin{itemize}
+	\item Applicable beyond a single machine
+	\item \keyword{Portable}{Easily implemented on many platforms and processing environments}
+	\item Easier synchronisation
+	\begin{itemize}
+		\item Implicit via send/receive behaviour
+		\item Communication and synchronisation is done simultaneously
+	\end{itemize}
+\end{itemize}
+\subsubsection{Cons}
+\begin{description}
+	\item[Inefficient]{Usually requires OS intervention every operation}
+	\item[Difficult to use]{Requires information packing into specific format}
+\end{description}
+
+\subsection{Unix Pipes}
+3 different communication channels to user
+\begin{enumerate}
+	\item stdin - standard in bounded to keyboard input
+	\item stderr - used for error messages
+	\item stdout - linked to screen
+\end{enumerate}
+$"|"$ symbol for linking input/output channels of each process to each other\\
+Create communication channel with 2 ends (one reading, one writing)\\
+\begin{itemize}
+	\item Producer-consumer relationship
+	\item Like anonymous file reading information FIFO
+\end{itemize}
+
+\subsubsection{Synchronisation}
+\begin{itemize}
+	\item Circular bounded byte buffer with implicit synchronization
+	\item Writer wait when buffer is full
+	\item Reader wait when buffer is empty
+	\item Unidirectional (one write one read exclusively) vs bidirectional (any end for reading and writing)
+\end{itemize}
+\subsubsection{pipe(@param)}
+\begin{description}
+	\item[param]{array of file descriptors}
+	\item[return]{0 for success, != for errors}
+\end{description}
+
+
+
 %--------------------------------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------------------------------
 \end{multicols*}
