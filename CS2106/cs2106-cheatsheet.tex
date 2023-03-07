@@ -613,7 +613,7 @@ Message buffers
 	\item stdout - linked to screen
 \end{enumerate}
 $"|"$ symbol for linking input/output channels of each process to each other\\
-Create communication channel with 2 ends (one reading, one writing)\\
+Create communication channel with 2 ends (one reading, one writing)
 \begin{itemize}
 	\item Producer-consumer relationship
 	\item Like anonymous file reading information FIFO
@@ -633,7 +633,137 @@ Create communication channel with 2 ends (one reading, one writing)\\
 \end{description}
 
 %--------------------------------------------------------------------------------------------------------------------
-\section{05.Synchronisation}
+\section{05.Process scheduling}
+Concurrency
+\begin{itemize}
+	\item Multiple process progress at the same time
+	\item Virtual parallelism (threading, context switching)
+	\item Physical parallelism (multicore, multi CPU)
+\end{itemize}
+
+\subsection{Scheduling}
+More ready processes vs limited CPU
+\begin{itemize}
+	\item Each process diff CPU usage
+	\item \keyword{Scheduling algorithms}{Deciding the process to run based on environment and process behaviour}
+	\item Processes have phases of io-bound and cpu intensive activities
+\end{itemize}
+Processing environment (sorted by increasing user interaction and response times):
+\begin{enumerate}
+	\item Batch
+	\item Interactive
+	\item Real time
+\end{enumerate}
+\subsection{Objectives}
+\begin{description}
+	\item[Fairness]{Should get fair share of CPU time n prevent \keyword{starvation}{processes never have access to CPU}}
+	\item[Utilization]{Hardware is used all the time}
+\end{description}
+\keyword{non-preemptive}{Process gives up resources voluntarily}
+\keyword{preemptive}{Process given a fixed quota to run and is suspended for other processes}
+\subsection{Timeline}
+\begin{enumerate}
+	\item Scheduler is triggered (OS take over)
+	\item Context switching can happen and current process information stored and placed back in queue
+	\item Pick process to run using algorithm and setup its context
+\end{enumerate}
+
+\subsection{Batch}
+Non-preemptive used dominantly cos minimal user interaction needed
+\subsubsection{Objectives} 
+\begin{description}
+	\item[Turnaround time]{Total time till finish running \textbf{including waiting} (finish time - arrival time)}
+	\item[Throughput]{Rate of task completion}
+	\item[Makespan]{Total time to complete \textbf{ALL} tasks}
+	\item[CPU utilization]{Percentage of \textbf{time} CPU is used}
+\end{description}
+\subsubsection{Algorithms}
+\begin{enumerate}
+	\item First Come First Serve (FCFS)
+	\begin{itemize}
+		\item Scheduled using FIFO queue based on arrival time
+		\item Guarantee no starvation - number of tasks in front of task is strictly decreasing
+		\item Reordering can reduce waiting time
+		\item \keyword{Convoy Effect}{Not all hardware resources are used concurrently because a process blocks it}
+	\end{itemize}
+	\item Shortest Job First (SJF)
+	\begin{itemize}
+		\item Choose tasks with smallest total CPU time
+		\item Estimate CPU time for tasks in advance using the previous CPU-bound phases
+		\item $Estimated_{n+1} = \alpha Actual_{n} + (1-\alpha) Predicted_{n}$
+		\item Starvation is possible as long tasks end up continuously waiting
+	\end{itemize}
+	\item Shortest Remaining Time (SRT)
+\end{enumerate}
+
+\subsection{Interactive system}
+\subsubsection{Objectives}
+\begin{description}
+	\item[Response time]{Time between request and response by system}
+	\item[Predictability]{Decreased variation in response time}
+	\item[Premptive scheduling]
+\end{description}
+\begin{itemize}
+	\item Periodic scheduler with time interrupts
+	\item \keyword{Time quantum}{Execution duration given to a process}
+	\begin{itemize}
+		\item Constant(regardless whether the process has given up processing halfway) OR Variable(full time quantum given to a process)
+		\item 
+	\end{itemize}
+\end{itemize}
+\subsubsection{Algorithms}
+\begin{enumerate}
+	\item Round Robin (RR)
+	\begin{itemize}
+		\item Store tasks in FIFO queue and pick tasks to run until
+		\begin{enumerate}
+			\item Fixed time slice elapsed
+			\item Task gives up CPU voluntarily
+			\item Task blocks
+		\end{enumerate}
+		\item Task placed at end of queue to wait for next turn
+		\item Response time guaranteed bounded by num task \* time quantum
+		\item Timer interrupt needed
+		\item Choice of time quantum duration is important 
+		\begin{itemize}
+			\item Longer quantum: Better utilization but greater wait time
+			\item Shorter quantum: Bigger overhead/ lower utilization but shorter wait time
+		\end{itemize}
+	\end{itemize}
+	\item Priority scheduling
+	\begin{itemize}
+		\item Assign tasks processes priorities based on impt and select them
+		\item Starvation for low priority tasks
+		\begin{itemize}
+			\item Solution: 
+			\item Lower priority every time the process have executed
+			\item Give processes a time quantum
+		\end{itemize}
+		\item \keyword{Priority Inversion}{Lower priority tasks locks the resources used by a higher priority task leading to deadlock OR allowing lower priority tasks to run before}
+	\end{itemize}
+	\item Multi-level Feedback Queue (MLFQ)
+	\begin{itemize}
+		\item Runs processes with higher priorities but lower priority when the job fully utilise its time quantum
+		\item Processes that voluntarily gives up/blocks before time quantum retains its priority
+		\item New processes have highest priority
+		\item Processes with same priority run in RR
+		\item Long CPU processes are starved as its priority becomes very low and cannot complete
+		\begin{itemize}
+			\item Solution: Occassionally reset tasks to full priority 
+		\end{itemize}
+		\item Processes can exploit and voluntarily give up to retain its priority
+		\begin{itemize}
+			\item Solution: Peg priority based on total CPU usage instead 
+		\end{itemize}
+	\end{itemize}
+	\item Lottery scheduling
+	\begin{itemize}
+		\item Give out tickets to processes for various system resources and randomly pick winners to be granted the resources
+		\item \keyword{Responsive}{Newly created processes can immediately join the lottery}
+		\item Good control - Process can be assigned quantity of tickets and resources which can be shared among its children/threads
+		\item Simple implementation
+	\end{itemize}
+\end{enumerate}
 %--------------------------------------------------------------------------------------------------------------------
 \section{06.Synchronisation primitives}
 %--------------------------------------------------------------------------------------------------------------------
