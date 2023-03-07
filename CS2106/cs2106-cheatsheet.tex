@@ -740,6 +740,11 @@ Non-preemptive used dominantly cos minimal user interaction needed
 			\item Give processes a time quantum
 		\end{itemize}
 		\item \keyword{Priority Inversion}{Lower priority tasks locks the resources used by a higher priority task leading to deadlock OR allowing lower priority tasks to run before}
+		\begin{itemize}
+			\item Solution:
+			\item Temporarily increase priority of tasks that lock resources until it unlocks
+			\item Low priority task inherit the priority of high priority tasks which is restored once unlocked
+		\end{itemize}
 	\end{itemize}
 	\item Multi-level Feedback Queue (MLFQ)
 	\begin{itemize}
@@ -766,6 +771,71 @@ Non-preemptive used dominantly cos minimal user interaction needed
 \end{enumerate}
 %--------------------------------------------------------------------------------------------------------------------
 \section{06.Synchronisation primitives}
+\subsection{Race condition}
+\begin{itemize}
+	\item Execution of sequential processes should be \keyword{deterministic}{Repeated execution returns the same result}... however,
+	\item Process sharing modifiable resources AND execute concurrently by interleaving may cause synchronization problems -\> non deterministic outcomes
+	\item Order determines the execution outcome
+\end{itemize}
+
+\subsection{Critical section}
+Region where unsynchronised access could lead to incorrectly interleaving scenarios\\
+Only \textbf{ONE} process should be in the critical section at one time
+\subsubsection{Properties}
+\begin{description}
+	\item[Mutual exclusion/Mutex]{All other processes should be blocked from entering critical section if occupied}
+	\item[Progress]{If no process occupying section, waiting process should be granted access}
+	\item[Bounded wait]{Upper bound on number of times other processes can enter critical section before a waiting process}
+	\item[Independence]{Process not in critical section should not block other process}
+\end{description}
+\subsubsection{Incorrect synchronization}
+\begin{description}
+	\item[Deadlock]{All processes blocked}
+	\item[Livelock]{Processes keep changing states to avoid deadlock resulting in no progress (Deadlock avoidance mechanism)}
+	\item[Starvation]
+\end{description}
+\subsection{Implementations}
+\begin{itemize}
+	\item High level language implementation (Peterson Algorithm)
+	\begin{itemize}
+		\item Busy waiting - Repeatedly tests while-loop condition instead of going into blocked state (Wastes CPU power)
+		\item Low level - Error prone and complicated
+		\item Not general - cannot extend to allowing multiple access instead of Mutex
+	\end{itemize}
+\end{itemize}
+\includegraphics[scale=0.46]{peterson-algorithm}
+\begin{itemize}
+	\item Assembly implementation
+	\begin{itemize}
+		\item Atomic instruction to load value and replace value in memory location (\textbf{TestAndSet})
+		\item No bounded wait unless fair scheduling algorithm employed
+		\item Employs busy waiting still
+	\end{itemize}
+\end{itemize}
+\includegraphics[scale=0.5]{test-and-set}
+\begin{itemize}
+	\item High level synchronization mechanism (Semaphore)
+	\begin{itemize}
+		\item Generalised mechanism to block a number of processes (sleeping), $S$, and unblock sleeping processes
+		\item \keyword{wait()}{Blocks if $S\leq 0$, decrement S}
+		\item \keyword{signal()}{Increment $S$, wake up sleeping processes, operation \textbf{never} blocks}
+	\end{itemize}
+\end{itemize}
+\subsubsection{Conditional variables}
+\begin{itemize}
+	\item Tasks wait for certain events to happen
+	\item Event completion/begin is broadcasted
+\end{itemize}
+\subsubsection{POSIX semaphore}
+\begin{description}
+	\item[header]{semaphore.h}
+	\item[wait]{pthread\_mutex\_unlock}
+	\item[signal]{pthread\_mutex\_lock}
+\end{description}
+
+%--------------------------------------------------------------------------------------------------------------------
+\section{Midterm}
+
 %--------------------------------------------------------------------------------------------------------------------
 \section{07.Threads}
 \subsection{Motivation}
