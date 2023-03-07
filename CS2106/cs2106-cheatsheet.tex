@@ -632,9 +632,104 @@ Create communication channel with 2 ends (one reading, one writing)\\
 	\item[return]{0 for success, != for errors}
 \end{description}
 
+%--------------------------------------------------------------------------------------------------------------------
+\section{05.Synchronisation}
+%--------------------------------------------------------------------------------------------------------------------
+\section{06.Synchronisation primitives}
+%--------------------------------------------------------------------------------------------------------------------
+\section{07.Threads}
+\subsection{Motivation}
+\begin{itemize}
+	\item Processes are expensive
+	\begin{itemize}
+		\item Process creation via fork() duplicates memory space and process context
+		\item Requires context switching and saving/restoring process information repeatedly
+	\end{itemize}
+	\item Hard to communicate with each other
+	\begin{itemize}
+		\item Independent memory space (IPC communication only)
+	\end{itemize}
+	\item Need easy way to execute some instructions simultaneously (more threads of control to same process)
+\end{itemize}
+\subsection{Features}
+\begin{itemize}
+	\item \keyword{Multithreaded process}{Single process with multiple threads}
+	\item Threads share the same \textbf{Memory context}(Text, data, heap) and \textbf{OS context}(PID)
+	\item Contains unique information
+	\begin{itemize}
+		\item Identification (thread id)
+		\item Registers (GPR and special)
+		\item Stack
+	\end{itemize}
+\end{itemize}
 
+\subsection{Benefits}
+\begin{description}
+	\item[Economy]{Less resources to manage}
+	\item[Resource sharing]
+	\item[Responsiveness]
+	\item[Scalability]{Can take advantage of multiple CPUs}	
+\end{description}
+
+\subsection{Problems}
+\begin{itemize}
+	\item Syscall concurrency
+	\begin{itemize}
+		\item Parallel execution of threads may result in parallel syscalls
+	\end{itemize}
+	\item Process behaviour
+	\begin{itemize}
+		\item Unable to impact process operations
+	\end{itemize}
+\end{itemize}
+
+\subsection{Thread implementation}
+\begin{enumerate}
+	\item User thread
+	\begin{itemize}
+		\item Implemented as a user library -\> More flexible and configurable
+		\item Runs on any OS
+		\item Kernel unaware of threads in process (scheduling at process level)
+	\end{itemize}
+	\item Kernel thread
+	\begin{itemize}
+		\item Implemented in the OS through syscalls (slower and more resource intensive)
+		\item Scheduling among threads instead of via process
+		\item Use threads in kernel operations
+		\item Less flexible
+		\begin{itemize}
+			\item Used by all multithreaded programs so kernel must cater to all
+			\item Balance btw many and less features
+		\end{itemize}
+	\end{itemize}
+	\item Hybrid thread
+	\begin{itemize}
+		\item OS schedules on kernel threads
+		\item User threads can be bound to kernel threads
+		\item Lead to greater flexibility
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Posix Threads (pthreads)}
+\subsubsection{pthread\_create}
+\begin{description}
+	\item[param]{tid, attributes, \&function, function\_params}
+	\item[return]{0 success, != 0 fail}
+\end{description}
+
+\subsubsection{pthread\_exit}
+\begin{description}
+	\item Automatically called after function finishes
+	\item[param]{exit\_value}
+	\item[behaviour]{return value of function will be the "exit value"}
+\end{description}
+
+\subsubsection{pthread\_join}
+\begin{description}
+	\item[param]{tid, \keyword{\&status}Exit value returned by target pthread}
+\end{description}
 
 %--------------------------------------------------------------------------------------------------------------------
-%--------------------------------------------------------------------------------------------------------------------
+\section{08.Synchronization classics}
 \end{multicols*}
 \end{document}
