@@ -97,10 +97,8 @@
 \keyword{OS}{Program that acts as an intermediary between user and hardware}
 
 \subsection{Different architectures}
-\subsubsection{Harvard architecture}
-\includegraphics[scale=0.2]{harvard-architecture}
-\subsubsection{Von Neumann architecture}
-\includegraphics[scale=0.2]{von-neumann}
+\includegraphics[scale=0.17]{harvard-architecture}
+\includegraphics[scale=0.17]{von-neumann}
 
 \begin{description}
 	\item[Difference]{Separate vs common storage pathway for code and data}
@@ -166,9 +164,18 @@ Difference
 	\item OS runs in \keyword{kernel mode}{Access to all hardware resources}
 	\item User programs run in \keyword{User mode}{Limited access}
 	\item User programs use syscalls to communicate with OS for hardware processes
+	\item User - Full virtual address space for code but cannot write outside of virtual address space
+	\item Kernel - All code share same address space
 \end{itemize}
-\includegraphics[scale=0.2]{os-interaction}
-\\Why OS dont occupy entire hardware layer
+\includegraphics[scale=0.33]{os-interaction}
+\begin{description}
+	\item[A]{OS executes machine instructions}
+	\item[B]{Normal machine instructions executed}
+	\item[C]{Calling OS using \textbf{syscall interface}}
+	\item[D]{User programs call library code}
+	\item[E]{System processes providing high level services}
+\end{description}
+Why OS dont occupy entire hardware layer
 \begin{itemize}
 	\item Slow to have all operations pass through intermediary
 	\item User programs can have direct interaction with hardware (eg. Arithmetic) during low risk operations
@@ -181,7 +188,7 @@ Difference
 	\item Well understood and has good performance
 	\item Highly \keyword{coupled}{internal structure interconnected that unintentionally affect each other}
 \end{itemize}
-\includegraphics[scale=0.2]{monolithic-os}
+\includegraphics[scale=0.3]{monolithic-os}
 
 \subsubsection{Microkernel}
 \begin{itemize}
@@ -193,6 +200,14 @@ Difference
 	\item Lower performance
 \end{itemize}
 \includegraphics[scale=0.32]{microkernel-os}
+\subsection{Virtual Machines}
+\begin{itemize}
+	\item Software emulation of hardware
+	\item Virtualization of underlying hardware to run additional operating systems concurrently
+\end{itemize}
+\includegraphics[scale=0.2]{type-1-hypervisor}
+\includegraphics[scale=0.2]{type-2-hypervisor}
+
 %--------------------------------------------------------------------------------------------------------------------
 
 \section{02. Process abstraction}
@@ -201,9 +216,10 @@ Difference
 	\item Allow concurrent usage of hardware
 	\item Multiple programs sharing the same processors/IO
 \end{itemize}
-
 \subsection{Computer organisation}
 \includegraphics[scale=0.27]{computer-organisation}
+\end{multicols*}
+\begin{multicols*}{4}
 \subsubsection{Memory}
 \begin{itemize}
 	\item Storage for instruction and data
@@ -221,6 +237,7 @@ Difference
 	\item Load instructions from memory
 	\item Location indicated by \textbf{Program Counter}
 \end{itemize}
+
 \subsubsection{Functional units}
 \begin{itemize}
 	\item Carry out instruction execution
@@ -253,7 +270,6 @@ Difference
 \end{itemize}
 
 \subsection{Function calls}
-\subsubsection{Separation of text and data}
 Suppose a function f() calls g()
 \begin{itemize}
 	\item f is caller and g is callee
@@ -286,10 +302,10 @@ Additional
 
 
 \subsection{Stack memory}
-Memory to store function invocation
+Memory to store function invocation\\
 \keyword{Stack Pointer}{Indicates the first free location in the stack region}\\
 \keyword{Frame Pointer}{Points to the frame and is used for traversing around the stack easily}\\
-\includegraphics[scale=0.13]{stack-frame}\\
+\includegraphics[scale=0.1]{stack-frame}\\
 Information needed for function invocation - Stack frame
 \begin{itemize}
 	\item Return address of caller
@@ -332,13 +348,33 @@ Features:
 	\item Communicated to the hardware
 \end{itemize}
 \subsubsection{Process state}
+\begin{description}
+	\item[New]{New process that may still be under initialization (not schedulable)}
+	\item[Ready]
+	\item[Running]{Executed on CPU}
+	\item[Blocked]{Sleeping/waiting for event - cannot execute until event available}
+	\item[Terminated]{Finished execution and requires OS cleanup}
+\end{description}
+\includegraphics[scale=0.23]{process-model}
+\subsection{Process control block}
+Table representing all processes containing entire execution context stored in OS memory
 \begin{itemize}
-	\item Denotes whether a process is running or not (Running vs waiting vs not running)
+	\item PC, FP, SP and other GPR (only updated when swapped out)
+	\item Memory region info (Text, data, heap and stack)
+	\begin{itemize}
+		\item It is a "point" to real memory space \textbf{NOT actual memory space used by process}
+	\end{itemize}
+	\item PID and process state
 \end{itemize}
-\includegraphics[scale=0.48]{process-model}
-
-\keyword{Process control block}{Table representing all processes}
-
+\subsubsection{Context switching}
+\begin{enumerate}
+	\item Interrupt or syscalls
+	\item Save state of old process into PCB
+	\item Reload state of new process from PCB
+\end{enumerate}
+\begin{itemize}
+	\item Involves a change to kernel mode and back
+\end{itemize}
 \subsection{Exceptions and interrupts}
 Exceptions
 \begin{itemize}
@@ -352,7 +388,6 @@ Interrupts
 	\item External events that cause execution to fail (hardware related errors)
 	\item Program execution suspended and \textbf{interrupt handler} executed automatically
 \end{itemize}
-
 \subsubsection{Instruction execution}
 \begin{enumerate}
 	\item Read byte from PC and decode instruction
@@ -375,16 +410,22 @@ Interrupts can happen at anytime, and will remain pending until step 5 where it 
 	\item OS populates the IVT table with address of interrupt routines
 	\item Hardware reads IVT to locate the handler
 \end{itemize}
-
 \subsection{System calls}
 \keyword{Application Program Interface}{Provides way of calling facilities/services in kernel}\\
-Instructions can only be done in kernel mode
-
-\subsubsection{Method}
+Synchronous function only done in kernel mode providing system services\\
+Typically more expensive than library calls due to context switching
+\subsubsection{Functions}
+\begin{description}
+	\item[Process control]{Direct processes like creating, terminating or synchronisation}
+	\item[File/device manipulation]
+	\item[Information maintenance]{Get system data, time, etc}
+	\item[Communication]{Create, delete connections and send/receive messages}
+\end{description}
+\subsubsection{Method (Programming language specific)}
 \begin{itemize}
-	\item Library version with the same name and same arguments
+	\item Library version with the same name and same arguments 
 	\item User friendly library version
-	\item using the function $long~syscall(long~number);$
+	\item Using func $long~syscall(long~number);$
 \end{itemize}
 \subsubsection{Mechanism}
 \begin{enumerate}
@@ -398,13 +439,12 @@ Instructions can only be done in kernel mode
 \end{enumerate}
 
 
-
 %--------------------------------------------------------------------------------------------------------------------
 \section{03. Process abstraction in Unix}
 Process information
 \begin{description}
 	\item[Pid]
-	\item[Process state]{Running, sleeping, stopped, \keyword{zombie}{Process that has stopped but resources not cleared}}
+	\item[Proc state]{Running, sleeping, stopped, zombie}
 	\item[Parent pid]
 	\item[Cumulative CPU time]{For scheduling}
 \end{description}
@@ -420,6 +460,7 @@ Process creation
 	\item Creates a child process
 	\begin{itemize}
 		\item \textbf{Copy} data of parent (Independent memory space)
+		\item Unless explicitly modifying value at address, parent and child variables are distinct
 		\item Sane code, same address space
 		\item Differs by pid, ppid and fork() return value
 	\end{itemize}
@@ -451,8 +492,9 @@ Solution: Copy on write
 \subsection{exec(@param)}
 Replace current executing process image
 \begin{itemize}
-	\item code and data replaced
-	\item PID intact
+	\item Code and data replaced
+	\item PID/PPID intact
+	\item If fail, program just continues to run the next instruction
 \end{itemize}
 Format
 \begin{description}
@@ -492,7 +534,7 @@ Parent child synchronisation
 \end{itemize}
 
 \subsection{Orphan and zombie process}
-\keyword{Zombie}{Process that has exited but parent did not call wait}\\
+\keyword{Zombie}{\textbf{All} processes that has exited but parent did not call wait}\\
 \keyword{Orphan}{Child process whose parent has been terminated}
 \begin{itemize}
 	\item Parenthood will be propagated up to init which may use wait() to clean up
@@ -526,10 +568,10 @@ Advantages
 Disadvantages
 \begin{description}
 	\item[Limited to single machines]{Less efficient over different system}
-	\item[Requires synchronization]{Might have data races without synchronisation}
+	\item[Need Sync]{Might have data races without synchronisation}
 \end{description}
 \keyword{Race condition}{System behaviour is dependent on the context/interleaving of process $\rightarrow$ unpredictable outcome}
-Steps of usage
+\subsubsection{Steps}
 \begin{enumerate}
 	\item Create/locate a shared memory region M
 	\item Attach M to process memory space
@@ -560,7 +602,7 @@ Sender/receiver explicitly name parties in communication
 \end{itemize}
 
 \subsubsection{Indirect communication}
-Messages sent to message storage (\textbf{Mailbox/Port})
+Message storage (\textbf{Mailbox/Port})
 \begin{itemize}
 	\item Can be shared among a number of processes
 \end{itemize}
@@ -618,7 +660,6 @@ Create communication channel with 2 ends (one reading, one writing)
 	\item Producer-consumer relationship
 	\item Like anonymous file reading information FIFO
 \end{itemize}
-
 \subsubsection{Synchronisation}
 \begin{itemize}
 	\item Circular bounded byte buffer with implicit synchronization
@@ -631,7 +672,15 @@ Create communication channel with 2 ends (one reading, one writing)
 	\item[param]{array of file descriptors}
 	\item[return]{0 for success, != for errors}
 \end{description}
-
+\subsection{Unix signals}
+Asynchronous notification about an event sent to process/threads
+\begin{itemize}
+	\item Handle signal via default or user supplied handlers
+	\item Can only call async safe functions (signal/wait cannot be called in POSIX)
+	\item eg. Kill, stop, continue, error
+\end{itemize}
+\end{multicols*}
+\begin{multicols*}{3}
 %--------------------------------------------------------------------------------------------------------------------
 \section{05.Process scheduling}
 Concurrency
@@ -681,9 +730,9 @@ Non-preemptive used dominantly cos minimal user interaction needed
 \begin{enumerate}
 	\item First Come First Serve (FCFS)
 	\begin{itemize}
-		\item Scheduled using FIFO queue based on arrival time
+		\item Scheduled using FIFO queue based on arrival time (bad turnaround time)
 		\item Guarantee no starvation - number of tasks in front of task is strictly decreasing
-		\item Reordering can reduce waiting time
+		\item Reordering can reduce waiting time 
 		\item \keyword{Convoy Effect}{Not all hardware resources are used concurrently because a process blocks it}
 	\end{itemize}
 	\item Shortest Job First (SJF)
@@ -808,6 +857,7 @@ Only \textbf{ONE} process should be in the critical section at one time
 	\item Assembly implementation
 	\begin{itemize}
 		\item Atomic instruction to load value and replace value in memory location (\textbf{TestAndSet})
+		\item \keyword{Atomicity}{Prevents race condition of process viewing and upon modification, the value changes}
 		\item No bounded wait unless fair scheduling algorithm employed
 		\item Employs busy waiting still
 	\end{itemize}
@@ -819,6 +869,7 @@ Only \textbf{ONE} process should be in the critical section at one time
 		\item Generalised mechanism to block a number of processes (sleeping), $S$, and unblock sleeping processes
 		\item \keyword{wait()}{Blocks if $S\leq 0$, decrement S}
 		\item \keyword{signal()}{Increment $S$, wake up sleeping processes, operation \textbf{never} blocks}
+		\item \keyword{Invariant}{$S_{current} = S_{initial} + N_{signal} - N_{wait}$}
 	\end{itemize}
 \end{itemize}
 \subsubsection{Conditional variables}
@@ -835,6 +886,9 @@ Only \textbf{ONE} process should be in the critical section at one time
 
 %--------------------------------------------------------------------------------------------------------------------
 \section{Midterm}
+\begin{itemize}
+	\item \keyword{Tail-call optimization}{Stack frame can be replaced in iterative recursion since all information is retained in the 'return' function call at every iteration}
+\end{itemize}
 
 %--------------------------------------------------------------------------------------------------------------------
 \section{07.Threads}
@@ -890,6 +944,7 @@ Only \textbf{ONE} process should be in the critical section at one time
 		\item Implemented as a user library -\> More flexible and configurable
 		\item Runs on any OS
 		\item Kernel unaware of threads in process (scheduling at process level)
+		\item If process is blocked, all the threads in the process cannot run 
 	\end{itemize}
 	\item Kernel thread
 	\begin{itemize}
@@ -906,6 +961,7 @@ Only \textbf{ONE} process should be in the critical section at one time
 	\begin{itemize}
 		\item OS schedules on kernel threads
 		\item User threads can be bound to kernel threads
+		\item If the user thread is blocked, the kernel thread that it is assigned to is blocked and the OS will execute another kernel thread
 		\item Lead to greater flexibility
 	\end{itemize}
 \end{enumerate}
