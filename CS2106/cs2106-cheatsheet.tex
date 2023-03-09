@@ -97,10 +97,8 @@
 \keyword{OS}{Program that acts as an intermediary between user and hardware}
 
 \subsection{Different architectures}
-\subsubsection{Harvard architecture}
-\includegraphics[scale=0.2]{harvard-architecture}
-\subsubsection{Von Neumann architecture}
-\includegraphics[scale=0.2]{von-neumann}
+\includegraphics[scale=0.17]{harvard-architecture}
+\includegraphics[scale=0.17]{von-neumann}
 
 \begin{description}
 	\item[Difference]{Separate vs common storage pathway for code and data}
@@ -166,9 +164,18 @@ Difference
 	\item OS runs in \keyword{kernel mode}{Access to all hardware resources}
 	\item User programs run in \keyword{User mode}{Limited access}
 	\item User programs use syscalls to communicate with OS for hardware processes
+	\item User - Full virtual address space for code but cannot write outside of virtual address space
+	\item Kernel - All code share same address space
 \end{itemize}
-\includegraphics[scale=0.2]{os-interaction}
-\\Why OS dont occupy entire hardware layer
+\includegraphics[scale=0.33]{os-interaction}
+\begin{description}
+	\item[A]{OS executes machine instructions}
+	\item[B]{Normal machine instructions executed}
+	\item[C]{Calling OS using \textbf{syscall interface}}
+	\item[D]{User programs call library code}
+	\item[E]{System processes providing high level services}
+\end{description}
+Why OS dont occupy entire hardware layer
 \begin{itemize}
 	\item Slow to have all operations pass through intermediary
 	\item User programs can have direct interaction with hardware (eg. Arithmetic) during low risk operations
@@ -181,7 +188,7 @@ Difference
 	\item Well understood and has good performance
 	\item Highly \keyword{coupled}{internal structure interconnected that unintentionally affect each other}
 \end{itemize}
-\includegraphics[scale=0.2]{monolithic-os}
+\includegraphics[scale=0.3]{monolithic-os}
 
 \subsubsection{Microkernel}
 \begin{itemize}
@@ -193,6 +200,14 @@ Difference
 	\item Lower performance
 \end{itemize}
 \includegraphics[scale=0.32]{microkernel-os}
+\subsection{Virtual Machines}
+\begin{itemize}
+	\item Software emulation of hardware
+	\item Virtualization of underlying hardware to run additional operating systems concurrently
+\end{itemize}
+\includegraphics[scale=0.2]{type-1-hypervisor}
+\includegraphics[scale=0.2]{type-2-hypervisor}
+
 %--------------------------------------------------------------------------------------------------------------------
 
 \section{02. Process abstraction}
@@ -201,9 +216,10 @@ Difference
 	\item Allow concurrent usage of hardware
 	\item Multiple programs sharing the same processors/IO
 \end{itemize}
-
 \subsection{Computer organisation}
 \includegraphics[scale=0.27]{computer-organisation}
+\end{multicols*}
+\begin{multicols*}{4}
 \subsubsection{Memory}
 \begin{itemize}
 	\item Storage for instruction and data
@@ -221,6 +237,7 @@ Difference
 	\item Load instructions from memory
 	\item Location indicated by \textbf{Program Counter}
 \end{itemize}
+
 \subsubsection{Functional units}
 \begin{itemize}
 	\item Carry out instruction execution
@@ -253,7 +270,6 @@ Difference
 \end{itemize}
 
 \subsection{Function calls}
-\subsubsection{Separation of text and data}
 Suppose a function f() calls g()
 \begin{itemize}
 	\item f is caller and g is callee
@@ -286,10 +302,10 @@ Additional
 
 
 \subsection{Stack memory}
-Memory to store function invocation
+Memory to store function invocation\\
 \keyword{Stack Pointer}{Indicates the first free location in the stack region}\\
 \keyword{Frame Pointer}{Points to the frame and is used for traversing around the stack easily}\\
-\includegraphics[scale=0.13]{stack-frame}\\
+\includegraphics[scale=0.1]{stack-frame}\\
 Information needed for function invocation - Stack frame
 \begin{itemize}
 	\item Return address of caller
@@ -332,13 +348,33 @@ Features:
 	\item Communicated to the hardware
 \end{itemize}
 \subsubsection{Process state}
+\begin{description}
+	\item[New]{New process that may still be under initialization (not schedulable)}
+	\item[Ready]
+	\item[Running]{Executed on CPU}
+	\item[Blocked]{Sleeping/waiting for event - cannot execute until event available}
+	\item[Terminated]{Finished execution and requires OS cleanup}
+\end{description}
+\includegraphics[scale=0.23]{process-model}
+\subsection{Process control block}
+Table representing all processes containing entire execution context stored in OS memory
 \begin{itemize}
-	\item Denotes whether a process is running or not (Running vs waiting vs not running)
+	\item PC, FP, SP and other GPR (only updated when swapped out)
+	\item Memory region info (Text, data, heap and stack)
+	\begin{itemize}
+		\item It is a "point" to real memory space \textbf{NOT actual memory space used by process}
+	\end{itemize}
+	\item PID and process state
 \end{itemize}
-\includegraphics[scale=0.48]{process-model}
-
-\keyword{Process control block}{Table representing all processes}
-
+\subsubsection{Context switching}
+\begin{enumerate}
+	\item Interrupt or syscalls
+	\item Save state of old process into PCB
+	\item Reload state of new process from PCB
+\end{enumerate}
+\begin{itemize}
+	\item Involves a change to kernel mode and back
+\end{itemize}
 \subsection{Exceptions and interrupts}
 Exceptions
 \begin{itemize}
@@ -352,7 +388,6 @@ Interrupts
 	\item External events that cause execution to fail (hardware related errors)
 	\item Program execution suspended and \textbf{interrupt handler} executed automatically
 \end{itemize}
-
 \subsubsection{Instruction execution}
 \begin{enumerate}
 	\item Read byte from PC and decode instruction
@@ -375,16 +410,22 @@ Interrupts can happen at anytime, and will remain pending until step 5 where it 
 	\item OS populates the IVT table with address of interrupt routines
 	\item Hardware reads IVT to locate the handler
 \end{itemize}
-
 \subsection{System calls}
 \keyword{Application Program Interface}{Provides way of calling facilities/services in kernel}\\
-Instructions can only be done in kernel mode
-
-\subsubsection{Method}
+Synchronous function only done in kernel mode providing system services\\
+Typically more expensive than library calls due to context switching
+\subsubsection{Functions}
+\begin{description}
+	\item[Process control]{Direct processes like creating, terminating or synchronisation}
+	\item[File/device manipulation]
+	\item[Information maintenance]{Get system data, time, etc}
+	\item[Communication]{Create, delete connections and send/receive messages}
+\end{description}
+\subsubsection{Method (Programming language specific)}
 \begin{itemize}
-	\item Library version with the same name and same arguments
+	\item Library version with the same name and same arguments 
 	\item User friendly library version
-	\item using the function $long~syscall(long~number);$
+	\item Using func $long~syscall(long~number);$
 \end{itemize}
 \subsubsection{Mechanism}
 \begin{enumerate}
@@ -398,10 +439,553 @@ Instructions can only be done in kernel mode
 \end{enumerate}
 
 
+%--------------------------------------------------------------------------------------------------------------------
+\section{03. Process abstraction in Unix}
+Process information
+\begin{description}
+	\item[Pid]
+	\item[Proc state]{Running, sleeping, stopped, zombie}
+	\item[Parent pid]
+	\item[Cumulative CPU time]{For scheduling}
+\end{description}
+
+\subsection{fork()}
+Process creation
+\begin{description}
+	\item[Package]{unistd.h and sys/types.h}
+	\item[return]{PID of newly created process(parent) and 0 (child process)}
+\end{description}
+\subsubsection{Behaviour}
+\begin{itemize}
+	\item Creates a child process
+	\begin{itemize}
+		\item \textbf{Copy} data of parent (Independent memory space)
+		\item Unless explicitly modifying value at address, parent and child variables are distinct
+		\item Sane code, same address space
+		\item Differs by pid, ppid and fork() return value
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Implementation}
+Clone the parent process 
+\begin{enumerate}
+	\item Create address space of child process
+	\item allocate new pid to child and pass to parent
+	\item Create kernel process data structures
+	\item Copy kernel environment of parent process
+	\item Initialize child process context (pid, ppid, cpu\_time = 0)
+	\item Copy memory regions from parent
+	\begin{itemize}
+		\item Very expensive operation
+		\item Code, data, stack
+	\end{itemize}
+	\item Acquire shared resources
+	\item Initialize hardware context for child process (copy parent registers)
+\end{enumerate}
+
+Problem: Memcopy is very expensive operation\\
+Solution: Copy on write
+\begin{itemize}
+	\item Only duplicate a memory location when it is written to
+\end{itemize}
+
+\subsection{exec(@param)}
+Replace current executing process image
+\begin{itemize}
+	\item Code and data replaced
+	\item PID/PPID intact
+	\item If fail, program just continues to run the next instruction
+\end{itemize}
+Format
+\begin{description}
+	\item[param]{char *path, char *arg0...}
+	\begin{itemize}
+		\item Note that last term MUST be \textbf{NULL} indicating end of argument list
+	\end{itemize}
+	\item[header]{unistd.h}
+\end{description}
+
+\subsection{exit(status)}
+\begin{description}
+	\item[return]{Does not return anything}
+	\item[param]{int status - returned to the wait call}
+\end{description}
+\begin{itemize}
+	\item Most system resource used by process are released on exit
+	\item return from main() implicitly calls exit(0)
+	\item Basic processes are not releasable
+	\begin{itemize}
+		\item Pid and status
+		\item Process accounting info
+	\end{itemize}
+\end{itemize}
+
+\subsection{wait(\&status)}
+Parent child synchronisation
+\begin{description}
+	\item[param]{\&status - address to put return value}
+	\item[header]{sys/types.h and sys/wait.h}
+	\item[return]{pid of terminated process}
+\end{description}
+\begin{itemize}
+	\item Call is blocking - suspend operation until at least one child terminates
+	\item Cleans up remainder of child system resources (PID, status)
+	\item waitpid - used for waiting for specific child process
+\end{itemize}
+
+\subsection{Orphan and zombie process}
+\keyword{Zombie}{\textbf{All} processes that has exited but parent did not call wait}\\
+\keyword{Orphan}{Child process whose parent has been terminated}
+\begin{itemize}
+	\item Parenthood will be propagated up to init which may use wait() to clean up
+\end{itemize}
+
 
 %--------------------------------------------------------------------------------------------------------------------
+\section{04. Inter Process Communication}
+
+\subsection{Mechanism}
+\begin{itemize}
+	\item Shared memory
+	\item Message passing
+	\begin{itemize}
+		\item Pipes
+		\item Signal
+	\end{itemize}
+\end{itemize}
+
+\subsection{Shared memory}
+Communication through read/write to shared memory\\
+Advantages
+\begin{description}
+	\item[Efficient]{Only require OS to setup shared region once}
+	\item[Ease of use]{Simple reads and write to memory}
+	\begin{itemize}
+		\item Implicit communication
+		\item Can store any type of information
+	\end{itemize}
+\end{description}
+Disadvantages
+\begin{description}
+	\item[Limited to single machines]{Less efficient over different system}
+	\item[Need Sync]{Might have data races without synchronisation}
+\end{description}
+\keyword{Race condition}{System behaviour is dependent on the context/interleaving of process $\rightarrow$ unpredictable outcome}
+\subsubsection{Steps}
+\begin{enumerate}
+	\item Create/locate a shared memory region M
+	\item Attach M to process memory space
+	\item Read from/write to M
+	\item Detach M from memory space after use
+	\item Destroy M
+	\begin{itemize}
+		\item Only one process need to do this
+		\item Can only destroy if M is not attached to any process
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Message Passing}
+Explicit communication through exchange of message
+\begin{description}
+	\item[Naming]{Have to identify the parties in the communication}
+	\item[Synchronisation]{Behaviour of sending/receiving operations}
+\end{description}
+\begin{itemize}
+	\item Messages have to be stored in kernel memory space
+	\item All sending/receiving operations have to be done through syscalls
+\end{itemize}
+\subsubsection{Direct communication}
+Sender/receiver explicitly name parties in communication
+\begin{itemize}
+	\item One link per pair of communicating processes
+	\item Need to know identity of other party
+\end{itemize}
+
+\subsubsection{Indirect communication}
+Message storage (\textbf{Mailbox/Port})
+\begin{itemize}
+	\item Can be shared among a number of processes
+\end{itemize}
+
+\subsubsection{Synchronisation behaviour}
+Blocking
+\begin{itemize}
+	\item send and receive is blocked until a message has received/sent (other party is ready)
+\end{itemize}
+Non-blocking (asynchronous)
+\begin{itemize}
+	\item execute immediately and sends information to somebody OR returns empty handed
+\end{itemize}
+Typically, receive is synchronous and send is asynchronous\\
+BUT send just buffers the message and only sends the message when the receiver is receiving (no loss)\\
+Message buffers
+\begin{itemize}
+	\item Under OS control 
+	\item Decouples sender and receiver -\> less sensitive to variation in execution
+	\item Mailbox capacity declaration in advance
+\end{itemize}
+\textbf{Rendezvous}
+\begin{itemize}
+	\item Synchronous message passing 
+	\item Sender is blocked until receiver sends matching receive
+	\item No buffering needed
+\end{itemize}
+
+\subsubsection{Pros}
+\begin{itemize}
+	\item Applicable beyond a single machine
+	\item \keyword{Portable}{Easily implemented on many platforms and processing environments}
+	\item Easier synchronisation
+	\begin{itemize}
+		\item Implicit via send/receive behaviour
+		\item Communication and synchronisation is done simultaneously
+	\end{itemize}
+\end{itemize}
+\subsubsection{Cons}
+\begin{description}
+	\item[Inefficient]{Usually requires OS intervention every operation}
+	\item[Difficult to use]{Requires information packing into specific format}
+\end{description}
+
+\subsection{Unix Pipes}
+3 different communication channels to user
+\begin{enumerate}
+	\item stdin - standard in bounded to keyboard input
+	\item stderr - used for error messages
+	\item stdout - linked to screen
+\end{enumerate}
+$"|"$ symbol for linking input/output channels of each process to each other\\
+Create communication channel with 2 ends (one reading, one writing)
+\begin{itemize}
+	\item Producer-consumer relationship
+	\item Like anonymous file reading information FIFO
+\end{itemize}
+\subsubsection{Synchronisation}
+\begin{itemize}
+	\item Circular bounded byte buffer with implicit synchronization
+	\item Writer wait when buffer is full
+	\item Reader wait when buffer is empty
+	\item Unidirectional (one write one read exclusively) vs bidirectional (any end for reading and writing)
+\end{itemize}
+\subsubsection{pipe(@param)}
+\begin{description}
+	\item[param]{array of file descriptors}
+	\item[return]{0 for success, != for errors}
+\end{description}
+\subsection{Unix signals}
+Asynchronous notification about an event sent to process/threads
+\begin{itemize}
+	\item Handle signal via default or user supplied handlers
+	\item Can only call async safe functions (signal/wait cannot be called in POSIX)
+	\item eg. Kill, stop, continue, error
+\end{itemize}
+\end{multicols*}
+\begin{multicols*}{3}
 %--------------------------------------------------------------------------------------------------------------------
+\section{05.Process scheduling}
+Concurrency
+\begin{itemize}
+	\item Multiple process progress at the same time
+	\item Virtual parallelism (threading, context switching)
+	\item Physical parallelism (multicore, multi CPU)
+\end{itemize}
+
+\subsection{Scheduling}
+More ready processes vs limited CPU
+\begin{itemize}
+	\item Each process diff CPU usage
+	\item \keyword{Scheduling algorithms}{Deciding the process to run based on environment and process behaviour}
+	\item Processes have phases of io-bound and cpu intensive activities
+\end{itemize}
+Processing environment (sorted by increasing user interaction and response times):
+\begin{enumerate}
+	\item Batch
+	\item Interactive
+	\item Real time
+\end{enumerate}
+\subsection{Objectives}
+\begin{description}
+	\item[Fairness]{Should get fair share of CPU time n prevent \keyword{starvation}{processes never have access to CPU}}
+	\item[Utilization]{Hardware is used all the time}
+\end{description}
+\keyword{non-preemptive}{Process gives up resources voluntarily}
+\keyword{preemptive}{Process given a fixed quota to run and is suspended for other processes}
+\subsection{Timeline}
+\begin{enumerate}
+	\item Scheduler is triggered (OS take over)
+	\item Context switching can happen and current process information stored and placed back in queue
+	\item Pick process to run using algorithm and setup its context
+\end{enumerate}
+
+\subsection{Batch}
+Non-preemptive used dominantly cos minimal user interaction needed
+\subsubsection{Objectives} 
+\begin{description}
+	\item[Turnaround time]{Total time till finish running \textbf{including waiting} (finish time - arrival time)}
+	\item[Throughput]{Rate of task completion}
+	\item[Makespan]{Total time to complete \textbf{ALL} tasks}
+	\item[CPU utilization]{Percentage of \textbf{time} CPU is used}
+\end{description}
+\subsubsection{Algorithms}
+\begin{enumerate}
+	\item First Come First Serve (FCFS)
+	\begin{itemize}
+		\item Scheduled using FIFO queue based on arrival time (bad turnaround time)
+		\item Guarantee no starvation - number of tasks in front of task is strictly decreasing
+		\item Reordering can reduce waiting time 
+		\item \keyword{Convoy Effect}{Not all hardware resources are used concurrently because a process blocks it}
+	\end{itemize}
+	\item Shortest Job First (SJF)
+	\begin{itemize}
+		\item Choose tasks with smallest total CPU time
+		\item Estimate CPU time for tasks in advance using the previous CPU-bound phases
+		\item $Estimated_{n+1} = \alpha Actual_{n} + (1-\alpha) Predicted_{n}$
+		\item Starvation is possible as long tasks end up continuously waiting
+	\end{itemize}
+	\item Shortest Remaining Time (SRT)
+\end{enumerate}
+
+\subsection{Interactive system}
+\subsubsection{Objectives}
+\begin{description}
+	\item[Response time]{Time between request and response by system}
+	\item[Predictability]{Decreased variation in response time}
+	\item[Premptive scheduling]
+\end{description}
+\begin{itemize}
+	\item Periodic scheduler with time interrupts
+	\item \keyword{Time quantum}{Execution duration given to a process}
+	\begin{itemize}
+		\item Constant(regardless whether the process has given up processing halfway) OR Variable(full time quantum given to a process)
+		\item 
+	\end{itemize}
+\end{itemize}
+\subsubsection{Algorithms}
+\begin{enumerate}
+	\item Round Robin (RR)
+	\begin{itemize}
+		\item Store tasks in FIFO queue and pick tasks to run until
+		\begin{enumerate}
+			\item Fixed time slice elapsed
+			\item Task gives up CPU voluntarily
+			\item Task blocks
+		\end{enumerate}
+		\item Task placed at end of queue to wait for next turn
+		\item Response time guaranteed bounded by num task \* time quantum
+		\item Timer interrupt needed
+		\item Choice of time quantum duration is important 
+		\begin{itemize}
+			\item Longer quantum: Better utilization but greater wait time
+			\item Shorter quantum: Bigger overhead/ lower utilization but shorter wait time
+		\end{itemize}
+	\end{itemize}
+	\item Priority scheduling
+	\begin{itemize}
+		\item Assign tasks processes priorities based on impt and select them
+		\item Starvation for low priority tasks
+		\begin{itemize}
+			\item Solution: 
+			\item Lower priority every time the process have executed
+			\item Give processes a time quantum
+		\end{itemize}
+		\item \keyword{Priority Inversion}{Lower priority tasks locks the resources used by a higher priority task leading to deadlock OR allowing lower priority tasks to run before}
+		\begin{itemize}
+			\item Solution:
+			\item Temporarily increase priority of tasks that lock resources until it unlocks
+			\item Low priority task inherit the priority of high priority tasks which is restored once unlocked
+		\end{itemize}
+	\end{itemize}
+	\item Multi-level Feedback Queue (MLFQ)
+	\begin{itemize}
+		\item Runs processes with higher priorities but lower priority when the job fully utilise its time quantum
+		\item Processes that voluntarily gives up/blocks before time quantum retains its priority
+		\item New processes have highest priority
+		\item Processes with same priority run in RR
+		\item Long CPU processes are starved as its priority becomes very low and cannot complete
+		\begin{itemize}
+			\item Solution: Occassionally reset tasks to full priority 
+		\end{itemize}
+		\item Processes can exploit and voluntarily give up to retain its priority
+		\begin{itemize}
+			\item Solution: Peg priority based on total CPU usage instead 
+		\end{itemize}
+	\end{itemize}
+	\item Lottery scheduling
+	\begin{itemize}
+		\item Give out tickets to processes for various system resources and randomly pick winners to be granted the resources
+		\item \keyword{Responsive}{Newly created processes can immediately join the lottery}
+		\item Good control - Process can be assigned quantity of tickets and resources which can be shared among its children/threads
+		\item Simple implementation
+	\end{itemize}
+\end{enumerate}
 %--------------------------------------------------------------------------------------------------------------------
+\section{06.Synchronisation primitives}
+\subsection{Race condition}
+\begin{itemize}
+	\item Execution of sequential processes should be \keyword{deterministic}{Repeated execution returns the same result}... however,
+	\item Process sharing modifiable resources AND execute concurrently by interleaving may cause synchronization problems -\> non deterministic outcomes
+	\item Order determines the execution outcome
+\end{itemize}
+
+\subsection{Critical section}
+Region where unsynchronised access could lead to incorrectly interleaving scenarios\\
+Only \textbf{ONE} process should be in the critical section at one time
+\subsubsection{Properties}
+\begin{description}
+	\item[Mutual exclusion/Mutex]{All other processes should be blocked from entering critical section if occupied}
+	\item[Progress]{If no process occupying section, waiting process should be granted access}
+	\item[Bounded wait]{Upper bound on number of times other processes can enter critical section before a waiting process}
+	\item[Independence]{Process not in critical section should not block other process}
+\end{description}
+\subsubsection{Incorrect synchronization}
+\begin{description}
+	\item[Deadlock]{All processes blocked}
+	\item[Livelock]{Processes keep changing states to avoid deadlock resulting in no progress (Deadlock avoidance mechanism)}
+	\item[Starvation]
+\end{description}
+\subsection{Implementations}
+\begin{itemize}
+	\item High level language implementation (Peterson Algorithm)
+	\begin{itemize}
+		\item Busy waiting - Repeatedly tests while-loop condition instead of going into blocked state (Wastes CPU power)
+		\item Low level - Error prone and complicated
+		\item Not general - cannot extend to allowing multiple access instead of Mutex
+	\end{itemize}
+\end{itemize}
+\includegraphics[scale=0.46]{peterson-algorithm}
+\begin{itemize}
+	\item Assembly implementation
+	\begin{itemize}
+		\item Atomic instruction to load value and replace value in memory location (\textbf{TestAndSet})
+		\item \keyword{Atomicity}{Prevents race condition of process viewing and upon modification, the value changes}
+		\item No bounded wait unless fair scheduling algorithm employed
+		\item Employs busy waiting still
+	\end{itemize}
+\end{itemize}
+\includegraphics[scale=0.5]{test-and-set}
+\begin{itemize}
+	\item High level synchronization mechanism (Semaphore)
+	\begin{itemize}
+		\item Generalised mechanism to block a number of processes (sleeping), $S$, and unblock sleeping processes
+		\item \keyword{wait()}{Blocks if $S\leq 0$, decrement S}
+		\item \keyword{signal()}{Increment $S$, wake up sleeping processes, operation \textbf{never} blocks}
+		\item \keyword{Invariant}{$S_{current} = S_{initial} + N_{signal} - N_{wait}$}
+	\end{itemize}
+\end{itemize}
+\subsubsection{Conditional variables}
+\begin{itemize}
+	\item Tasks wait for certain events to happen
+	\item Event completion/begin is broadcasted
+\end{itemize}
+\subsubsection{POSIX semaphore}
+\begin{description}
+	\item[header]{semaphore.h}
+	\item[wait]{pthread\_mutex\_unlock}
+	\item[signal]{pthread\_mutex\_lock}
+\end{description}
+
 %--------------------------------------------------------------------------------------------------------------------
+\section{Midterm}
+\begin{itemize}
+	\item \keyword{Tail-call optimization}{Stack frame can be replaced in iterative recursion since all information is retained in the 'return' function call at every iteration}
+\end{itemize}
+
+%--------------------------------------------------------------------------------------------------------------------
+\section{07.Threads}
+\subsection{Motivation}
+\begin{itemize}
+	\item Processes are expensive
+	\begin{itemize}
+		\item Process creation via fork() duplicates memory space and process context
+		\item Requires context switching and saving/restoring process information repeatedly
+	\end{itemize}
+	\item Hard to communicate with each other
+	\begin{itemize}
+		\item Independent memory space (IPC communication only)
+	\end{itemize}
+	\item Need easy way to execute some instructions simultaneously (more threads of control to same process)
+\end{itemize}
+\subsection{Features}
+\begin{itemize}
+	\item \keyword{Multithreaded process}{Single process with multiple threads}
+	\item Threads share the same \textbf{Memory context}(Text, data, heap) and \textbf{OS context}(PID)
+	\item Contains unique information
+	\begin{itemize}
+		\item Identification (thread id)
+		\item Registers (GPR and special)
+		\item Stack
+	\end{itemize}
+\end{itemize}
+
+\subsection{Benefits}
+\begin{description}
+	\item[Economy]{Less resources to manage}
+	\item[Resource sharing]
+	\item[Responsiveness]
+	\item[Scalability]{Can take advantage of multiple CPUs}	
+\end{description}
+
+\subsection{Problems}
+\begin{itemize}
+	\item Syscall concurrency
+	\begin{itemize}
+		\item Parallel execution of threads may result in parallel syscalls
+	\end{itemize}
+	\item Process behaviour
+	\begin{itemize}
+		\item Unable to impact process operations
+	\end{itemize}
+\end{itemize}
+
+\subsection{Thread implementation}
+\begin{enumerate}
+	\item User thread
+	\begin{itemize}
+		\item Implemented as a user library -\> More flexible and configurable
+		\item Runs on any OS
+		\item Kernel unaware of threads in process (scheduling at process level)
+		\item If process is blocked, all the threads in the process cannot run 
+	\end{itemize}
+	\item Kernel thread
+	\begin{itemize}
+		\item Implemented in the OS through syscalls (slower and more resource intensive)
+		\item Scheduling among threads instead of via process
+		\item Use threads in kernel operations
+		\item Less flexible
+		\begin{itemize}
+			\item Used by all multithreaded programs so kernel must cater to all
+			\item Balance btw many and less features
+		\end{itemize}
+	\end{itemize}
+	\item Hybrid thread
+	\begin{itemize}
+		\item OS schedules on kernel threads
+		\item User threads can be bound to kernel threads
+		\item If the user thread is blocked, the kernel thread that it is assigned to is blocked and the OS will execute another kernel thread
+		\item Lead to greater flexibility
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Posix Threads (pthreads)}
+\subsubsection{pthread\_create}
+\begin{description}
+	\item[param]{tid, attributes, \&function, function\_params}
+	\item[return]{0 success, != 0 fail}
+\end{description}
+
+\subsubsection{pthread\_exit}
+\begin{description}
+	\item Automatically called after function finishes
+	\item[param]{exit\_value}
+	\item[behaviour]{return value of function will be the "exit value"}
+\end{description}
+
+\subsubsection{pthread\_join}
+\begin{description}
+	\item[param]{tid, \keyword{\&status}Exit value returned by target pthread}
+\end{description}
+
+%--------------------------------------------------------------------------------------------------------------------
+\section{08.Synchronization classics}
 \end{multicols*}
 \end{document}
