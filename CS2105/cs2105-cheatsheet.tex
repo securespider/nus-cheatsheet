@@ -787,6 +787,13 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 	\end{itemize}
 \end{itemize}
 
+\subsubsection{Special subnet}
+\begin{itemize}	
+	\item Private IP addresses - 10.0.0.0/8, 172.16.0.0/12, 192,168.0.0/16
+	\item Loopback address 127.0.0.0/8
+	\item Broadcast 255.255.255.255/32
+\end{itemize}
+
 \subsubsection{CIDR}
 \includegraphics[scale=0.25]{ip-cidr}
 \subsubsection{Subnet mask}
@@ -814,7 +821,138 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 	\item Transaction ID specifies the DHCP connection
 \end{itemize}
 
-%------ remember to add in the private ip addresses
+%--------------------------------------------------------------------------------------------------------------------------------
+\section{07. IP (cont)}
+\subsection{IP fragmentation}
+\keyword{MTU}{Maximum Transfer Unit, maximum amount of data a link-level frame can carry}\\
+\keyword{Fragmentation}{Large datagrams that are broken up by routers}
+\includegraphics[scale=0.2]{ipv4-datagram-format}
+\begin{itemize}
+	\item Frag flag = 1 if there are more fragments from same segment, 0 = last fragment
+	\item Offset - in units of 8-bytes specifying the offset of fragment wrt beginning of unfragmented IP datagram
+\end{itemize}
+\textbf{Problem:}\\
+Not enough IP addresses to specify all devices
+\subsection{Network Address Translation}
+Using private IP addresses to map devices within an organisation and enable communication with the internet\\
+\begin{itemize}
+	\item WAN (Wide area network) vs LAN (Local area network) - private vs public IP address
+\end{itemize}
+\subsubsection{Implementation}
+\begin{itemize}
+	\item Routers replace source Ip address, port num of every outgoing datagram to NAT IP address and new port num
+	\item Remember (in NAT translation table) the mapping of the source vs NAT info
+	\item Replace NAT ip address and port num in destination fields of incoming datagrams with corresponding source IP/port stored in NAT translation table
+\end{itemize}
+
+\subsubsection{Motivation}
+\begin{itemize}
+	\item No need to rent a range of public IP addresses from ISP: just 1 for NAT
+	\item Hosts using private IP address can have variable IP addresses without notifying other hosts
+	\item Can change ISP without changing addresses of host in LAN
+	\item Hosts in Lan are not explicitly addressable and visible by outside (Security)
+\end{itemize}
+
+\subsubsection{Challenges}
+\begin{itemize}
+	\item Difficult to have p2p applications across WANs
+\end{itemize}
+
+\subsection{Routing}
+Hierachial routing on internet due to size and decentralised administration\\
+Goal: Find the least cost to connect 2 hosts through routers
+\subsubsection{Intra Autonomous system(AS) routing}
+\begin{itemize}
+	\item Finds good path between routers within AS
+	\item Single admin so no policy decision needed
+	\item Performance impt in routing
+	\item Protocols - RIP and OSPF
+\end{itemize}
+
+\subsubsection{Inter AS routing}
+\begin{itemize}
+	\item Handles interfaces between AS
+	\item Admin wants control over traffic routing
+	\item Policy \> performance
+	\item Protocol - BGP
+\end{itemize}
+
+Cost associated along each link based on various factors
+\begin{itemize}
+	\item Inversely related to bandwidth
+	\item Related to congestion of router
+	\item Distance, \$
+\end{itemize}
+
+\subsubsection{Distance vector}
+Iterative Bellman-Ford computation
+\begin{enumerate}
+	\item Starting router queries all the neighbours around it
+	\item Neighbours could have cached the distance vector to other routers
+	\begin{enumerate}
+		\item Router can send the table of distance vectors to the new router (routing tables)
+	\end{enumerate}
+	\item No/incomplete distance vector record: WAit for (change in local link cost or message from neighbour)
+	\item Recomputes DV estimates using DV received from neighbour
+	\item Notify neighbours if DV to any destination changes
+\end{enumerate}
+
+\begin{itemize}
+	\item Iterative and asynchronous: local iteration caused by
+	\begin{itemize}
+		\item Local link cost changes
+		\item DV update messages from neighbours
+	\end{itemize}
+	\item Distributed and self stopping
+	\begin{itemize}
+		\item Each node notifies neighbours \textbf{only} when DV changes (if necessary)
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Link state algorithms}
+\begin{itemize}
+	\item Periodically braodcasting link costs to each other
+	\begin{itemize}
+		\item \textbf{All} routers have complete knowledge of topology and link cost
+	\end{itemize}
+	\item Use Dijkstra algorithm to compute least cost path locally
+\end{itemize}
+
+\subsubsection{Routing Information Protocol(RIP)}
+\begin{itemize}
+	\item Implements DV algorithm
+	\item Uses hop count as cost metric
+	\item \keyword{Self-repair}{If no updates from router for 3 minutes will assume router fails}
+	\item Exchanges routing table every 30s (UDP - 520)
+\end{itemize}
+
+\subsection{Internet Control Message Protocol - ICMP}
+
+Used by hosts and routers to communicate network information
+\begin{description}
+	\item[Error reporting]{Unreachable host/network/port/protocol}
+	\item[Echo Request]
+	\item[Headers]{Starts after IP header carried in IP datagrams}
+\end{description}
+\includegraphics[scale=0.2]{icmp-type-and-code}
+\subsubsection{Ping}
+\begin{itemize}
+	\item Used to echo and test connection between different remote hosts
+	\item Format: $XX$ bytes from $client~ip$: icmp\_seq=$X$ ttl=$X$ time=$X$ms
+	\item Time == time taken for ping command to execute completely
+	\item ttl = number of hops between client and remote host
+	\item icmp\_seq = index of the datagrams sent to remote host (ascending order, default 0..6)
+\end{itemize}
+\subsubsection{Traceroute}
+\begin{itemize}
+	\item Sends series of small packets with different TTL to display route to get to host
+	\item Mechanism
+	\begin{itemize}
+		\item TTL decrements every hop from initial TTL, X
+		\item Once TTL has reached 0, it will immediately reply with ICMP error message, addressed from the current device to the original source
+		\item Extract source IP address from the reply to get the device X hops away
+	\end{itemize}
+\end{itemize}
 
 \end{multicols*}
 \end{document}
