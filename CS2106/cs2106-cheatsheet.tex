@@ -104,6 +104,10 @@
 	\item[Difference]{Separate vs common storage pathway for code and data}
 \end{description}
 Why do we need OS?
+\begin{itemize}
+	\item Should not have bugs
+	\item Treat process as malicious
+\end{itemize}
 
 \subsection{Mainframe}
 Old analog "computers" using physical cards for programming
@@ -140,7 +144,7 @@ Old analog "computers" using physical cards for programming
 	\item Control programs
 	\begin{itemize}
 		\item Restrict resource allocation
-		\item Security, protection and error prevention
+		\item Security, protection and error prevention (Defensive)
 		\item Ensure proper use of device
 	\end{itemize}
 \end{enumerate}
@@ -167,7 +171,7 @@ Difference
 	\item User - Full virtual address space for code but cannot write outside of virtual address space
 	\item Kernel - All code share same address space
 \end{itemize}
-\includegraphics[scale=0.33]{os-interaction}
+\includegraphics[scale=0.28]{os-interaction}
 \begin{description}
 	\item[A]{OS executes machine instructions}
 	\item[B]{Normal machine instructions executed}
@@ -188,7 +192,7 @@ Why OS dont occupy entire hardware layer
 	\item Well understood and has good performance
 	\item Highly \keyword{coupled}{internal structure interconnected that unintentionally affect each other}
 \end{itemize}
-\includegraphics[scale=0.3]{monolithic-os}
+\includegraphics[scale=0.25]{monolithic-os}
 
 \subsubsection{Microkernel}
 \begin{itemize}
@@ -198,8 +202,9 @@ Why OS dont occupy entire hardware layer
 	\item Robust and more \keyword{modular}{Extendible and maintainable}
 	\item Better isolation btw kernel and services
 	\item Lower performance
+	\item Unix is monolithic kernel, Windows is hybrid 
 \end{itemize}
-\includegraphics[scale=0.32]{microkernel-os}
+\includegraphics[scale=0.28]{microkernel-os}
 \subsection{Virtual Machines}
 \begin{itemize}
 	\item Software emulation of hardware
@@ -279,6 +284,10 @@ Steps of control flow
 	\item Setup parameters
 	\item Trf ctrl to callee
 	\item Setup local var
+	\begin{itemize}
+		\item Remember the initial variables especially if registers are to be reverted back when jumping back to caller
+		\item Callee does not know the registers callers used, so prevent accidental overwrite of content to registers caller use
+	\end{itemize}
 	\item Store any results
 	\item Return ctrl to caller
 \end{enumerate}
@@ -314,6 +323,7 @@ Information needed for function invocation - Stack frame
 	\item Stack and frame pointer of caller
 	\item GPR values (register spilling)
 \end{itemize}
+\includegraphics[scale=0.3]{stack-frame-diagram}\\
 Callee stack frame will be on top of the caller
 
 
@@ -380,7 +390,8 @@ Exceptions
 \begin{itemize}
 	\item Synchronous (due to program execution)
 	\item Machine level instructions arise errors
-	\item Exception handler executed automatically in software
+	\item Exception handler executed automatically in software (can be handled by programmer)
+	\item Handled by OS which sends a signal to application to implement try-catch mechanism
 \end{itemize}
 Interrupts
 \begin{itemize}
@@ -413,7 +424,8 @@ Interrupts can happen at anytime, and will remain pending until step 5 where it 
 \subsection{System calls}
 \keyword{Application Program Interface}{Provides way of calling facilities/services in kernel}\\
 Synchronous function only done in kernel mode providing system services\\
-Typically more expensive than library calls due to context switching
+Typically more expensive than library calls due to context switching\\
+OS dependent anc cannot be avoided by any application
 \subsubsection{Functions}
 \begin{description}
 	\item[Process control]{Direct processes like creating, terminating or synchronisation}
@@ -675,13 +687,16 @@ Create communication channel with 2 ends (one reading, one writing)
 \subsection{Unix signals}
 Asynchronous notification about an event sent to process/threads
 \begin{itemize}
-	\item Handle signal via default or user supplied handlers
-	\item Can only call async safe functions (signal/wait cannot be called in POSIX)
+	\item Handle signal via default or user defined/supplied handlers(not all signals)
+	\item Can only call async safe functions within handler (signal/wait cannot be called in POSIX)
 	\item eg. Kill, stop, continue, error
 \end{itemize}
 \end{multicols*}
 \begin{multicols*}{3}
+\includegraphics[scale=0.37]{common-signals}
+
 %--------------------------------------------------------------------------------------------------------------------
+
 \section{05.Process scheduling}
 Concurrency
 \begin{itemize}
@@ -778,6 +793,7 @@ Non-preemptive used dominantly cos minimal user interaction needed
 			\item Longer quantum: Better utilization but greater wait time
 			\item Shorter quantum: Bigger overhead/ lower utilization but shorter wait time
 		\end{itemize}
+		\item Poor performance when there are many jobs all exceeding time quantum -\> high overhead from context switching
 	\end{itemize}
 	\item Priority scheduling
 	\begin{itemize}
