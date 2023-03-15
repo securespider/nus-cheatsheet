@@ -1,4 +1,5 @@
-\documentclass{article}
+\documentclass[10pt]{article}
+\linespread{.7}
 \usepackage[a4paper, margin=3mm, landscape]{geometry}
 \usepackage{multicol}
 \usepackage{xcolor}
@@ -1003,5 +1004,56 @@ Only \textbf{ONE} process should be in the critical section at one time
 
 %--------------------------------------------------------------------------------------------------------------------
 \section{08.Synchronization classics}
+Use cases of synchronisation (mutexes)
+
+\subsection{Producer Consumer}
+\begin{itemize}
+	\item Processes share a bounded biffer of size K
+	\begin{itemize}
+		\item Producers produce items to insert in buffer when not full
+		\item Consumers remove items from buffer when non-empty
+	\end{itemize}
+	\item Busy waiting vs blocking version and message passing
+\end{itemize}
+\includegraphics[scale=0.28]{producer-consumer}
+
+\subsection{Reader writer}
+\begin{itemize}
+	\item Processes share data structure D
+	\begin{itemize}
+		\item Reader retrieves information from D (multiple concurrent accesses)
+		\item Writer modifies information from D exclusively
+	\end{itemize}
+	\item Starvation of the writer as readers can continue to occupy the resource continuously
+\end{itemize}
+\includegraphics[scale=0.24]{reader-writer}
+
+\subsection{Dining philosophers}
+\includegraphics[scale=0.2]{dining-philosophers-spec}
+\begin{itemize}
+	\item Single chopsticks between philosophers sitting around a table
+	\item Philosophers need pair to eat without deadlocks and starvation
+	\item Philosophers makes the same decision (takes the same side of chopsticks everytime)
+\end{itemize}
+\subsubsection{Livelock}
+\begin{itemize}
+	\item To prevent deadlock, philosophers put down chopstick if cannot get the other side
+	\item Livelock because all philosophers take chopstick, put down ....
+\end{itemize}
+
+\subsubsection{Limited eater}
+\begin{itemize}
+	\item One of the philosophers delay their eating temporarily until either side finishes
+	\item All philosophers can complete their execution pigeonhole theorum (more chopsticks than philos)
+	\item Not fair to the philosopher not eating (How to decide who stops operation?)
+\end{itemize}
+
+\subsubsection{Tanenbaum Solution}
+\begin{itemize}
+	\item Randomly decide which side chopstick the philosophers take first
+\end{itemize}
+
+
+
 \end{multicols*}
 \end{document}
