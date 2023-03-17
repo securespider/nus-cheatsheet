@@ -224,8 +224,6 @@ Why OS dont occupy entire hardware layer
 \end{itemize}
 \subsection{Computer organisation}
 \includegraphics[scale=0.27]{computer-organisation}
-\end{multicols*}
-\begin{multicols*}{4}
 \subsubsection{Memory}
 \begin{itemize}
 	\item Storage for instruction and data
@@ -243,17 +241,17 @@ Why OS dont occupy entire hardware layer
 	\item Load instructions from memory
 	\item Location indicated by \textbf{Program Counter}
 \end{itemize}
-
 \subsubsection{Functional units}
 \begin{itemize}
 	\item Carry out instruction execution
 	\item Dedicated to specific instruction type
 \end{itemize}
+\end{multicols*}
+\begin{multicols*}{4}
 \subsubsection{Registers}
 \begin{itemize}
 	\item Internal storage for fastest access speed
 \end{itemize}
-
 \subsection{Information needed}
 \begin{itemize}
 	\item Memory context
@@ -692,9 +690,7 @@ Asynchronous notification about an event sent to process/threads
 	\item Can only call async safe functions within handler (signal/wait cannot be called in POSIX)
 	\item eg. Kill, stop, continue, error
 \end{itemize}
-\end{multicols*}
-\begin{multicols*}{3}
-\includegraphics[scale=0.37]{common-signals}
+\includegraphics[scale=0.35]{common-signals}
 
 %--------------------------------------------------------------------------------------------------------------------
 
@@ -773,9 +769,11 @@ Non-preemptive used dominantly cos minimal user interaction needed
 	\item \keyword{Time quantum}{Execution duration given to a process}
 	\begin{itemize}
 		\item Constant(regardless whether the process has given up processing halfway) OR Variable(full time quantum given to a process)
-		\item 
 	\end{itemize}
 \end{itemize}
+
+\end{multicols*}
+\begin{multicols*}{3}
 \subsubsection{Algorithms}
 \begin{enumerate}
 	\item Round Robin (RR)
@@ -1003,7 +1001,7 @@ Only \textbf{ONE} process should be in the critical section at one time
 \end{description}
 
 %--------------------------------------------------------------------------------------------------------------------
-\section{08.Synchronization classics}
+\section{08. Classic synchronisation problems}
 Use cases of synchronisation (mutexes)
 
 \subsection{Producer Consumer}
@@ -1053,7 +1051,138 @@ Use cases of synchronisation (mutexes)
 	\item Randomly decide which side chopstick the philosophers take first
 \end{itemize}
 
+%------------------------------------------------------------------------------------------------------------------------------
 
+\section{09. Memory abstraction}
+\subsection{Basics}
+\subsubsection{Hardware}
+\begin{itemize}
+	\item uses Random Access Memory
+	\begin{itemize}
+		\item Access latency approximately constant regardless of location
+	\end{itemize}
+	\item Can be treated as a 1D array of \keyword{AU}{Addressable unit}
+	\item \keyword{Contiguous}{Consecutive memory address with unique index (physical address)}
+\end{itemize}
+\subsubsection{Memory usage of process}
+Types of data
+\begin{enumerate}
+	\item \keyword{Transient data}{Valid only for a specific duration}
+	\item \keyword{Persistent data}{Valid for complete duration of prgm until explicitly deallocated}
+\end{enumerate}
+\subsubsection{Role of OS}
+\begin{enumerate}
+	\item Allocate, manage and protect memory space for each process
+	\item Provide memory-related system calls to processes
+	\item Manage memory space for internal OS use
+\end{enumerate}
 
+\subsection{Memory abstractions}
+\subsubsection{Motivation}
+\begin{itemize}
+	\item Processes assume memory starts at 0 and occupy the same memory location
+	\item Difficult to protect memory space
+\end{itemize}
+\subsubsection{Solutions (?)}
+\begin{itemize}
+	\item Address reallocation
+	\begin{itemize}
+		\item Change all the memory addresses when starting process to the new changed memory address
+		\item Problems: Slow runtime because have to run through all the instructions
+	\end{itemize}
+	\item Base and limit registers
+	\begin{itemize}
+		\item Base register as the "starting point" of all memory references
+		\item Limit register as the range of memory space of current process (protect memory space integrity)
+		\item All memory references are compiled as an offset of base register 		
+	\end{itemize}
+\end{itemize}
+\subsubsection{Logical address}
+\begin{itemize}
+	\item How the program views its memory space
+	\item Mapping between physical and logical address needed
+	\item Self contained, independent logical memory space
+\end{itemize}
+\subsection{Contiguous Memory allocation}
+Same process occupies memory as one piece during whole execution
+\subsubsection{Fixed size partitions}
+\begin{itemize}
+	\item Fixed number of partitions and size (Minimum addressable units of partition is larger)
+	\item \keyword{Internal fragmentation} Wasted leftover space when process does not occupy whole partition
+	\item Pros: Easy to manage and fast to allocate
+	\item Cons: Partition size need to be large enough to contain the largest process without wasting space
+\end{itemize}
+\subsection{Variable size partitions}
+\keyword{External fragmentation}{Waste of space outside of partition (unallocated to any process)}
+\begin{itemize}
+	\item Pros: Flexible and removes internal fragmentation
+	\item Cons: Need more info in OS and takes longer time to locate appropriate region
+\end{itemize}
+\subsubsection{Allocation algorithms}
+\begin{itemize}
+	\item First fit 
+	\begin{itemize}
+		\item Take the first hole large enough
+		\item Fastest runtime (don't have to iterate through all the free partitions)
+		\item May be inefficient (high external fragmentation)
+	\end{itemize}
+	\item Best fit
+	\begin{itemize}
+		\item Choose the smallest partition that fits the information
+		\item Slower runtime but more efficient
+	\end{itemize}
+	\item Worst fit
+	\begin{itemize}
+		\item Choose the largest partition 
+		\item Try to ensure that there is enough free space in the large partition for other process
+	\end{itemize}
+\end{itemize}
+\subsubsection{Merging and Compaction}
+Merging
+\begin{itemize}
+	\item When occupied partition is freed, it can join surrounding partitions to form a larger partition
+\end{itemize}
+Compaction
+\begin{itemize}
+	\item Mving occupied partitions around to create bigger consolidated holes
+\end{itemize}
+
+\subsubsection{Multiple free lists}
+\begin{itemize}
+	\item Keep multiple lists of different hole sizes and take the hole from list that most closely match request size
+	\item Partition size increases exponentially but fast allocation (compared to iterating through all address to find free partitions)
+\end{itemize}
+\textbf{Buddy system}
+\begin{itemize}
+	\item Free block split into half repeatedly to meet request size
+	\item Merge buddy blocks when both free
+	\item Pros: Efficient partition splitting, deallocation and for locating good match
+\end{itemize}
+Allocation algorithm ($2^k$ is largest allocatable block)
+\begin{enumerate}
+	\item Find smallest s such that $2^s \geq N$
+	\item Access A[S] for free block
+	\begin{enumerate}
+		\item Free block exists
+		\begin{itemize}
+			\item Remove block from free block list and allocate
+		\end{itemize}
+		\item Find smallest R from S+1 - K such that A[R] has a free block B
+		\item Split B and restart from step 1
+	\end{enumerate}
+\end{enumerate}
+Deallocation algorithm
+\begin{enumerate}
+	\item Check if buddy is free
+	\begin{enumerate}
+		\item If buddy is free remove both blocks from list and merge to get a larger block
+	\end{enumerate}
+	\item If buddy not free then insert block into list
+\end{enumerate}
+2 blocks B and C of size $2^S$ are buddies if
+\begin{itemize}
+	\item Lowest S bits (0..S-1) of B and C are identical
+	\item S+1th bit of B and C is different
+\end{itemize}
 \end{multicols*}
 \end{document}
