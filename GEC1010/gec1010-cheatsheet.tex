@@ -1,4 +1,5 @@
 \documentclass{article}
+\linespread{0.7}
 \usepackage[a4paper, margin=3mm, landscape]{geometry}
 \usepackage{multicol}
 \usepackage{xcolor}
@@ -79,7 +80,7 @@
 
 % -----------------------------------------------------------------------
 \begin{document}
-\begin{multicols*}{3}
+\begin{multicols*}{4}
 \footnotesize
 
 % Title box
@@ -228,7 +229,7 @@ Difference between the heat absorbed Q and the work done W on object is equal to
 $Q-W=\triangle U$
 
 \subsection{Steam based thermal power plant}
-\includegraphics[scale=0.3]{boiler_system}\\
+\includegraphics[scale=0.25]{boiler_system}\\
 Key stages
 \begin{description}
 	\item[Compression]{Work done on system to compress cold water to high pressure}
@@ -369,13 +370,49 @@ Using the heat by the sun to drive rankine cycle
 	\item Run focus pipes surrounded my mirrors to heat the fluid in the pipes to be used to generate heat
 \end{itemize}
 
+\section{04b. Solar Photovoltaics}
+$E=hf=\dfrac{hc}{\lambda} |$
+$h=6.63*10^{-34},c=3*10^{8}$
+\includegraphics[scale=0.2]{i-v-characteristic}\\
+\includegraphics[scale=0.23]{fill-factor}
+\subsection{Band gap}
+Minimum energy that is required to excite an electron up to a state in the conduction band where it can participate in conduction\\
+Higher short circuit current -\> lower bandgap
 \subsection{Silicon}
+Types
+\begin{itemize}
+	\item Polycrystalline
+	\item Crystalline
+	\item Amorphous
+\end{itemize}
+\subsubsection{Mechanism}
+Transfer of electrons from n-types and p-types to maintain electric potential
+\begin{itemize}
+	\item \keyword{N-type}{Electron rich (conduct via electrons)}
+	\begin{itemize}
+		\item Doped with elements with more valence electrons (P)
+		\item Cathode (negative terminal where current flows into when illuminated)
+	\end{itemize}
+	\item \keyword{P-type}{Electron deficient (conduct via holes)}
+	\begin{itemize}
+		\item Doped with elements with less valence electrons (Al)
+		\item Anode (postive terminal where current flows out of when illuminated)
+	\end{itemize}
+	\item Pink arrow denotes conventional current
+\end{itemize}
+\includegraphics[scale=0.18]{solar-cell}
+\subsubsection{Efficiency}
+\begin{itemize}
+	\item 23\% of photons has less energy than bandgap
+	\item 30\% heat energy and 10\% loss from electron hole-pair recombination
+	\item Increase efficiency by using anti-reflective coating
+	\item Smaller bandgap -\> greater photocurrent but decrease output voltage (optimum 1.4eV gap)
+\end{itemize}
 
 % -----------------------------------------------------------------------
 % -----------------------------------------------------------------------
-% -----------------------------------------------------------------------
 
-\section{05. Hydro power}
+\section{05a. Hydro power}
 \subsection{Ocean vs River}
 River
 \begin{enumerate}
@@ -429,5 +466,63 @@ Production of electricity by using gravitational force of falling water\\
 $P=\eta\rho ghQ$\\
 $\eta$ = efficiency, $\rho$ = density of water, Q = Volume of water flowing per second on turbine, h = Vertical distance between turbine and water surface
 
+\subsubsection{Types of water turbines}
+Impulse
+\begin{itemize}
+	\item Simpler and cheaper design -\> Easier to fabricate and maintain
+	\item Needs higher head height
+	\item Higher volume flow rate
+	\item Greater tolerance of sand and other particles in water
+	\item Better access to working parts
+\end{itemize}
+\includegraphics[scale=0.3]{pelton-turbine}\\
+Reaction
+\begin{itemize}
+	\item Rotating element in reaction turbine enclosed in pressure casing to generate energy
+	\item Rotates faster than impulse turbines given same head and flow conditions
+	\item More expensive 
+\end{itemize}
+\includegraphics[scale=0.4]{reaction-turbine}
+
+\subsection{Run of the river}
+\begin{itemize}
+	\item Low-level diversion weir/stream bed instead of dam
+	\item Located on fast flowing, non seasonal stream 
+	\item Minimize impact on environment
+\end{itemize}
+
+\includegraphics[scale=0.2]{pumped-storage}
+\subsection{Pumped storage hydro}
+\begin{itemize}
+	\item Load balancing by storing energy pumped from lower elevation reservoir up
+	\item Low cost off peak power to run pumps and released when high demand
+	\item Net consumer of energy but largest capacity form of grid energy storage	
+\end{itemize}
+
+\subsection{Damless hydro}
+\begin{itemize}
+	\item Little to no maintenance
+	\item Low initial setup cost and environmental impact
+	\begin{itemize}
+		\item No risk of flash flooding/dam-related accidents
+		\item No silt accumulation and fish ladders
+	\end{itemize}
+\end{itemize}
+
+\subsection{Advantage of hydroelectric}
+\begin{itemize}
+	\item Clean renewable energy (Low level of greenhouse gases)
+	\item Low operating cost and highly automated
+	\item Plant life is long $\approx$ 40 years
+	\item Available on demand as flow rate is controlled
+\end{itemize}
+\subsection{Problems with hydroelectric}
+\begin{itemize}
+	\item Capital cost is high and payback time is long
+	\item Social issues with displacement of population
+	\item Environmental impact (Diversion of water)
+\end{itemize}
+
+\section{05b. Ocean Power}
 \end{multicols*}
 \end{document}
