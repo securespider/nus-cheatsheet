@@ -1,4 +1,5 @@
 \documentclass{article}
+\linespread{0.7}
 \usepackage[a4paper, margin=3mm, landscape]{geometry}
 \usepackage{multicol}
 \usepackage{xcolor}
@@ -385,5 +386,183 @@ Credits
 	\item[Increase in equity]{Capital, revenue}
 	\item[Increase in liabilities]{Accounts payable, accumulated depreciation, borrowing}
 \end{description}
+
+\section{07. Cash and A/R}
+\begin{itemize}
+	\item Cash at hand
+	\item Cash in bank
+	\item Cash equivalents (liquid, in safe financial instruments)
+\end{itemize}
+\subsection{Petty cash}
+\begin{itemize}
+	\item Fixed amount that companies holds, usually to meet day-to-day spending needs
+	\item Credit "cash at bank" and debit "petty cash account" only when fund amount changes OR during setup/tear down
+\end{itemize}
+\subsubsection{Cash over and short}
+\begin{itemize}
+	\item Account representing the gap between expected amount from receipts and actual amount in petty cash box
+	\item Accidental mistakes eg. petty cashier returning the wrong amount of change	
+	\item Debited as minor expense
+\end{itemize}
+\subsubsection{Changing fund amount}
+\begin{itemize}
+	\item Record replenishment and amount to increase[debit]/decrease[credit] fund to petty cash
+\end{itemize}
+\subsection{Bank reconciliation}
+\begin{itemize}
+	\item Updating cash at bank records and book records (deposits and withdrawals)
+\end{itemize}
+\subsubsection{Causes}
+\begin{description}
+	\item[Deposits in transit]{Company received and recorded cheques and deposited in bank but bank has not cleared/recorded deposit \textbf{add to bank}}
+	\item[Outstanding cheques]{Payment made via cheques but payee has not deposited cheques/still being processed}
+	\begin{itemize}
+		\item Bank has not deducted from account but book records payments when cheques were sent - \textbf{subtract from bank}
+	\end{itemize}
+	\item[Non-sufficient funds(NSF)]{Receive cheques that recorded as cash receipt and deposited but bounced because not enough money in payer bank account}
+	\begin{itemize}
+		\item Book incorrectly add amount \textbf{subtract from book}
+	\end{itemize}
+	\item[Bank charges]{Expense from commission fees and penalties deducted from account - \textbf{subtract from books}}
+	\item[Interest received]{Commercial bank giving interest to account \textbf{add to book}}
+	\item[Collections on behalf]{Bank directly collect outstanding dues on behalf \textbf{add to book}}
+\end{description}
+\subsection{Bad debts}
+Accrual accounting at the end of the year
+\begin{itemize}
+	\item Expected loss from customers not paying when selling goods on credit
+	\item Recorded as \textit{loss allowance} or \textit{allowance for bad debts}
+	\item Contra-asset representing a negative adjustment to trade receivables
+	\item Goes up on credit side and down on debit side
+	\item Coupled with \textit{expected credit loss} or \textit{bad debt expense}
+\end{itemize}
+When customer defaults
+\begin{itemize}
+	\item Reduce allowance to "write off" trade receivable amount
+	\item Can reverse write off (customer pays up despite giving up hope)
+	\begin{itemize}
+		\item Credit allowance and debit trade receivables
+	\end{itemize}
+\end{itemize}
+\includegraphics[scale=0.4]{write-off}
+\section{08. Notes and Warranty}
+\begin{itemize}
+	\item Current liability
+	\begin{itemize}
+		\item Notes payable
+		\item Warranty liability
+	\end{itemize}
+\end{itemize}
+\subsection{Notes payable/receivable}
+\begin{itemize}
+	\item Formal document where a borrower promises to pay a fixed sum of money (principal) after a fixed period from date note is signed (issue date)
+	\item Current asset (less than a year)
+	\item Stronger than accounts payable/receivables
+	\item \keyword{Maturity/settlement date}{Note due date}
+	\item \keyword{Interest}{Additional amount borrower must return on top of principal (accrued interest + principal lumpsum)}
+	\item Note that interest is recorded in a separate account with adjusting journal entries
+\end{itemize}
+\subsubsection{Calculations}
+\begin{itemize}
+	\item Months
+	\begin{itemize}
+		\item Taken from the same day of the month
+		\item eg. Borrowing on 2/1/2023 + 3 months = 2/4/2023
+	\end{itemize}
+	\item Days
+	\begin{itemize}
+		\item Taken from the day after issue date
+		\item eg. Borrow on 2/1/2023 + 30 days = 1/2/2023
+	\end{itemize}
+	\item Record non-payments against an established allowance
+\end{itemize}
+\subsubsection{Provisions liabilities}
+\begin{itemize}
+	\item Liabilities where timing and amount are uncertain and needs to be estimated
+	\item eg. \keyword{embedded warranty}{Warranty automatically gotten when purchasing goods(included in sale price)}
+	\item vs \keyword{extended warranty}{Extra charge for additional warranty counted under unearned revenue}
+	\item \keyword{Warranty expense}{Balancing figure when creating/increasing provision}
+	\item \keyword{Warranty liability}{Anticipated future claims decrease when actual warranty claim occurs (cash/asset goes down concurrently)}
+\end{itemize}
+\subsubsection{Contingent liabilities}
+\begin{itemize}
+	\item Possible uncertain liabilities that do not satisfy the criteria to be stated as provisions
+\end{itemize}
+
+\section{09.PPE}
+\begin{itemize}
+	\item Tangible long-lived assets used in business to generate profits
+	\item Life is more than a year (non-current asset)
+\end{itemize}
+\subsection{Accounting}
+\begin{itemize}
+	\item Initially recorded at acquisition cost
+\end{itemize}
+\begin{enumerate}
+	\item Cost approach
+	\begin{itemize}
+		\item Asset recorded at \keyword{carrying amount}{cost less accumulated depreciation}
+		\item Recorded by 2 accounts (PPE at cost and accumulated depreciation on PPE)
+	\end{itemize}
+	\item Revaluation approach
+	\begin{itemize}
+		\item Periodically revalued to current market value
+		\item Record the difference in value as accumulated depreciation
+	\end{itemize}
+\end{enumerate}
+\subsection{Acquisition cost}
+\begin{itemize}
+	\item Includes all cost necessary to acquire asset, bring to location of use and install it
+	\item Additional cost accrued as initial acquisition cost of asset
+	\item Includes future cost of dismantling/clean-up of assets
+	\item All related liability is non-current
+\end{itemize}
+
+\subsection{Capital vs Revenue expenditure}
+Cost incurred after installation
+\subsubsection{Capital expenditure}
+\begin{itemize}
+	\item Addition or improvement of assets
+	\item Provides additional functionality and extends life
+	\item Increase in asset at cost amount
+\end{itemize}
+\subsubsection{Revenue expenditure}
+\begin{itemize}
+	\item Routine repair, maintenance/cleaning cost to maintain in proper working conditions
+	\item Recorded as expense
+\end{itemize}
+
+\subsection{Depreciation}
+\begin{itemize}
+	\item Estimate of the wear and tear that assets suffers during life
+\end{itemize}
+\subsubsection{Straight-line depreciation}
+$\dfrac{Acquisition~cost-Residual~value~if~any}{life~in~years}$
+\subsubsection{Partial-year depreciation}
+\begin{itemize}
+	\item Acquired during a year so depreciation is prorated at a fraction of a year (rounded to nearest month)
+	\item \keyword{15-day rule}{Before 15 start counting from that month, after 15th start counting from next month}
+\end{itemize}
+\subsubsection{Revising assumptions}
+Estimate of depreciation changes
+\begin{itemize}
+	\item Revised estimates \textbf{prospectively} over the remaining recalculated life of asset
+	\item Not \keyword{retrospectively}{Changing past estimates}
+	\item Revised depreciation expense =
+	\item $\dfrac{carrying~amount~at~beginning~of~year-Revised~residual~value}{Revised~remaining~life~from~start~of~year}$
+\end{itemize}
+
+\subsection{PPE disposal}
+\subsubsection{Selling PPE}
+Steps:
+\begin{enumerate}
+	\item Credit PPE asset \textbf{at cost} to 0
+	\item Debit accumulated depreciation of PPE asset to make it 0
+	\item Debit proceeds from sale to cash/receivable
+	\item Gain [Credit] or loss[debit] on disposal
+	\begin{itemize}
+		\item Proceeds from sale of PPE - carrying amount of PPE at sale date
+	\end{itemize}
+\end{enumerate}
 \end{multicols*}
 \end{document}
