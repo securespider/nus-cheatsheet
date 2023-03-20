@@ -1,4 +1,5 @@
 \documentclass{article}
+\linespread{0.7}
 \usepackage[a4paper, margin=3mm, landscape]{geometry}
 \usepackage{multicol}
 \usepackage{xcolor}
@@ -79,7 +80,7 @@
 
 % -----------------------------------------------------------------------
 \begin{document}
-\begin{multicols*}{3}
+\begin{multicols*}{4}
 \footnotesize
 
 % Title box
@@ -152,7 +153,7 @@ Problems
 	\item Unsustainable - reserves depleting
 	\item Global warming - Enhanced greenhouse effect by earth atmosphere
 	\item Greater absorption of long wavelength IR in earth's atmosphere
-	\item Rising temperature anomaly from 1980-2000	
+	\item Rising temperature anomaly from 1965-now by about 100mm
 	\item Global sea level rising
 	\begin{itemize}
 		\item Thermal expansion of water
@@ -171,7 +172,7 @@ Clean energy
 \subsubsection{High energy conversion efficiency}
 \subsection{Singapore}
 Singapore uses LNG primarily (95\%) piped from indonesia and malaysia\\
-Switching to solar and biofuels to reduce reliance
+Switching to \textbf{solar} and biofuels to reduce reliance
 \subsubsection{Energy conservation}
 \begin{itemize}
 	\item Outdoor LED initative
@@ -210,6 +211,9 @@ $Q=mL$
 		\item Cold fluids sink, warm fluid rise
 	\end{itemize}
 	\item Radiation
+	\begin{itemize}
+		\item Uneven, black bodies absorb/emit better
+	\end{itemize}
 \end{itemize}
 
 \subsection{Stefan Boltzmann Law}
@@ -225,7 +229,7 @@ Difference between the heat absorbed Q and the work done W on object is equal to
 $Q-W=\triangle U$
 
 \subsection{Steam based thermal power plant}
-\includegraphics[scale=0.3]{boiler_system}\\
+\includegraphics[scale=0.25]{boiler_system}\\
 Key stages
 \begin{description}
 	\item[Compression]{Work done on system to compress cold water to high pressure}
@@ -242,7 +246,7 @@ Efficiency of cycle is given by \\
 $\eta = \dfrac{Net~output~work}{heat~input} = \dfrac{W_{t} - W_{com}}{Q_{1}} = \dfrac{Q_{1}-Q_{2}}{Q_{1}} = 1-\dfrac{Q_{2}}{Q_{1}}$
 
 \subsection{Rankine cycle}
-\includegraphics[scale=0.5]{rankine_cycle}\\
+\includegraphics[scale=0.3]{rankine_cycle}\\
 Steam power plant energy generation (Temperature - entropy graph)
 \begin{itemize}
 	\item EF - Compressor increases the pressure of water
@@ -277,8 +281,8 @@ Use gas instead of water leading to no worry of water droplets and can go higher
 	\item Ocean
 	\begin{itemize}
 		\item Water absorbs/releases heat slower than land
-		\item Day: Water less hot, sea -> land
-		\item Night: Water hotter, land -> sea
+		\item Day: Water less hot, sea -\> land
+		\item Night: Water hotter, land -\> sea
 	\end{itemize}
 	\item Surface friction
 	\item Eddy motion
@@ -308,7 +312,7 @@ Wind speed affected by height of the turbines
 	\item[Lift]{Net force perpendicular to wind}
 \end{description}
 \subsection{Blades}
-Turbines cause turbulence for surrounding blades so cannot have too many blades
+Turbines cause turbulence for surrounding blades so cannot have too many blades\\
 \keyword{Tip Speed Ratio (TSR)}{$\dfrac{Speed~of~rotation~of~outer~tip~of~blade}{incident~wind~speed}$}\\
 \keyword{Betz limit}{Maximum theoretical efficiency of rotor}\\
 \keyword{Capacity factor}{$\dfrac{yield}{rated~power}$}\\
@@ -339,7 +343,7 @@ Only half reach surface of earth
 \subsection{Solar fluid collectors}
 \includegraphics[scale=0.3]{solar-collectors}
 \subsection{Passive space heating system}
-\includegraphics[scale=0.3]{passive-heating}
+\includegraphics[scale=0.25]{passive-heating}
 \subsubsection{Trombe wall}
 \includegraphics[scale=0.3]{trombe-wall}
 \subsection{Principles of passive cooling}
@@ -366,13 +370,49 @@ Using the heat by the sun to drive rankine cycle
 	\item Run focus pipes surrounded my mirrors to heat the fluid in the pipes to be used to generate heat
 \end{itemize}
 
+\section{04b. Solar Photovoltaics}
+$E=hf=\dfrac{hc}{\lambda} |$
+$h=6.63*10^{-34},c=3*10^{8}$
+\includegraphics[scale=0.2]{i-v-characteristic}\\
+\includegraphics[scale=0.23]{fill-factor}
+\subsection{Band gap}
+Minimum energy that is required to excite an electron up to a state in the conduction band where it can participate in conduction\\
+Higher short circuit current -\> lower bandgap
 \subsection{Silicon}
+Types
+\begin{itemize}
+	\item Polycrystalline
+	\item Crystalline
+	\item Amorphous
+\end{itemize}
+\subsubsection{Mechanism}
+Transfer of electrons from n-types and p-types to maintain electric potential
+\begin{itemize}
+	\item \keyword{N-type}{Electron rich (conduct via electrons)}
+	\begin{itemize}
+		\item Doped with elements with more valence electrons (P)
+		\item Cathode (negative terminal where current flows into when illuminated)
+	\end{itemize}
+	\item \keyword{P-type}{Electron deficient (conduct via holes)}
+	\begin{itemize}
+		\item Doped with elements with less valence electrons (Al)
+		\item Anode (postive terminal where current flows out of when illuminated)
+	\end{itemize}
+	\item Pink arrow denotes conventional current
+\end{itemize}
+\includegraphics[scale=0.18]{solar-cell}
+\subsubsection{Efficiency}
+\begin{itemize}
+	\item 23\% of photons has less energy than bandgap
+	\item 30\% heat energy and 10\% loss from electron hole-pair recombination
+	\item Increase efficiency by using anti-reflective coating
+	\item Smaller bandgap -\> greater photocurrent but decrease output voltage (optimum 1.4eV gap)
+\end{itemize}
 
 % -----------------------------------------------------------------------
 % -----------------------------------------------------------------------
-% -----------------------------------------------------------------------
 
-\section{05. Hydro power}
+\section{05a. Hydro power}
 \subsection{Ocean vs River}
 River
 \begin{enumerate}
@@ -426,5 +466,302 @@ Production of electricity by using gravitational force of falling water\\
 $P=\eta\rho ghQ$\\
 $\eta$ = efficiency, $\rho$ = density of water, Q = Volume of water flowing per second on turbine, h = Vertical distance between turbine and water surface
 
+\subsubsection{Types of water turbines}
+Impulse
+\begin{itemize}
+	\item Simpler and cheaper design -\> Easier to fabricate and maintain
+	\item Needs higher head height
+	\item Higher volume flow rate
+	\item Greater tolerance of sand and other particles in water
+	\item Better access to working parts
+\end{itemize}
+\includegraphics[scale=0.3]{pelton-turbine}\\
+Reaction
+\begin{itemize}
+	\item Rotating element in reaction turbine enclosed in pressure casing to generate energy
+	\item Rotates faster than impulse turbines given same head and flow conditions
+	\item More expensive 
+\end{itemize}
+\includegraphics[scale=0.4]{reaction-turbine}
+
+\subsection{Run of the river}
+\begin{itemize}
+	\item Low-level diversion weir/stream bed instead of dam
+	\item Located on fast flowing, non seasonal stream 
+	\item Minimize impact on environment
+\end{itemize}
+
+\includegraphics[scale=0.2]{pumped-storage}
+\subsection{Pumped storage hydro}
+\begin{itemize}
+	\item Load balancing by storing energy pumped from lower elevation reservoir up
+	\item Low cost off peak power to run pumps and released when high demand
+	\item Net consumer of energy but largest capacity form of grid energy storage	
+\end{itemize}
+
+\subsection{Damless hydro}
+\begin{itemize}
+	\item Little to no maintenance
+	\item Low initial setup cost and environmental impact
+	\begin{itemize}
+		\item No risk of flash flooding/dam-related accidents
+		\item No silt accumulation and fish ladders
+	\end{itemize}
+\end{itemize}
+
+\subsection{Advantage of hydroelectric}
+\begin{itemize}
+	\item Clean renewable energy (Low level of greenhouse gases)
+	\item Low operating cost and highly automated
+	\item Plant life is long $\approx$ 40 years
+	\item Available on demand as flow rate is controlled
+\end{itemize}
+\subsection{Problems with hydroelectric}
+\begin{itemize}
+	\item Capital cost is high and payback time is long
+	\item Social issues with displacement of population
+	\item Environmental impact (Diversion of water)
+\end{itemize}
+
+\section{05b. Ocean Power}
+\begin{enumerate}
+	\item Tidal energy
+	\begin{itemize}
+		\item Gravitational field of sun and moon
+	\end{itemize}
+	\item Ocean wave energy
+	\item Ocean thermal energy
+\end{enumerate}
+\subsection{Tidal energy}
+\begin{itemize}
+	\item Derived from gravitational interaction between Earth and Moon
+	\item Bulge on opposite side due to earth's attraction
+	\item Low and high tide occuring simultaneously at 2 places with longitudes differing by 90
+	\item Interval between high tides approximately 12h
+	\item \keyword{tidal range}{Difference between height of high and low tides}
+	\item \keyword{Spring tides}{Moon and sun align leading to unusually high tides}
+	\item \keyword{Neap tides}{Moon perpendicular to sun wrt earth leading to weak tides}
+\end{itemize}
+\subsubsection{Tidal barrage}
+\begin{itemize}
+	\item Dam built across river estuary
+	\item High tides: Seawater flows into reservoir of barrage and rotate the turbine blades
+	\item Low tides: Seawater stored in barrage is allowed to flow back out into sea turning turbines
+	\item Output power $P=\dfrac{\eta\rho g A h^2}{T}$
+	\begin{itemize}
+		\item T is tidal period (time interval between 2 successive high tides)
+	\end{itemize}
+\end{itemize}
+\subsubsection{Advantages}
+\begin{itemize}
+	\item Free, reliable and green (low maintenance)
+	\item Turbines are cheap and do not cause large environmental impact
+\end{itemize}
+\subsubsection{Disadvantages}
+\begin{itemize}
+	\item Only provides power for about 10 hours each day (when tides moving)
+	\item Tidal barrage sites are limited
+	\item Fish ladders have to be installed and total cost is expensive
+\end{itemize}
+\subsection{Ocean current and waves}
+\begin{itemize}
+	\item Horizontal movement of seawater in the ocean
+	\item Factors affecting:
+	\begin{itemize}
+		\item Intensity of solar radiation
+		\begin{itemize}
+			\item Fast moving air from sea surface to land
+			\item Water dragged along the wind
+		\end{itemize}
+		\item Air temperature
+		\item Wind speed and direction
+		\item Gravitational pull of sun and moon
+	\end{itemize}
+	\item Moving up and down in circles
+\end{itemize}
+\includegraphics[scale=0.151]{ocean-current-motion}
+\subsubsection{Types of devices}
+\begin{itemize}
+	\item Oscillating water column devices
+	\begin{itemize}
+		\item Traps air which increases and decreases in volume as the sea surface moves up and down
+	\end{itemize}
+	\item Buoyant moored device
+	\begin{itemize}
+		\item Floating on surface of water and rotate to generate electricity
+		\item Requires depth of 80m with almost constant tension to mooring cables
+	\end{itemize}
+	\item Archimedes Wave Swing
+	\begin{itemize}
+		\item Hydraulic system that compresses air within cylinder when pressure on top of cylinder increases (crest approaching) and vice versa
+		\item Only one moving part so more reliable with less maintenance
+	\end{itemize}
+	\item Pelamis (Hinged countour device)
+	\begin{itemize}
+		\item Semi submerged construction generating power from motion at joints
+		\item Rocking back and forth with waves activates hydraulic pumps driving electricity generators
+	\end{itemize}
+\end{itemize}
+\subsubsection{Impacts}
+\begin{itemize}
+	\item Large global potential
+	\item Destroys scenic beauty and generates noise pollution
+	\item Have to withstand extreme weather conditions at sea
+\end{itemize}
+\subsection{Ocean Thermal Energy Conversion (OTEC)}
+\begin{itemize}
+	\item Using heat energy stored in oceans to generate electricity (best $\approx$ 20c at 1000m)
+	\item Difference in high[shallow] and low[deep] temp to rotate turbine
+	\item Uses rankine cycle (closed/open/hybrid cycles) in low-pressure turbine and ammonia
+\end{itemize}
+\subsubsection{Benefits}
+\begin{itemize}
+	\item Provides air conditioning for buildings and refrigeration
+	\item Rich in mineral - used for aquaculture
+	\item Production of fuels concurrently (hydrogen, ammonia and methanol)
+\end{itemize}
+\subsubsection{Concerns}
+\begin{itemize}
+	\item Marine organism entrainment and impingement from water current
+	\item Chemicals used to reduce/control biofouling buildup
+	\item \keyword{Upwelling}{Rise of deep cold water to surface}
+\end{itemize}
+\includegraphics[scale=0.3]{otec}
+
+\section{06. Biofuels}
+\begin{itemize}
+	\item Plant and animal derived materials that are renewable and carbon neutral
+	\item Efficiency of photosynthesis \~0.5\%
+	\item Items: Corn, soy, sorghum, sugar cane, waste, sawdust
+	\item Low energy content per kilogram and low density -\> bulky and expensive
+\end{itemize}
+\subsection{Methods of conversion}
+\subsubsection{Thermochemical}
+\begin{enumerate}
+	\item Direct conversion
+	\begin{itemize}
+		\item Burning solid biomass and production of thermal energy 
+	\end{itemize}
+	\item Gasification
+	\begin{enumerate}
+		\item Decompose starting material without oxygen to produce hydrocarbon gases and tar by-product
+		\item Heat char again with oxygen to synthesize more gases
+	\end{enumerate}
+	\begin{itemize}
+		\item Advantage: Gaseous fuels mix better than liquid and burns more efficiently and cleanly
+		\item Most economically competitive use of biomass
+	\end{itemize}
+	\item Pyrolysis
+	\begin{itemize}
+		\item Liquefied by heating in the absence of air
+	\end{itemize}
+\end{enumerate}
+\subsubsection{Biochemical}
+\begin{enumerate}
+	\item Anaerobic digestion
+	\begin{itemize}
+		\item Decomposition of organic matter in the absence of air by bacteria
+		\item Occurs naturally at 30-60c producing methane for heating, cooking and powering generators
+		\item \keyword{biogas}{Methane and C02}
+	\end{itemize}
+	\item Fermentation
+	\begin{itemize}
+		\item Using yeast or bacteria to convert to ethanol and CO2
+	\end{itemize}
+\end{enumerate}
+\subsubsection{Extraction}
+\begin{itemize}
+	\item \keyword{trans esterification}{Reaction with oil using sodium/potassium hydroxide as catalyst to form ethyl/methyl esters (biodiesel)}
+\end{itemize}
+
+\subsection{Impact}
+\begin{itemize}
+	\item Energy security since biomass is more evenly distributed over earth's surface
+	\item Rural economic growth
+	\item Good and easy storage options
+\end{itemize}
+\section{07. Geothermal}
+\begin{itemize}
+	\item Energy extracted from heat stored in the earth
+	\item Formation of the planet, radioactive decay of mineral, volcanic activity and from solar energy absorbed by surface
+	\item Flowing from the hot core by conduction and convection
+	\item Dissipates to atmosphere and space 
+	\item Strongest along tectonic plate boundaries
+\end{itemize}
+\subsection{Methods}
+\begin{enumerate}
+	\item Borehole heat exchangers
+	\begin{itemize}
+		\item Heat extraction from ambient rock formation
+	\end{itemize}
+	\item Hydrothermal systems
+	\begin{itemize}
+		\item Heat extraction from thermal groundwater
+	\end{itemize}
+	\item Hot-dry rock
+	\begin{itemize}
+		\item Water circulation through stimulated fractured rock
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Sources}
+\begin{itemize}
+	\item Hot springs
+	\begin{itemize}
+		\item Gushes of hot water found on land surface
+		\item Water vapor emission from cooling molten which rises through rocks to condense at surface
+	\end{itemize}
+	\item Fumaroles
+	\begin{itemize}
+		\item Vents from which volcanic gas escapes into the atmosphere
+		\item Persistent for decades and centuries
+		\item Dangerous gas at around 70-100c
+	\end{itemize}
+	\item Geysers
+	\begin{itemize}
+		\item Hot spring erupting periodically ejecting a column of hot water and steam
+	\end{itemize}
+\end{itemize}
+
+\subsection{Extraction}
+\begin{enumerate}
+	\item Dry steam system
+	\begin{itemize}
+		\item 180-225c, 4-8 MPa at 200km/h
+		\item Drive steam generator at 1 kWh/6.5kg of steam
+		\item Suitable where geothermal steam is not mixed with water
+		\item Wells drilled to aquifer and superheated pressurised steam brought to surface at high speeds
+		\item Efficiency: 30\%, simplest and most economical technology
+	\end{itemize}
+	\includegraphics[scale=0.28]{dry-steam}
+	\item Flash system
+	\begin{itemize}
+		\item Steam with water extracted and water flashes to steam when pressure drops suddenly
+		\item Steam separated from water and used to drive a turbine
+		\item Generates 5-100MW using 6-9 tonnes of steam per hour
+		\item Single or double[More efficient but higher cost] flashed systems 
+	\end{itemize}
+	\includegraphics[scale=0.3]{single-flash}\\
+	\includegraphics[scale=0.2]{double-flash}
+	\item Binary cycle system
+	\begin{itemize}
+		\item Used for geothermal resource with low temperatures with liquids with low boiling points
+		\item Liquids boiled to drive turbine which condenses and recycles continuously
+		\item 7-12\% efficient
+		\item More expensive but can have higher efficiencies than flash plants
+	\end{itemize}
+	\includegraphics[scale=0.32]{binary-cycle}
+	\item Geothermal heat pumps
+	\begin{itemize}
+		\item Storing and retrieving heat from earth using anti-freeze/water solution circulated in plastic pipe loops 200m into ground
+	\end{itemize}
+\end{enumerate}
+
+\subsection{Concerns}
+\begin{itemize}
+	\item Environmental impacts (tremors, \keyword{subsidence}{sinking of ground})
+	\item Non-steady state source
+	\item High initial capital cost but minimal operating cost
+\end{itemize}
 \end{multicols*}
 \end{document}
