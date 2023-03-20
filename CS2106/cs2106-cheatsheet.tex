@@ -1184,5 +1184,122 @@ Deallocation algorithm
 	\item Lowest S bits (0..S-1) of B and C are identical
 	\item S+1th bit of B and C is different
 \end{itemize}
+
+\section{10. Disjoint memory schemes}
+\begin{itemize}
+	\item Processes informations can be split into disjoint physical memory chunks
+\end{itemize}
+\subsection{Paging scheme}
+\begin{itemize}
+	\item Divide into \keyword{physical frames}{memory split into regions of fixed size}
+	\item Frames sizes are decided by hardware
+	\begin{itemize}
+		\item Reduce number of access to memory
+		\item Dedicated component to support paging by speeding address translation
+	\end{itemize}
+	\item Logical memory also split into same size (logical page)
+\end{itemize}
+\subsubsection{Page table}
+\begin{itemize}
+	\item Lookup mechanism for mapping logical pages to physical frames
+	\item Physical address = $frame_number*sizeof(physical_frame)+offset$
+	\item Note that frame sizes should be a power of 2 (ease of calculation)
+	\item No external fragmentation - any information can be stored in any page
+	\item Possible internal fragmentation (but low)
+	\item Abstraction of logical and physical address
+	\begin{itemize}
+		\item Greater flexibility
+	\end{itemize}
+\end{itemize}
+\includegraphics[scale=0.2]{paging-example}
+\subsubsection{Implementation}
+\begin{enumerate}
+	\item Pure software
+	\begin{itemize}
+		\item OS stores page table information in PCB with 2 access to memory per reference
+		\begin{enumerate}
+			\item Read the indexed page table entry to get the frame number
+			\item Access the actual memory item
+		\end{enumerate}
+	\item Memory context of each process includes page table/pointers to page table
+	\end{itemize}
+	\item Hardware support
+	\begin{itemize}
+		\item Contain \keyword{Translation Look-aside Buffer}{Specialized on-chip component to cache page table entries}
+		\item Use page numbers to search TLB associatively
+		\item Possible to have multiple TLB per core
+		\begin{description}
+			\item[TLB-hit]{Frame number retrieved to generate physical address}
+			\item[TLB-miss]{Memory access to page table -\> retrieved frame number used to generate physical address and update TLB}
+		\end{description}
+		\item Very small and fast (reducing average Memory Access Time)
+		\begin{itemize}
+			\item $P(TLB~hit)*latency(TLB~hit)+P(TLB~miss)*latency(TLB~miss)$
+			\item Latency of filling in TLB hidden by hardware
+		\end{itemize}
+		\item Part of hardware context, so entries will be flushed when context switch occurs
+		\begin{itemize}
+			\item Save pointer to prev process' page table in PCB 
+			\item Ensure process does not get incorrect translation
+		\end{itemize}
+	\end{itemize}
+\end{enumerate}
+
+\subsubsection{Paging scheme}
+\begin{itemize}
+	\item Access-right bits
+	\begin{itemize}
+		\item Enforce protection like read, write execute permissions
+		\item Memory access checked against access-right bits in hardware
+	\end{itemize}
+	\item Valid Bit
+	\begin{itemize}
+		\item Exclude pages that are out-of-range for particular process from mapping
+		\item Check against bits in hardware whether the page can be accessed by process
+	\end{itemize}
+	\item Page sharing
+	\begin{itemize}
+		\item Allow several processes to share the same physical memory frame
+		\item Shared code pages (code that may be used by many processes)
+		\item Copy on write (share pages until one tries to change value from it)
+	\end{itemize}
+\end{itemize}
+
+\subsection{Segmentation scheme}
+\subsubsection{Motivation}
+\begin{itemize}
+	\item Process contains different types of memory regions (data, text, heap, stack)
+	\begin{itemize}
+		\item Does not really matter the order of memory regions
+	\end{itemize}
+	\item Regions are variable sized and grow/shrink at execution time 
+	\begin{itemize}
+		\item Provision gaps in-between
+		\item Difficult to check what is the permissions of memory access (which range it is)
+	\end{itemize}
+\end{itemize}
+\subsubsection{Implementation}
+\begin{itemize}
+	\item Process broken into segments of variable sizes
+	\item Manage memory at level of memory segments
+	\item Mapped into contiguous physical partitions of the same size
+	\begin{itemize}
+		\item Contains name (base address + segment\_id) and limit (range of segment)
+		\item 
+	\end{itemize}
+\end{itemize}
+\subsubsection{Evaluation}
+\begin{itemize}
+	\item + Independent contiguous memory space matches programmers view of memory
+	\item + More efficient bookkeeping
+	\item + Segments can grow/shrink and be protected/shared independently
+	\item - Cause external fragmentation due to variable sized contiguous memory regions
+\end{itemize}
+\subsection{Segmentation with paging}
+\begin{itemize}
+	\item Each segment contains fixed sized pages with its own page table
+	\item Segment grows by allocating new page and adding to its page table 
+\end{itemize}
+
 \end{multicols*}
 \end{document}
