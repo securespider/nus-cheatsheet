@@ -1,4 +1,5 @@
 \documentclass{article}
+\linespread{0.7}
 \usepackage[a4paper, margin=3mm, landscape]{geometry}
 \usepackage{multicol}
 \usepackage{xcolor}
@@ -79,7 +80,7 @@
 
 % -----------------------------------------------------------------------
 \begin{document}
-\begin{multicols*}{3}
+\begin{multicols*}{4}
 \footnotesize
 
 % Title box
@@ -137,7 +138,7 @@
 \end{itemize}
 
 \subsubsection{Internet Structure}
-\includegraphics[scale=0.15]{internet}
+\includegraphics[scale=0.12]{internet}
 
 \begin{itemize}
     \item End systems connect to Internet via \textbf{Access Internet Service Providers (ISPs)} (autonomous systems $\rightarrow$ regional ISP $\rightarrow$ Access ISP $\rightarrow$ hosts)
@@ -186,7 +187,7 @@
         \item Dealing with bottlenecks over n packets:
     \end{itemize}
 \end{itemize}
-\includegraphics[scale=0.1]{bottleneck}
+\includegraphics[scale=0.08]{bottleneck}
 \begin{itemize}
     \item Average: Rate over long period of time
     \item Instantaneous: Rate at given point in time
@@ -215,7 +216,7 @@
 \keyword{Encapsulation} Take information from a higher layer and adds a header to it, treating the higher layer information as data
 
 \subsection{Topology}
-	\includegraphics[scale=0.20]{topology}
+	\includegraphics[scale=0.19]{topology}
 	\begin{itemize}
 		\item \keyword{Star}{Lowest cost and simplest}
 		\item \keyword{Mesh}{High redundancy, increased cost but highest transmission speeds}
@@ -326,7 +327,8 @@
     \item RTT is $2*d_{prop}$
     \item Response Time: 2 RTT + File transmission time
 \end{itemize}
-
+\end{multicols*}
+\begin{multicols*}{3}
 \subsubsection{Persistent HTTP}
 
 \begin{itemize}
@@ -337,7 +339,7 @@
 
 \subsubsection{HTTP Request Message}
 
-\includegraphics[scale=0.12]{http-request}
+\includegraphics[scale=0.14]{http-request}
 
 \begin{itemize}
     \item To upload form input: \keyword{POST method}{Input uploaded via entity body} and \keyword{URL method}{Input uploaded in URL field of GET method}
@@ -347,7 +349,7 @@
 
 \subsubsection{HTTP Response Message}
 
-\includegraphics[scale=0.15]{http-response}
+\includegraphics[scale=0.12]{http-response}
 
 
 \subsubsection{Error codes}
@@ -368,7 +370,7 @@
     \item Components: Cookie header for HTTP response, Cookie header for HTTP, request, Cookie file on user's host (Key-value pair), Database on server
 \end{itemize}
 
-\includegraphics[scale=0.12]{cookies}
+\includegraphics[scale=0.1]{cookies}
 
 
 \subsubsection{Web Cache (Proxy Server)}
@@ -409,20 +411,19 @@
     \item \keyword{Authoritative DNS Server}{Organization's own DNS server. Provides mappings for organization's named hosts.}
 \end{itemize}
 
-\columnbreak
 \begin{itemize}
 	\item Iterated query: "Not sure, ask this server"    
 \end{itemize}
 \includegraphics[scale=0.08]{dns-iterative-query}
-
+\includegraphics[scale=0.1]{dns-recursive-query}
 \begin{itemize}
     \item Recursive query: "Okay, let me find for you"
     \begin{itemize}
         \item Heavy load on upper levels of hierarchy
     \end{itemize}
 \end{itemize}
+Local DNS servers does both
 
-\includegraphics[scale=0.1]{dns-recursive-query}
 
 \subsection{DNS Caching}
 \keyword{Cache entry}{Cache record of recent name mapping}
@@ -443,8 +444,8 @@
 
 \subsection{UDP Socket}
 
-\includegraphics[scale=0.14]{udp-socket}
-\includegraphics[scale=0.14]{udp}
+\includegraphics[scale=0.17]{udp-socket}\\
+\includegraphics[scale=0.18]{udp}
 
 \begin{itemize}
     \item No connection beforehand. Just send it.
@@ -455,11 +456,10 @@
         \item \keyword{Datagram}{Group of bytes}
     \end{itemize}
 \end{itemize}
-
 \subsection{TCP Socket}
 
-\includegraphics[scale=0.14]{tcp-socket}
-\includegraphics[scale=0.18]{tcp}
+\includegraphics[scale=0.3]{tcp-socket}\\
+\includegraphics[scale=0.35]{tcp}
 
 \begin{itemize}
     \item Client establishes connection to server via welcome socket
@@ -475,6 +475,7 @@
 \end{itemize}
 
 % -----------------------------------------------------------------------
+
 \section{04. UDP and Reliable Protocol}
 
 \subsection{Transport Layer Services}
@@ -930,6 +931,7 @@ Iterative Bellman-Ford computation
 
 Used by hosts and routers to communicate network information
 \begin{description}
+	\item When TTL is 0, packet is discarded and ICMP error message is sent to datagram's source address
 	\item[Error reporting]{Unreachable host/network/port/protocol}
 	\item[Echo Request]
 	\item[Headers]{Starts after IP header carried in IP datagrams}
