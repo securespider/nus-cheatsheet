@@ -956,5 +956,148 @@ Used by hosts and routers to communicate network information
 	\end{itemize}
 \end{itemize}
 
+\section{08. Link layer}
+\subsection{Motivation}
+\begin{itemize}
+	\item Sending data between N nodes via cable
+	\begin{itemize}
+		\item Interconnect the N nodes via broadcast link
+		\item Every link has to be addressed
+		\item Define protocol so address to node on shared link (who speaks when and for how long)
+		\item Need to handle errors (Detection and reliability)
+	\end{itemize}
+	\item \keyword{Communication channel}{Transmission medium of data signals}
+	\item Link layer sends frames transmitted between \textbf{physically adjacent} nodes over single link
+\end{itemize}
+\subsection{Services}
+\begin{description}
+	\item[Framing]{Encapsulate IP datagram into frame by adding header and trailer}
+	\item[Link Access Control]{Coordinate which nodes send frames at specific time}
+	\item[Error detection]{Errors caused by signal attenuation or noise detected by receiver that signals sender for retransmission}
+	\item[Error correction]{Identifies and correct bit errors without transmission}
+\end{description}
+\subsubsection{Devices}
+\begin{itemize}
+	\item Implemented in NIC or on a chip (ethernet card/wifi adapter)
+	\item Adapters are semi-autonomous and implements link and physical layer
+\end{itemize}
+\subsection{Error Detection and correction}
+\subsubsection{Schemes}
+\begin{itemize}
+	\item Checksum (used in TCP/UDP/IP)
+	\item Parity checking
+	\begin{itemize}
+		\item Maintains a parity bit that value dependent on total number of 1s (where d+1 bit is even - even parity scheme)
+		\item Detect odd number of single bit errors
+		\item Probability of multiple bit errors is low (if errors are independent)
+		\item IRL errors are clustered so P(undetected errors) $\approx 50\%$
+		\item Can be made 2-D where d bits divided into i rows and columns
+		\item Parity bit along each row and column
+		\item Detects and corrects bit errors in data by comparing horizontally and vertically for errors
+	\end{itemize}
+	\item Cyclic redundancy check (CRC)
+	\begin{enumerate}
+		\item Decide generator G and number of bits to append, R
+		\item For every info sent, append R bits of 9 to the back of the data, X
+		\item Data sent is the largest value less than X divisible by G
+		\item At receiver, data has error when it is indivisible by G
+	\end{enumerate}
+	\begin{itemize}
+		\item Easy to implement (Appending 0s and modulo 2 arithmetic xor)
+		\\
+		\includegraphics[scale=0.24]{CRC-example}
+		\item Powerful error detection (detects all errors less than r+1 bit + $P(1-0.5^{r})$ error $>$ r bits
+		\item AKA polynomial code
+	\end{itemize}
+\end{itemize}
+\subsection{Multiple access links \& protocol}
+\subsubsection{Types of links}
+\begin{itemize}
+	\item Point-to-point
+	\begin{itemize}
+		\item Sender-receiver connected by dedicated link (no need multiple access control)
+		\item Point-to-point protocol, serial line internet protocol
+	\end{itemize}
+	\item Broadcast link (shared medium)
+	\begin{itemize}
+		\item Multiple nodes in a shared broadcast channel
+		\item Channel broadcast frames to all nodes in the network
+		\item Wifi, satellite, bus ethernet
+	\end{itemize}
+\end{itemize}
+\subsubsection{Motivation}
+\begin{itemize}
+	\item Collision happens when nodes receives two or more signals concurrently
+	\item Need protocol to decide who, when and how long nodes get to communicate
+\end{itemize}
+\subsection{Transmission algorithms}
+\subsubsection{Goals}
+\begin{description}
+	\item[Collision free]
+	\item[Efficient]{Node can send at rate R(max transmission rate)}
+	\item[Fairness]{When M nodes want to transmit, each sends at an average rate R/M}
+	\item[Decentralised]{No dedicated driver/node to coordinate transmission}
+\end{description}
+\textbf{Channel partitioning}
+\subsubsection{Time division multiple access (TDMA)}
+\begin{itemize}
+	\item Access channels in fixed length time slots each round
+	\item Not very efficient as unused slots go idle (max throughput is R/N)
+	\item Collision free, fair and decentralised\\
+	\includegraphics[scale=0.25]{tdma-rounds}
+\end{itemize}
+\subsubsection{Frequency division multiple access (FDMA)}
+\begin{itemize}
+	\item Channel spectrum divided into frequency bands
+	\item Node assigned to fixed band
+	\item Same pros cons as TDMA
+\end{itemize}
+\textbf{Take turn}
+\subsubsection{Polling protocol}
+\begin{itemize}
+	\item Taking turn protocol that requires one node to be designated master node
+	\item Master node polls each node in round robin to assign usage
+	\item High efficiency, collision free, fair (proper algo for master node) but not decentralised
+\end{itemize}
+\subsubsection{Token passing}
+\begin{itemize}
+	\item Token passed from one node to next sequentially
+	\item Holds token $\iff$ want to transmit frames else forward token to next node
+	\item Collision free, high efficiency (negligible overhead from token passing), fair and decentralised
+	\item Might be disruptive (frame loss, system bugs) or node failure
+\end{itemize}
+\textbf{Random access}
+\subsubsection{Slotted ALOHA}
+\begin{itemize}
+	\item Split time into slots of equal size(synchronised among all nodes)
+	\item Nodes transmit at full channel transmission rate \textbf{ONLY} at the beginning of a slot (randomly)
+	\item Have collisions and partially efficient (maximum efficiency at 37\% because collision and empty slots)
+	\item Perfectly fair and decentralised
+\end{itemize}
+\subsubsection{Unslotted ALOHA}
+\begin{itemize}
+	\item No time slots/synchronisation and transmit entire frame immediately
+	\item Retransmit frames with probability p everytime there is collision until success
+	\item Chance of collisions increase (max efficiency at 18\%)
+\end{itemize}
+\subsubsection{Carrier Sense Multiple Access (CSMA)}
+\begin{itemize}
+	\item Node decision to transmit is dependent of activity of other nodes attached to channel
+	\item Node detects if other node is transmitting before transmission (defers transmission when channel is busy)
+	\item Collisions may still occur due to propagation delay (does not detect other nodes transmissions immediately)
+\end{itemize}
+\subsubsection{CSMA/Collision Detection}
+\begin{itemize}
+	\item Abort transmission immediately when collision detected
+	\item Frame is retransmitted after random delay
+	\item \keyword{Backoff algorithm}{Adapts retransmission attempts to estimated current load}
+	\begin{itemize}
+		\item More collisions implies heavier load -\> increase back-off interval with more collisions
+		\item Binary exponential backoff (Probability of resending = $2^{-m-1}$ after m collisions)
+	\end{itemize}
+	\item Enforce minimum frame size to ensure collision is detected (account for propagation delay)
+	\item Not collision free but efficient, fair and decentralised
+\end{itemize}
+
 \end{multicols*}
 \end{document}
