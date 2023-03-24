@@ -978,7 +978,7 @@ Used by hosts and routers to communicate network information
 \end{description}
 \subsubsection{Devices}
 \begin{itemize}
-	\item Implemented in NIC or on a chip (ethernet card/wifi adapter)
+	\item Implemented in NIC (network interface card) or on a chip (ethernet card/wifi adapter)
 	\item Adapters are semi-autonomous and implements link and physical layer
 \end{itemize}
 \subsection{Error Detection and correction}
@@ -1097,6 +1097,121 @@ Used by hosts and routers to communicate network information
 	\end{itemize}
 	\item Enforce minimum frame size to ensure collision is detected (account for propagation delay)
 	\item Not collision free but efficient, fair and decentralised
+\end{itemize}
+
+\section{09. Link layer LAN}
+\subsection{Media Access Control (MAC)}
+\begin{itemize}
+	\item Used to send and receive link layer frames
+	\item Found on every NIC adapter
+	\item If dest MAC == nic mac, extract datagram and pass to protocol stack | else discard frame without interruption
+	\item 48 bits burnt in NIC ROM (read only memory) administered by IEEE
+	\item First 3 bytes specify vendor of adapter
+	\item Can run ifconfig $<$interface$>$ on unix systems to get the information
+\end{itemize}
+\keyword{Local Area Network (LAN)}{Network that interconnects computers within geographical area}	
+\subsection{Ethernet}
+\begin{itemize}
+	\item Dominant wired Lan technology
+	\item 802.3 Standards with different band speeds and physical layer media
+	\item Frame Structure\\
+	\includegraphics[scale=0.2]{ethernet-frame-structure}
+	\item Note that hosts can use other network-layer protocol besides IP (Type field)
+	\item Preamble used to synchronise receiver and sender clock rates
+	\begin{itemize}
+		\item 7 bytes of 10101010 (0xAA)
+		\item 1 byte of 10101011 (0xAB) (start of frame)
+	\end{itemize}
+\end{itemize}
+\subsubsection{Data delivery service}
+\begin{itemize}
+	\item Unreliable (no ACK or NAK to sender NIC)
+	\begin{itemize}
+		\item Data in dropped frames will only be recovered if initial sender uses higher layer RDT
+	\end{itemize}
+	\item Uses CSMA/CD with binary (exponential) backoff
+\end{itemize}
+\subsubsection{Topology}
+\begin{itemize}
+	\item \textbf{Bus topology} popular till mid 90s (broadcast Lan)
+	\item Cons:
+	\begin{itemize}
+		\item Backbone cable (network fails if damaged)
+		\item Difficult to troubleshoot problems
+		\item Slow and not ideal for large networks
+	\end{itemize}
+	\item \textbf{Star} prevelant today 
+	\item \keyword{Hubs}{physical layer device}
+	\begin{itemize}
+		\item Cheap with easy maintenance
+		\item Slow and may not be ideal for larger networks (Collision)
+	\end{itemize}
+	\item \keyword{Switch}{Link layer device with no collisions}
+	\begin{itemize}
+		\item Store and forward packet switch
+	\end{itemize}
+\end{itemize}
+\subsection{Switch}
+\subsubsection{Function}
+\begin{itemize}
+	\item Examine incoming frame Mac address 
+	\item Selectively store and forward frame to one or more outgoing links (CSMA/CD)
+	\item Transparent (hosts unaware of switches)
+	\item Plug and play - no need configuration
+\end{itemize}
+\subsubsection{Mechanism}
+\begin{itemize}
+	\item Nodes have dedicated direct connection to switch
+	\item Ethernet protocol used without collision due to switching
+	\item Maintains switching forwarding table for \keyword{selective forwarding}{only sending frames to the correct interfaces}
+	\begin{itemize}
+		\item Format \textit{Mac address of host, interface to reach host, TTL}
+	\end{itemize}
+	\item \keyword{Self learning}{Records sender/location pair in switch table everytime frames are received}
+\end{itemize}
+\begin{enumerate}
+	\item Record incoming link, Mac address of sending host
+	\item Index switch table using Mac destination address
+	\item If entry found for destination,
+	\begin{enumerate}
+		\item if destination is in the same segment as source ? drop : forward frame on destination interface		
+	\end{enumerate}
+	\item else flood - forward on all interface except arriving interface
+\end{enumerate}
+\subsubsection{vs Router}
+\begin{itemize}
+	\item Checks MAC vs IP address
+	\item Both store and forward
+	\item Forward frame to link/broadcast vs Route computation
+\end{itemize}
+\subsection{Address Resolution Protocol}
+\begin{itemize}
+	\item Maps IP address and MAC address of nodes in the same subnet
+	\item TTL - time until address mapping will be forgotten
+\end{itemize}
+Resolution when in same subnet
+\begin{enumerate}
+	\item Broadcast ARP query with B's ip as dest
+	\begin{itemize}
+		\item Dest mac == FF-FF-FF-FF-FF-FF
+		\item All nodes in same subnet receives but only B replies
+	\end{itemize}
+	\item B replies to A with its MAC address
+	\item A cache B's IP-Mac address mapping in ARP table until TTL
+\end{enumerate}
+Different subnet
+\begin{enumerate}
+	\item Sends packet with correct MAC and IP but no response because different subnet
+	\item Resends packet with dest MAC == router MAC
+	\item Datagram removed passed to IP where routing calculations determine the subnet it is in (at router)
+	\item Router attaches dest MAC address again or use ARP with correct IPs
+	\item Receiver receives the information
+\end{enumerate}
+\subsection{IP vs MAC address}
+\begin{itemize}
+	\item 32 bits vs 48 bits
+	\item Network-layer address used to move datagrams from src to dest vs link layer address to move frames over each link
+	\item Dynamic assignment;hierachial vs permanent
 \end{itemize}
 
 \end{multicols*}
