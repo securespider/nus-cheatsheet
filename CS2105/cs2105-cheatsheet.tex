@@ -541,7 +541,6 @@ Local DNS servers does both
 \end{itemize}
 
 \includegraphics[scale=0.2]{rdt-2.0}
-
 \includegraphics[scale=0.2]{rdt-2.0-fsm}
 
 \subsubsection{rdt 2.1}
@@ -554,9 +553,9 @@ Local DNS servers does both
 \end{itemize}
 
 \includegraphics[scale=0.2]{rdt-2.1}
-
+\\ Sender
 \includegraphics[scale=0.2]{rdt-2.1-sender-fsm}
-
+\\ Receiver
 \includegraphics[scale=0.2]{rdt-2.1-receiver-fsm}
 
 \subsubsection{rdt 2.2}
@@ -566,6 +565,7 @@ Local DNS servers does both
     \item Receiver sends ACK for last packet received. \textbf{ACK must include seq number of packet}.
     \item Receiver send duplicate ACK to retransmit current packet
 \end{itemize}
+\includegraphics[scale=0.2]{rdt-2.2-fsm}
 
 \subsubsection{rdt 3.0}
 
