@@ -716,7 +716,7 @@ Creates n+1 sockets for n clients (additional 1 for listening)\\
 \end{itemize}
 
 \subsubsection{Retransmission Scenarios}
-Send ACKs every other packet OR after timeout of packet OR receive gapped packet
+Send ACKs every other packet OR after timeout of packet OR receive gapped packet\\
 \includegraphics[scale=0.25]{tcp-acks}
 \\\includegraphics[scale=0.23]{tcp-retransmission1}
 \includegraphics[scale=0.23]{tcp-retransmission2}
@@ -1214,5 +1214,168 @@ Different subnet
 	\item Dynamic assignment;hierachial vs permanent
 \end{itemize}
 
+\section{10: Network Security}
+\subsubsection{Security issues}
+\begin{description}
+	\item[Eavesdrop]{Intercept messages}
+	\item[Impersonation]{Fake/spoof source address in packet}
+	\item[Hijacking]{Take over ongoing connection by replacing sender or receiver (man in the middle)}
+	\item[Denial of service]{Prevent service from being used by others (overloading resources)}
+\end{description}
+\subsubsection{Objectives}
+\begin{description}
+	\item[Confidentiality]{Only sender and intended receiver should understand message contents}
+	\item[Authentication]{Sender, receiver can confirm identity of each other}
+	\item[Message integrity]{Message is not altered (in transit or afterwards) without detection}
+	\item[Access and available]
+\end{description}
+\textbf{Cryptography}
+\begin{itemize}
+	\item Allow sender to disguise data so that an intruder can gain no information from the intercepted data
+	\item Allow receiver to recover original data from the disguised data
+	\item \keyword{Plaintext}{Message in the original readable form}
+	\item \keyword{Ciphertext}{Encrypted message}
+	\item \keyword{Key}{String of numbers or characters provided as input parameter to the encryption/decryption algorithm}
+\end{itemize}
+
+\subsection{Symmetric key cryptography}
+\begin{itemize}
+	\item Sender and receiver use the same key
+	\item Need prior communication via other secure means to decide common key
+	\item Difficult to agree on key in the first place
+\end{itemize}
+\subsubsection{Caesar cipher}
+\begin{itemize}
+	\item \keyword{Substitution cipher}{Fixed shift of alphabet(eg. a -\> d, b -\> e..)}
+	\item Only 25 possible values so easy to break with brute force search
+\end{itemize}
+
+\subsubsection{Monoalphabetic cipher}
+\begin{itemize}
+	\item Substitute one letter for another (random distance)
+	\item Mapping set of 26 letters to 26 so 26! mappings possible (brute force)
+	\item \keyword{Statistical analysis}{Derive patterns in encrypted text OR possible contents to derive the mapping}
+\end{itemize}
+Breaking the encryption scheme
+\begin{description}
+	\item[Ciphertext only attack]{Has ciphertext she can analyse}
+	\item[Known-plaintext attack]{User has plaintext corresponding to ciphertext}
+	\item[Chosen-plaintext attack]{Can get ciphertext for chosen plaintext}
+\end{description}
+
+\subsubsection{Polyalphabetic cipher}
+\begin{itemize}
+	\item Multiple mapping for each letter
+	\item Using cyclic pattern for choosing which substitution cipher to use
+	\item eg. Block cipher
+	\begin{itemize}
+		\item Each message is broken into k-bit blocks which is encrypted independently
+		\item Number of keys: $2^K$
+		\item eg. Data Encryption Standard/DES (56-bit key and 64-bit block), N-DES (encrypt DES N times with N different keys)
+		\item eg. Advanced Encryption Standard/AES (128-bit blocks with 128/192/256 bit keys) (way more secure encryption vs DES)
+	\end{itemize}
+\end{itemize}
+
+
+\subsection{Public key cryptography}
+\begin{itemize}
+	\item Sender and receiver do not share secret key but uses a public encryption key known to all
+	\item Receiver uses private decryption key only known by receiver
+	\item Requires 2 different keys - encryption/decryption and impossible to compute value of each key given other
+\end{itemize}
+\subsubsection{Rivest Shamir, Adleman algorithm (RSA)}
+\textbf{Creating private/public key pair}
+\begin{enumerate}
+	\item Choose 2 large prime numbers. p,q
+	\item Compute $n=pq$, $z=(p-1)(q-1)$
+	\item Choose e ($<$ n ) that has no common factors with z
+	\item Choose d s.t. ed-1 is exactly divisible by z
+	\item Public key is (n,e), private key is (n,d)
+\end{enumerate}
+\textbf{Encryption/decryption}
+\begin{enumerate}
+	\item Encrypt - Compute $c = m^{e}mod(n)$
+	\item Decrypt - Compute $c^dmod(n)$
+\end{enumerate}
+\textbf{In practice}
+\begin{itemize}
+	\item RSA is computationally expensive so RSA is only used to sync session/symmetric keys (DES keys)
+\end{itemize}
+
+\subsection{Cryptographic hash}
+\subsubsection{Motivation}
+\begin{itemize}
+	\item Maintain message integrity BUT checksum/CRC not robust enough to detect attacks
+	\item Need a function s.t. computationally infeasible to find any 2 messages with the same hash output
+	\item Small change in input should result in a large change in the hash output
+	\item Need consistent fixed length/size msg digest
+\end{itemize}
+\subsubsection{Implementation}
+\begin{itemize}
+	\item Attacker can replace both the message and the hash output without anyone detecting
+	\begin{itemize}
+		\item Implement \keyword{message authentication code}{Sender sends (m, H(m+s)) instead of (m, H(m))}
+		\item s is a secret key known to the receiver and no one else
+		\item Receiver can generate authentication code directly from m and compare with the received code
+	\end{itemize}
+\end{itemize}
+
+\subsection{Authentication}
+\begin{itemize}
+	\item Confirm identity of each other using digital signatures
+	\begin{description}
+		\item[Verifiable]{Check if signature and message generated by intended sender}
+		\item[Unforgeable]{Only intended sender can generate signature and message}
+	\end{description}
+\end{itemize}
+\subsubsection{RSA}
+\begin{itemize}
+	\item $K_B^-(K_B^+(m))=m=K_B^+(K_B^-(m))$
+	\item Recipient knows that whoever sent the message must have encrypted using their own private key
+	\item Recipient can verify that no one else but the intended sender sent it because the public key can be used to decrypt the information
+	\item Since RSA is computationally intensive, sender signs the hash of message rather than the content which is verified at the recipient
+\end{itemize}
+
+\subsubsection{Certification Authority}
+\begin{itemize}
+	\item Binds public key to particular entity and creates a certificate containing the entity key digitally signed by CA
+	\item Public database of all public keys
+	\item CA also signs its messages to prevent interception
+	\item Maintain a list of trusted CAs by the devices
+\end{itemize}
+
+\subsection{Firewall}
+\subsubsection{Objective}
+\begin{itemize}
+	\item Isolate Organisation's internal net from larger internet -- allowing some packets to pass and blocking others
+	\item Prevent DoS attacks
+	\begin{description}
+		\item[Syn flooding]{Attacker establish many bogus TCP connections, leaving no resources for "real" connections}
+	\end{description}
+	\item Prevent illegal modification/access internal data
+	\item Allow only authorised access to inside network
+\end{itemize}
+
+\subsubsection{Stateless packet filtering}
+\begin{itemize}
+	\item Router filters packet-by-packet, decision to forward/drop based on:
+	\begin{itemize}
+		\item source/dest IP and ICMP message type
+		\item TCP/UDP src/dst port numbers
+		\item TCP SYN/ACK bits
+	\end{itemize}
+\end{itemize}
+\includegraphics[scale=0.2]{stateless-filtering-examples}
+
+\subsubsection{Access Control List}
+\begin{itemize}
+	\item Table of rules, applied top to bottom to incoming packets (action, condition) pairs
+\end{itemize}
+
+\subsubsection{Limitation}
+\begin{itemize}
+	\item IP spoofing - router cant know if data comes from claimed source
+	\item Tradeoff btw flexibility of communication with outside world and level of security
+\end{itemize}
 \end{multicols*}
 \end{document}
