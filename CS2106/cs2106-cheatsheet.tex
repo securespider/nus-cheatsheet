@@ -1,4 +1,4 @@
-\documentclass[10pt]{article}
+\documentclass{article}
 \linespread{.7}
 \usepackage[a4paper, margin=3mm, landscape]{geometry}
 \usepackage{multicol}
@@ -1033,6 +1033,8 @@ Use cases of synchronisation (mutexes)
 	\item Philosophers need pair to eat without deadlocks and starvation
 	\item Philosophers makes the same decision (takes the same side of chopsticks everytime)
 \end{itemize}
+\end{multicols*}
+\begin{multicols*}{4}
 \subsubsection{Livelock}
 \begin{itemize}
 	\item To prevent deadlock, philosophers put down chopstick if cannot get the other side
@@ -1301,5 +1303,354 @@ Deallocation algorithm
 	\item Segment grows by allocating new page and adding to its page table 
 \end{itemize}
 
+\section{11. File System}
+\subsection{Introduction}
+\begin{itemize}
+	\item Provides abstraction on top of physical media
+	\item High level resource management scheme
+	\item Protection between processes and users
+	\item Sharing between processes and users
+\end{itemize}
+
+\subsubsection{Motivation}
+\begin{itemize}
+	\item Volatile physical memory so external storage needed for longer term storage
+	\item Storage media is not portable 
+	\begin{itemize}
+		\item Dependent on hardware specification and organisation
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Objectives}
+\begin{description}
+	\item[Self-contained]{Information stored on media is enough to describe organisation (plug and play)}
+	\begin{itemize}
+		\item System knows how to read and write information on the storage system automatically
+	\end{itemize}
+	\item[Persistent]{Retain and be retrieved beyond the lifetime of OS and processes}
+	\item[Efficient]{Good management of free and used space while having low overhead for bookkeeping information}
+\end{description}
+\subsubsection{Memory vs File System management}
+\includegraphics[scale=0.2]{mem-vs-file}
+
+\subsection{File}
+\subsubsection{Objective}
+\begin{itemize}
+	\item Abstraction for logical unit of information by processes
+	\item Contains information structured in specific styles
+	\item \keyword{Metadata}{Additional information associated with the file}
+\end{itemize}
+
+\subsubsection{Metadata}
+\begin{description}
+	\item[Name]{Human readable reference to the file}
+	\begin{itemize}
+		\item Consistent naming rule
+		\item Case sensitivity, length of name, allowed symbols
+		\item File extension (sometimes used to indicate file type)
+	\end{itemize}
+	\item[Identifier]{Unique id for the file used internally by FS}
+	\item[Type]{eg. directory, text, object, executable}
+	\begin{itemize}
+		\item May have a predefined internal structure that must be processed by specific program (jar, pdf)
+		\item Distinguishing Type is OS dependent (some use file extensions and some \keyword{magic numbers}{Embedded info in the file stored at the beginning})
+	\end{itemize}
+	\item[Size]
+	\item[Protection]{Classified under reading writing and execution rights for owner, group, and everyone}
+	\begin{itemize}
+		\item Types of access: Read, write, execute, append, delete, list (read metadata of file)
+		\item \keyword{access control list}{List of user identity and allowed access types (very customisable but too much overhead)}
+		\begin{itemize}
+			\item Command: getfacl\\
+			\includegraphics[scale=0.22]{getfacl}
+		\end{itemize}
+		\item \keyword{permission bits}{Classify users into 3 classes (owner, group and all) and define permissions RWX for the classes}
+		
+	\end{itemize}
+	\item[Time, date and owner info]
+	\item[Table of content]{Info for the FS on how to access the file}
+\end{description}
+\includegraphics[scale=0.2]{ls-la}
+
+\subsubsection{Structure}
+\begin{itemize}
+	\item Array of bytes (every byte is addressed by a specific offset from the file start)
+	\item Fixed length record
+	\begin{itemize}
+		\item Array of records that grows and shrinks dynamically
+		\item Can jump to Nth offset of M record
+		\item Prone to internal fragmentation due to fixed size records
+	\end{itemize}
+	\item Variable length records
+	\begin{itemize}
+		\item Flexible size and saves space but harder to locate record
+		\item Incurs some overhead 
+	\end{itemize}
+\end{itemize}
+
+
+\subsubsection{Access methods}
+\begin{description}
+	\item[Sequential]{Data read in order and cannot be skipped}
+	\item[Random access]{Read bytes in any order}
+	\begin{itemize}
+		\item Can be read to specific (absolute) offset 
+		\item Seek to relative offset from current pointer location (used by unix and windows)
+	\end{itemize}
+	\item[Direct access]{Same as random access but addressed to specific record}
+\end{description}
+
+\subsubsection{Operations}
+\begin{description}
+	\item[Create, read, write]
+	\item[Open]{Performed before any operation to prepare necessary info for file operations}
+	\item[Repositioning]{Seek (Move current position to new location)}
+	\item[Truncate]{Removes data from specified position to end of file}
+\end{description}
+\begin{itemize}
+	\item Done as system calls to OS for protection, concurrent efficient access
+	\item Commands: `open` `read` `write` `lseek` `close`
+\end{itemize}
+\includegraphics[scale=0.18]{c-file-operations}
+
+\subsection{Implementation in OS}
+\subsubsection{Information}
+\begin{description}
+	\item[File pointer]{Keeps track of current position within a file}
+	\item[File descriptor]{Unique identifier of file (int) Used internally in software rather than the name}
+	\item[Disk location]{Actual file location on disk}
+	\item[Open count/reference count]{How many process this file opened}
+\end{description}
+\textbf{Criteria}
+\begin{itemize}
+	\item Multiple processes can open same file
+	\item Multiple files can be opened concurrently
+\end{itemize}
+
+\subsubsection{Approach}
+Using 3 tables to store information
+\begin{enumerate}
+	\item Per-process open-file table
+	\begin{itemize}
+		\item Keep track of open files for process
+		\item Points to system-wide open-file table entry
+	\end{itemize}
+	\item Sys-wide open-file table
+	\begin{itemize}
+		\item Keep track of open files in system 
+		\item Each entry points to V-node entry
+	\end{itemize}
+	\item V-node table (virtual node)
+	\begin{itemize}
+		\item Link with file on physical drive
+		\item Contains info about physical location of file on storage
+	\end{itemize}
+\end{enumerate}
+\includegraphics[scale=0.17]{file-system-table-example}
+
+\subsection{Directory}
+\subsubsection{Motivation}
+\begin{itemize}
+	\item Provides logical grouping of file
+	\item Keep track of files (system usage of directory)
+\end{itemize}
+
+\subsubsection{Structure}
+\begin{itemize}
+	\item Single level
+	\begin{itemize}
+		\item All files in one directory (CD etc)
+	\end{itemize}
+	\item Tree structure
+	\begin{itemize}
+		\item Recursively embedded in other directory
+		\item Addressed by absolute or relative pathnames from curr working dir 
+	\end{itemize}
+	\item DAG
+	\begin{itemize}
+		\item File can be shared using hard links (dir not allowed)
+		\item Appears in multiple directory under same name referring to the same content using pointers
+		\item Low overhead (only pointers added) but deletion problems (synchronisation)
+		\item Command: ln
+	\end{itemize}
+	\item General graph
+	\begin{itemize}
+		\item Undesirable structure - hard to traverse (cycles)
+		\item Hard to determine when to remove file
+		\item Implementation via symbolic links (dir allowed)
+		\item Sym link is a special link file that contains the path name of file F -\> find out where F is and access it
+		\item Deletion is easy as only the special link file is deleted OR dangling link created (link without file)
+		\item Larger overhead as special link file is taking up actual disk space
+		\item Command: ln -s
+	\end{itemize}
+\end{itemize}
+
+\subsection{File system implementation}
+\begin{itemize}
+	\item Stored as 1-D logical blocks mapped into disk sector organised with unique ID
+	\item Storage contains Master boot record and 1.. partitions
+\end{itemize}
+\subsubsection{MBR}
+\begin{enumerate}
+	\item \keyword{Simple boot code}{Defines the partition to be initialised first}
+	\item \keyword{Partition table}{Starting and ending address of each partition}
+\end{enumerate}
+
+\subsubsection{Partitions}
+Partitions can contain independent file systems and OS
+\begin{description}
+	\item[OS boot block]{All information needed to boot OS from the partition into memory}
+	\item[Partition details]{Metadata of partition/blocks free etc}
+	\item[Directory structure, files info and file data]
+\end{description}
+
+\section{12. File System Implementation}
+\subsection{Allocation Policies}
+\subsubsection{Contiguous}
+\begin{itemize}
+	\item Allocate consecutive disk blocks to a file
+	\item Simple to keep track and fast (only need to keep track of the first block)
+	\item External fragmentation because file size is fixed and specified in advance
+\end{itemize}
+\subsubsection{Linked list}
+\begin{itemize}
+	\item Linked list of disk blocks 
+	\begin{itemize}
+		\item Stores pointer to the next disk block number 
+		\item Actual file data
+	\end{itemize}
+	\item Need to keep track of the first and last disk block number
+	\item Solves fragmentation but random access of file is very slow
+	\item Overhead with storing next block number
+	\item Less reliable (if one of the pointer breaks, all break)
+\end{itemize}
+\textbf{File Allocation Table(FAT)}
+\begin{itemize}
+	\item All "next block" pointers stored in a single table rather than at each data block
+	\item Table always in memory so simple and efficient (faster random access)
+	\item Keeps track of all disk blocks in partition which may waste a lot of memory (valuable)
+\end{itemize}
+
+\subsubsection{Indexed allocation}
+\begin{itemize}
+	\item Use one block to save pointers of all the blocks needed in file (and index)
+	\item Lower memory overhead (only index block of file needs to be in memory)
+	\item Faster direct access
+	\item Have maximum file size (limited by number of indexes in index block)
+	\item Index block overhead (waste one block for indexing)
+\end{itemize}
+
+\subsection{Partition Details}
+\subsubsection{Free space}
+\begin{itemize}
+	\item Maintain free space info (where and how much, remove/add when file created/deleted)
+	\item \keyword{Bitmap}{Disk block represented by bits and 0/1 if free}
+	\item \keyword{Linked List}{Each disk block contains some free disk blocks/pointer to next free space}
+	\begin{itemize}
+		\item Easy to locate free block and only one pointer needed in memory
+		\item BUT high overhead
+	\end{itemize}
+\end{itemize}
+
+\subsection{Directory Info}
+\subsubsection{Objectives}
+\begin{itemize}
+	\item Keep track of files in directory and metadata
+	\item Map file name to file information
+	\begin{itemize}
+		\item Locate the file information using pathname and file name to open for use
+		\item Parse the full path name by recursively searching directories along path
+	\end{itemize}
+\end{itemize}
+\subsubsection{Linear List}
+\begin{itemize}
+	\item Each entry represents a file incl name + other metadata + file info/pointer to file info
+	\item Locating file requires a linear search
+	\begin{itemize}
+		\item Inefficient for large directories requiring deep tree traversals
+		\item Latest searches can be cached to improve latency
+	\end{itemize}
+\end{itemize}
+\subsubsection{Hash tables}
+\begin{itemize}
+	\item Each directory contains hash table indexed by filename (with chained collision resolution)
+	\item Fast lookup but may be limited in size and dependent on hash functions (to reduce collisions)
+\end{itemize}
+\subsection{FAT}
+\begin{itemize}
+	\item Used by Microsoft
+	\item File data allocated to blocks with allocation info kept as linked list
+	\item Data block pointers in File Allocation Table with block info (free/next occupied block/damaged)
+	\item OS cache table in Ram to facilitate linked list traversal
+\end{itemize}
+\subsubsection{Directory Structure}
+\begin{itemize}
+	\item Directory represented as a special file with linear list of directory entries
+	\item \keyword{directory entry}{Fixed size,32 bytes containing name+extension, attributes (permissions, type), creation time, size+starting block}
+	\begin{itemize}
+		\item Name limited to 8+3 char for filename+extension
+		\item Creation time limited to 1980-2107 within accuracy $\pm$2s (2+2 bytes, date+time)
+		\item First block index using 12,16,32 for FAT12,16,32 respectively 
+		\item Filesize in bytes (allocated 4 bytes)
+	\end{itemize}
+\end{itemize}
+
+\subsection{Extended-2 FS (Ext2)}
+\begin{itemize}
+	\item Split into Blocks (corresponding to 1 or more disk sectors) and grouped into Block Groups
+	\item File/directory described by Index Node (I-Node) containing file metadata and addresses
+	\item \keyword{Superblock}{Describes whole FS including total num I-Node, I-Nodes per grp, total disk blocks + num in grps}
+	\item \keyword{Group descriptors}{Describes block grp: num free blocks, num free I-Nodes. bitmap pointer}
+	\begin{itemize}
+		\item Superblock and descriptors duplicated in each block group for redundancy
+	\end{itemize}
+	\item \keyword{Bitmap}{Block/I-Node: keep track usage status free/occupied}
+	\item \keyword{I-Node Table}{Array of I-nodes in particular block group accessible by unique index}
+\end{itemize}
+\subsubsection{I-Node}
+\begin{itemize}
+	\item Contains mode (2), owner info(4), file size(4/8), timestamps(3x4), data block pointers (15x4), reference count(2)
+	\begin{description}
+		\item[Direct Block]{1st 12 pointers to actual data}
+		\item[Single Indirect block]{13th pointer to a disk block containing some direct pointers}
+		\item[Double Indirect Block]{14th pointer to disk block with number of single indirect blocks}
+		\item[Triple Indirect Block]{15th pointer to block containing double indirect blocks}
+	\end{description}
+	\item Fast access to small file and flexibility in handling big files
+\end{itemize}
+
+\subsubsection{Directory Structure}
+\begin{itemize}
+	\item Data block of directory store linked list of directory entry
+	\item \keyword{Directory entry}{Variable sized to store file/subdirectory info}
+	\begin{itemize}
+		\item I-Node number for file
+		\item Size of this directory entry (to find next directory entry)
+		\item Length of file/subdirectory name
+		\item Type of file/subdirectory
+		\item File/subdirectory name (up to 255 chars)
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Open}
+\begin{enumerate}
+	\item Process P opens file /.../.../F which is located
+	\item File info loaded into entry \textit{F} in sys-wide table and \textit{V} in I-Node table
+	\item Create entry in P table to point to \textit{E} (file descriptor) and pointer from E to \textit{V} 
+	\item Return file descriptor to caller
+\end{enumerate}
+
+\subsubsection{Hard link}
+\begin{itemize}
+	\item Hard to determine when to delete I-Node
+	\begin{itemize}
+		\item Can maintain I-Node reference count and decremented for every deletion
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Sym Link}
+\begin{itemize}
+	\item Since only pathname is stored, link easily invalidated (during file name changes/deletion)
+\end{itemize}
 \end{multicols*}
 \end{document}
