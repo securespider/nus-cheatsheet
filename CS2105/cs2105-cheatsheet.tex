@@ -1186,8 +1186,11 @@ Used by hosts and routers to communicate network information
 \end{itemize}
 \subsection{Address Resolution Protocol}
 \begin{itemize}
-	\item Maps IP address and MAC address of nodes in the same subnet
+	\item Maps 32-bit IP address to 48 bit MAC address for some neighbouring host in same subnet
 	\item TTL - time until address mapping will be forgotten
+	\begin{itemize}
+		\item Hosts may disconnect from subnet so useless entries must be cleared
+	\end{itemize}
 \end{itemize}
 Resolution when in same subnet
 \begin{enumerate}
@@ -1199,7 +1202,6 @@ Resolution when in same subnet
 	\item B replies to A with its MAC address
 	\item A cache B's IP-Mac address mapping in ARP table until TTL
 \end{enumerate}
-Different subnet
 \begin{enumerate}
 	\item Sends packet with correct MAC and IP but no response because different subnet
 	\item Resends packet with dest MAC == router MAC
