@@ -444,8 +444,8 @@ Local DNS servers does both
 
 \subsection{UDP Socket}
 
-\includegraphics[scale=0.17]{udp-socket}\\
-\includegraphics[scale=0.18]{udp}
+\includegraphics[scale=0.20]{udp-socket}\\
+\includegraphics[scale=0.20]{udp}
 
 \begin{itemize}
     \item No connection beforehand. Just send it.
@@ -456,10 +456,10 @@ Local DNS servers does both
         \item \keyword{Datagram}{Group of bytes}
     \end{itemize}
 \end{itemize}
-\subsection{TCP Socket}
 
-\includegraphics[scale=0.3]{tcp-socket}\\
-\includegraphics[scale=0.35]{tcp}
+\subsection{TCP Socket}
+\includegraphics[scale=0.22]{tcp-socket}\\
+\includegraphics[scale=0.3]{tcp}
 
 \begin{itemize}
     \item Client establishes connection to server via welcome socket
@@ -747,10 +747,9 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 \begin{enumerate}
 	\item Bits are b and bytes are B (8 bits = byte)
 \end{enumerate}
-
 \rule{8cm}{1pt}
 
-% -----------------------------------------------------------------------
+%-----------------------------------------------------------------------
 \section{06: IP Addressing}
 
 \subsection{Function}
@@ -810,10 +809,13 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 \subsection{DHCP}
 \keyword{Dynamic Host Configuration Protocol}{Lease IP address from network server when joining network}
 \begin{itemize}
-	\item Runs over UDP , Client \#:68
+	\item Runs over UDP, broadcasted in ethernet (FF:FF:.. dst mac address)
+	\begin{itemize}
+		\item Broadcast is used to ensure that all responding servers know that client has chosen a server
+	\end{itemize}
 	\item Router can act as DHCP
 	\item Server \#: 67, sends "DHCP ack" and "DHCP offer" 
-	\item Client \#: 68, sends "DHCP request" and "DHCP discover" 
+	\item Client \#: 68, sends "DHCP request" and "DHCP discover"
 \end{itemize}
 
 \includegraphics[scale=0.28]{dhcp}
@@ -827,11 +829,16 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 \subsection{IP fragmentation}
 \keyword{MTU}{Maximum Transfer Unit, maximum amount of data a link-level frame can carry}\\
 \keyword{Fragmentation}{Large datagrams that are broken up by routers}
+\begin{itemize}
+	\item Fragmentation frequently occur in router but only reassembled at the destination
+\end{itemize}
 \includegraphics[scale=0.2]{ipv4-datagram-format}
 \begin{itemize}
 	\item Frag flag = 1 if there are more fragments from same segment, 0 = last fragment
 	\item Offset - in units of 8-bytes specifying the offset of fragment wrt beginning of unfragmented IP datagram
 \end{itemize}
+\end{multicols*}
+\begin{multicols*}{4}
 \textbf{Problem:}\\
 Not enough IP addresses to specify all devices
 \subsection{Network Address Translation}
@@ -955,7 +962,6 @@ Used by hosts and routers to communicate network information
 		\item Extract source IP address from the reply to get the device X hops away
 	\end{itemize}
 \end{itemize}
-
 \section{08. Link layer}
 \subsection{Motivation}
 \begin{itemize}
@@ -1379,5 +1385,234 @@ Breaking the encryption scheme
 	\item IP spoofing - router cant know if data comes from claimed source
 	\item Tradeoff btw flexibility of communication with outside world and level of security
 \end{itemize}
+
+\section{11. Multimedia Networking}
+\subsection{Types}
+\subsubsection{Applications}
+\begin{itemize}
+	\item Streaming stored audio, video
+	\begin{description}
+		\item[Streaming]{Begin playout before downloading entire file}
+		\item[Stored]{Can transmit faster than audio/video being rendered to be cached at user side}
+	\end{description}
+	\item Conversational ("2 way live") voice/video over IP
+	\begin{itemize}
+		\item Interactive nature with human-to-human conversation limit delay tolerance (sub 400ms)
+	\end{itemize}
+	\item Streaming ("one way live") audio/video
+\end{itemize}
+
+\subsection{Multimedia}
+\subsubsection{Video}
+Constantly high bit rate sequence of images displayed
+\begin{itemize}
+	\item Compression to reduce data usage
+	\item Redundancy within/btw images to reduce bits used
+	\begin{itemize}
+		\item Spatial coding (sending colour and number of pixels instead of duplicate pixels)
+		\item Temporal coding (Sending difference betw frames instead of complete frames)
+	\end{itemize}
+\end{itemize}
+\textbf{Bit rate}
+\begin{description}
+	\item[Constant bit rate]{Video encoding rate fixed}
+	\begin{itemize}
+		\item Not responsive to video complexity 
+		\item Bitrate has to be set high by default to handle complex segments
+		\item Consistent so well-suited for real-time encoding (streaming)
+	\end{itemize}
+	\item[Variable bit rate]{Video encoding rate changes as amount of spatial/temporal coding changes}
+	\begin{itemize}
+		\item Longer time to process data
+		\item More suited for on-demand video 
+	\end{itemize}
+\end{description}
+
+\subsubsection{Audio}
+\begin{itemize}
+	\item Analog audio signal sampled at constant rate
+	\item Audio curve quantized to send through analog using converters
+	\item \keyword{ADC/DAC}{Analog-to-Digital Converter (and vice versa)}
+\end{itemize}
+
+\subsection{Streaming}
+\subsubsection{Objective}
+\begin{description}
+	\item[Continuous playout]{Playback must match original timing (even if network delays are variable)}
+	\item[Client interactivity]{User may pause, fast-forward, rewind, jump through video etc}
+	\item[Lost packets]{Video packets have to be retransmitted or just ignored}
+\end{description}
+\subsubsection{Mechanism}
+\includegraphics[scale=0.2]{multimedia-streaming-buffering}
+\begin{enumerate}
+	\item Intial fill of buffer until playout begins
+	\item Buffer fill level varies based on fill rate while keeping playout rate constant
+\end{enumerate}
+\begin{itemize}
+	\item fill rate $>$ playout rate: buffer will not empty assuming delay is large enough to absorb variability in fill rate
+	\begin{itemize}
+		\item Initial playout delay tradeoff - buffer starvation less likely but user wait longer to start watching
+	\end{itemize}
+	\item fill rate $<$ playout rate: Buffer eventually empties (causing freezing of video playout until buffer fills)
+\end{itemize}
+\subsubsection{UDP}
+\begin{itemize}
+	\item Server sends at rate appropriate for client with short playout delay
+	\item UDP is faster and no congestion control (transmission without rate control restrictions)
+	\item Error is handled by application (decide what it wants to do)
+	\item Video chunks encapsulated using RTP (Real Time Transport protocol)
+	\begin{itemize}
+		\item Maintains seq num, time stamps, video encoding
+	\end{itemize}
+	\item Control Connection maintained separately using RTSP (Real Time Streaming Protocol)
+	\begin{itemize}
+		\item Establish controlling media sessions btw endpoints eg. commands like play, record, pause
+	\end{itemize}
+\end{itemize}
+\textbf{Drawbacks}
+\begin{itemize}
+	\item Need separate media control server like RTSP increasing cost and complexity
+	\item UDP may not go through firewalls
+\end{itemize}
+
+\subsubsection{HTTP}
+\begin{itemize}
+	\item Multimedia file received via HTTP GET at maximum rate under TCP
+\end{itemize}
+\textbf{Advantages}
+\begin{itemize}
+	\item Passes more easily through firewalls
+	\item Network infrastructure more tuned towards http/tcp connections
+\end{itemize}
+\textbf{Drawbacks}
+\begin{itemize}
+	\item Fill rate fluctuates due to TCP congestion control, retransmission (in order delivery)
+	\item Larger playout delay 
+\end{itemize}
+
+\subsection{VoIP}
+\begin{itemize}
+	\item Voice over IP
+	\item End-to-end delay requirement: Need to maintain conversational aspect 
+	\begin{itemize}
+		\item Higher delays $>$ 400ms noticeable, impairs interactivity
+	\end{itemize}
+	\item Minimum dataloss (conversation unintelligible)
+\end{itemize}
+\textbf{Challenge}
+IP is a best-effort service that has no upperbound on delay and packet loss
+\subsubsection{Characteristics}
+\begin{itemize}
+	\item Speaker only sends packets when user is speaking (in 20msec chunks)
+	\item Application-layer header added to each chunk
+	\item Chunk+header encapsulated under TCP/\textbf{UDP} segment
+\end{itemize}
+\subsubsection{Loss}
+\begin{description}
+	\item[Network loss]{Datagram lost due to network congestion (router buffer overflow or dropped or firewall)}
+	\item[Delay loss]{Datagram arrives too late for playout at receiver}
+	\item[Tolerance]{Depending on voice encoding/loss concealment, packet loss rates btw 1-10\% is tolerated}
+\end{description}
+\subsubsection{Fixed playout delay}
+\includegraphics[scale=0.23]{multimedia-voip-fixed-delay}
+\begin{itemize}
+	\item Receiver attempts to playout each chunk at constant q msec after chunk generation
+	\item Large q $\rightarrow$ less packet loss, small q $\rightarrow$ Better interactive experience
+\end{itemize}
+\subsubsection{Adaptive playout delay}
+\includegraphics[scale=0.2]{adaptive-playout-delay}
+\begin{itemize}
+	\item Low playout delay, low late loss rate \textbf{during talking spurts}
+	\item Estimate network delay and adjust playout delay at beginning of talk spurt
+	\item Silent periods compressed and elongated to ensure chunks played out at constant rate during talking spurt
+	\item Adaptively estimate packet delay 
+	\begin{itemize}
+		\item Exponential Weighted Moving Average calculated for every received packets
+		\includegraphics[scale=0.24]{adaptive-playout-emwa-calc}
+		\item $playout-time_i = t_i+d_i+4v_i$
+		\item Remaining packets are played out periodically
+	\end{itemize}
+\end{itemize}
+\subsubsection{Forward Error Correction}
+\begin{itemize}
+	\item Send enough bits to allow recovery without retransmission
+	\item Retransmission of whole packet is too slow 
+\end{itemize}
+\begin{description}
+	\item[XOR n chunks]{Create redundant chunk by XORing original chunks and send n+1 chunks}
+	\begin{itemize}
+		\item Reconstruct original n chunks if at most one lost chunks from n+1 chunks
+		\item Bandwidth increased by 1/n
+		\item Playout delay increase as receiver must wait for n+1 chunks before playout
+	\end{itemize}
+	\item[Piggyback]{Send lower res audio stream as redundancy tog with subsequent packets}
+	\begin{itemize}
+		\item Only works for non-consecutive losses
+		\includegraphics[scale=0.2]{piggyback-voip-loss}
+	\end{itemize}
+	\item[Interleaving chunks]{Audio chunks divided into smaller units and put in different packets}
+	\begin{itemize}
+		\item Packets contain small units from different chunks
+		\item Even if packets are lost, most of every original chunk is there
+		\item Missing mini-chunk can be concealed by packet repetition or interpolation
+		\item No redundancy overhead but increases playout delay 
+	\end{itemize}
+\end{description}
+\subsection{Dynamic Adaptive Streaming over HTTP}
+\subsubsection{Motivation}
+\begin{itemize}
+	\item HTTP streaming is wasteful as needs large client buffer
+	\item All client receives the same encoding of video despite variation in device/network bandwidth
+\end{itemize}
+\subsubsection{Mechanism}
+\textbf{Server}
+\begin{itemize}
+	\item Divides video file into multiple chunks which is stored at encoded at different rates
+	\item Manifest file provides URL for different encoding
+\end{itemize}
+\textbf{Client}
+\begin{itemize}
+	\item Periodically mesasures server-client bandwidth and consults manifest to request one chunk at a time
+	\item Chooses maximum coding rate sustainable given current bandwidth (which will vary)
+	\item Client determines when to request chunk, what encoding to request and the url server to request chunk from
+\end{itemize}
+\subsubsection{Implementation}
+\begin{enumerate}
+	\item Data is encoded into different qualities and cut into short segments
+	\item Client downloads Manifest File which describes available videos and qualities
+	\item Client/player executes adaptive bitrate algorithm (ABR) to determine segment to download next and plays it
+\end{enumerate}
+\subsubsection{Pros and cons}
+\begin{itemize}
+	\item Server is simple and has no firewall problems
+	\item Standard web caching works
+	\item \textbf{However} DASH based on media segment transmissions
+	\item Only buffers a few segments at client side and does not provide low latency interactive 2way applications
+\end{itemize}
+
+\subsection{Content Distribution Networks (CDN)}
+\begin{itemize}
+	\item Store/serve multiple copies of videos at multiple geographically distributed sites
+	\item Deep into access networks at ISPs and close to users
+	\item Service provider returns manifest which allows users to contact CDN for multimedia
+\end{itemize}
+\begin{center}
+\begin{tabular}{|l|p{0.5in}|p{0.5in}|p{0.5in}|}
+\hline
+\textbf{Layer} & Transport & Network & Link\\
+\hline
+\textbf{Unit} & Packet & Fragment & Frame\\
+\hline
+\textbf{Service} & Process-to-Proc & End-to-End & Host-to-host\\
+\hline
+\textbf{Addressing} & Port Number & IP address & MAC address\\
+\hline
+\textbf{Devices} & End host & Routers & Switches\\
+\hline
+\textbf{Protocols} & TCP/UDP & IP, ICMP, DHCP & CSMA/CD, ARP\\
+\hline
+\end{tabular}
+\end{center}
 \end{multicols*}
+
 \end{document}
