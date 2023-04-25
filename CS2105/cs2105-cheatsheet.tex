@@ -415,8 +415,8 @@
 \begin{itemize}
 	\item Iterated query: "Not sure, ask this server"    
 \end{itemize}
-\includegraphics[scale=0.08]{dns-iterative-query}
-\includegraphics[scale=0.1]{dns-recursive-query}
+\includegraphics[scale=0.13]{dns-iterative-query}
+\includegraphics[scale=0.15]{dns-recursive-query}
 \begin{itemize}
     \item Recursive query: "Okay, let me find for you"
     \begin{itemize}
@@ -433,7 +433,7 @@ Local DNS servers does both
 	\item Timeout after some time based on TTL
 	\item Best effort name-to-address translation (can be out-of-date)
 	\item \keyword{Resource record}{Mapping btw hostname and IP}
-	\item Format: <NAME, TYPE, VALUE, TTL>
+	\item Format: $<$NAME, TYPE, VALUE, TTL$>$
 \end{itemize}
 \subsubsection{DNS Cache poisoning}
 \begin{itemize}
@@ -642,6 +642,10 @@ Pipeline vs Parallel (HTTP)
         \item Discard \textbf{out-of-order} packets
     \end{itemize}
     \item Not efficient, since future packets discarded if out-of-order
+    \item Min window size = utilization * (2x+1)
+    \begin{itemize}
+    	\item x = prop delay
+    \end{itemize}
 \end{itemize}
 
 \subsection{Selective Repeat}
