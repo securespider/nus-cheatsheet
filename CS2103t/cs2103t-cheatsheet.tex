@@ -94,8 +94,6 @@
         }
     }
 \end{center}
-{\Large \textbf{PE}}\\
-\rule{6cm}{0.4pt}
 
 \subsection{Bug reporting format}
 \begin{itemize}
@@ -145,13 +143,9 @@
 	\item Features not well optimized for fast typist or target users
 	\item Feature does not fit well with the product
 \end{itemize}
-\section{DG}
-\subsection{General}
-\subsubsection{Image}
+\section{Models}
 \begin{itemize}
-	\item Text in image not matching size of main text
-	\item Image is not put close to where it is being described
-	\item Lower level details of multiple components there without purpose
+	\item Simpler view of a complex entity
 \end{itemize}
 \subsection{Sequence Diagram}
 \includegraphics[scale=0.3]{sequence-diagram-basic}
@@ -226,9 +220,11 @@
 \subsection{Class Diagram}
 \includegraphics[scale=0.33]{class-diagram}
 \subsubsection{Class representation}
-\begin{itemize}
-	\item Operations and attributes compartment can be omitted if not important
+\begin{itemize}	
+	\item Can contain default values eg. +max:int=0
+	\item Operations\slash methods and attributes compartment can be omitted if not important
 	\item Underlines denote class-level attributes and methods
+	\item Entities can only appear once in a diagram
 \end{itemize}
 \subsubsection{Visibility}
 \begin{description}
@@ -244,7 +240,10 @@
 	\begin{itemize}
 		\item If class A has multiplicity 2, means 2 objects of A associated to 1 object of other class
 	\end{itemize}
-	\item Navigability - There is a reference from one class to another (can be unidirectional or bidirectional)
+	\item \keyword{Navigability}There is a reference from one class to another (can be unidirectional or bidirectional)
+	\begin{itemize}
+		\item This is optional
+	\end{itemize}
 \end{itemize}
 \subsubsection{Composition vs Aggregation}
 \begin{itemize}
@@ -273,6 +272,7 @@
 \begin{itemize}
 	\item Represents additional information about association
 	\item Should be dotted from the association btw 2 classes
+	\item Variables of the 2 classes should not be shown in the association class
 \end{itemize}
 
 \subsection{Object Diagram}
@@ -300,7 +300,7 @@
 \subsection{User Stories}
 \begin{itemize}
 	\item Short simple descriptions of a feature told from perspective of person who wants the capability
-	\item Must be in the format `As a \{user type/role\} I can \{function\} so that \{benefit\}`
+	\item Must be in the format `As a \{user type\slash role\} I can \{function\} so that \{benefit\}`
 	\begin{itemize}
 		\item Benefit can be omitted if obvious
 	\end{itemize}
@@ -337,5 +337,628 @@
 \subsubsection{Format}
 \includegraphics[scale=0.28]{use-case}
 
+\section{Software Architecture}
+\begin{itemize}
+	\item Software architecture shows overall organization of system as a high-level design
+	\item Contains a set of interacting components that fit tog for a specific functionality
+	\item Simple and technically viable structure
+\end{itemize}
+\subsection{Design}
+\begin{itemize}
+	\item Free-form diagrams with no standard notation
+	\item Minimise variety of symbols
+	\item Limit use of double-headed arrows to show interaction
+\end{itemize}
+\subsection{N-tier architectural style}
+\begin{itemize}
+	\item aka multi-layered, layered
+	\item Higher layer make use of services provided by lower 
+\end{itemize}
+\subsection{Event-driven architectural style}
+\begin{itemize}
+	\item Flow of application dependent on events from \textit{emitters} and communicated to \textit{consumers} (eg. GUI)
+\end{itemize}
+\subsection{Other architectural styles}
+\begin{description}
+	\item[Client-server]
+	\item[Transaction processing]{Divides workload of systems into transactions controlled by \textit{dispatcher}}
+	\item[Service Oriented]{Combining packages as \textit{programmatically accessible services}}
+	\begin{itemize}
+		\item Interoperability btw distrbuted system via XML
+	\end{itemize}
+\end{description}
+
+\section{Software design pattern}
+\begin{itemize}
+	\item Reusable solution to a commonly recurring problem
+\end{itemize}
+\subsubsection{Format}
+\begin{itemize}
+	\item Consist of context, problem, solution, consequences (if-any)
+\end{itemize}
+\subsection{Singleton}
+\begin{description}
+	\item[Context]{Classes with \textbf{ONLY ONE} instance}
+	\item[Problem]{Normal classes can be instantiated multiple times by calling constructor}
+	\item[Solution]{Make constructor private and provide public static method to access single instance}
+	\begin{itemize}
+		\item Method instantiates instance when executed for the first time
+		\item Subsequent calls return single instance of class
+	\end{itemize}
+	\item[Notation]{$<<Singleton>>$ above the class name in class diagrams}
+\end{description}
+
+\subsection{Abstraction occurrence pattern}
+\begin{description}
+	\item[Context]{Groups of similar entities sharing the same info but slightly different}
+	\item[Problem]{Duplication of data which can lead to inconsistencies}
+	\item[Solution]{Create an $<<Abstraction>>$ class that holds common information and have unique information in an $<<Occurrence>>$ class}
+	\begin{itemize}
+		\item eg. Abstraction: BookTitle, Occurence: BookCopy (storing only the serial number)
+	\end{itemize}
+\end{description}
+
+\subsection{Facade pattern}
+\begin{description}
+	\item[Context]{Components need to access functionality deep inside other components}
+	\item[Problem]{Internal details may be exposed when component is accessed}
+	\item[Solution]{Facade class sitting between component internals and users}
+	\begin{itemize}
+		\item All access to component happens through the facade class
+	\end{itemize}
+\end{description}
+
+\subsection{Command pattern}
+\begin{description}
+	\item[Context]{System required to execute number of commands doing specific tasks}
+	\item[Problem]{Other objects do not need to know command type to execute commands}
+	\item[Solution]{General $<<Command>>$ object that is passed around, stored, executed using polymorphism}
+\end{description}
+
+\subsection{Model View Controller (MVC) pattern}
+\begin{description}
+	\item[Context]{Application supporting storage/retrieval of info, displaying of info and changing stored info from external inputs}
+	\item[Problem]{High coupling from the above features}
+	\item[Solution]{Decouple data, presentation and control logic of application into 3 different components}
+	\begin{description}
+		\item[Model]{Stores and maintains data}
+		\item[View]{Displays data, interacts with user and pulls data from model}
+		\item[Controller]{Detects UI events and executes commands which updates models\slash view if necessary}
+	\end{description}
+\end{description}
+
+\subsection{Observer pattern}
+\begin{description}
+	\item[Context]{Multiple objects affected by a change in another object}
+	\item[Problem]{Observed object should be decoupled from 'observing' objects}
+	\item[Solution]{Force communication through interface known to both parties}
+\end{description}
+
+\section{Design approach}
+\subsection{Top-down/Bottom-up design}
+\begin{description}
+	\item[Top-down]{Design high-level before lower level}
+	\begin{itemize}
+		\item Useful when designing big novel systems where high-level design need to be stable
+	\end{itemize}
+	\item[Bottom-up]{Design lower-level and put them together to create higher-level}
+	\begin{itemize}
+		\item Not usually scalable for bigger systems
+		\item Useful when designing variation of existing system or repurposing existing components
+	\end{itemize}
+\end{description}
+\subsection{Agile design}
+\begin{itemize}
+	\item Emergent, not defined up front
+	\item Evolves to fulfil new requirements and take advantage of new technologies as appropriate
+	\item Some initial architectural modeling
+\end{itemize}
+
+\section{Code Quality}
+\subsection{Readability}
+\subsubsection{Avoid...}
+\begin{description}
+	\item[Long methods]{Methods should be less than 30 lines of code (LOC)}
+	\item[Deep nesting]{Less than 3 levels of indentation}
+	\begin{tabbing}
+		\=\includegraphics[scale=0.2]{arrowhead-code}
+	\end{tabbing}
+	\item[Complicated expressions]{Avoid negations and nested parentheses}
+	\begin{itemize}
+		\item Evaluate complicated expressions in steps with intermediate values
+	\end{itemize}
+	\item[Magic numbers]{Unexplained numbers should be a named constant}
+	\item[Premature Optimization]
+	\begin{itemize}
+		\item May not know which parts are performance bottlenecks
+		\item Complicate code further affecting correctness
+		\item Hand-optimization may be slower for compiler to optimise
+	\end{itemize}
+	\item[Reusing parameters]{Should redeclare local variables with same value as parameter - error prone}
+\end{description}
+\subsubsection{Should..}
+\begin{description}
+	\item[Make code obvious]{Explicit type conversions, parentheses to show groupings, enumerations}
+	\item[Structure code logically]{Lay out code to adhere logical structure with classes, methods, indentation, linespacing}
+	\item[Not trip up reader]{Unused parameters in method, barely similar\slash different things, multiple statements in same line}
+	\item[KISS]{Keep things simple (brute-force may be better than complicated}
+	\item[SLAP]{Single Level of Abstraction Principle}
+	\begin{tabbing}
+		\=\includegraphics[scale=0.2]{slap-example}
+	\end{tabbing}
+	\item[Prominent happy path]{Restructure code to make happy path unindented (using guard clauses)}
+\end{description}
+\subsection{Style guide}
+\subsubsection{Naming}
+\begin{itemize}
+	\item Names representing packages should be in lowercase
+	\item Class\slash enum names must be nouns and written in PascalCase
+	\item Variable names should be in camelCase
+	\item Constant names should be all UPPERCASE using underscore to separate\_words
+	\item Methods should be verbs and in camelCase
+	\item Boolean variables\slash methods should sound like booleans (eg. isVisible, hasSomething())
+	\begin{itemize}
+		\item Use prefix such as `is`, `has`, `was`, `can`
+	\end{itemize}
+	\item Plural form should be used on names representing a collection of objects
+	\item Iterator variables can be called i, j, k etc
+\end{itemize}
+\subsubsection{Layout}
+\begin{itemize}
+	\item Indentation should be 4 spaces
+	\item Line length should be less than 120 char
+	\item Indentation for wrapped lines should be 8 spaces more than parent lines (2 tabs)
+	\item Egyptian\slash K\&R style eg. while (done) \{
+	\item Methods definition: `public void someMethod() throws SomeException \{`
+	\item Note there is no indentation for `case` clauses
+	\item The explicit \slash\slash Fallthrough comment should be included whenever there is a `case` statement without a break statement
+\end{itemize}
+\subsubsection{Statements}
+\begin{itemize}
+	\item Every class should be in some package
+	\item Imported classes should always be listed explicitly (no wildcard imports)
+	\item Array specifiers should be attached to type not the variables (eg. int[ ] a $>$ int a[ ])
+	\item Loops must be wrapped by curly brackets
+	\item Conditionals should be placed on separate lines
+\end{itemize}
+\subsubsection{Javadocs}
+\begin{itemize}
+	\item Opening \slash ** on a separate lines
+	\item First sentence should be a short summary of method
+	\begin{itemize}
+		\item Starts with strong verbs `returns`, `sends`, `adds`
+	\end{itemize}
+	\item Subsequent * is aligned with the first *
+	\item Space after each *
+	\item Empty line between description and parameter section
+	\item Punctuation behind each parameter description
+	\item No blank line between documentation block and method\slash class
+	\item @return can be omitted if method does not return anything
+\end{itemize}
+\subsubsection{Unsafe shortcuts}
+\begin{itemize}
+	\item Use default branches (final default and else statements)
+	\item Don't recycle variables or parameters
+	\item Avoid empty catch blocks
+	\item Delete dead code
+	\item Minimize scope of variables (limit global variables and keep variable definition within blocks)
+	\item Minimize code duplication
+\end{itemize}
+\subsubsection{Comments}
+\begin{itemize}
+	\item Do not repeat the obvious
+	\item Write to readers
+	\item Explain what and why not how
+\end{itemize}
+\section{Refactoring}
+\begin{itemize}
+	\item Process of improving a program's internal structure in small steps without modifying its external behaviour
+	\item May improve performance and uncover bugs
+	\item Refactor $\neq$ rewriting\slash bug fixing
+\end{itemize}
+\subsection{Consolidate Duplicate Conditional Fragments}
+\begin{description}
+	\item[Context]{Same fragment of code in all branches of conditional expression}
+	\item[Solution]{Move fragment outside the expression}
+\end{description}
+\subsection{Extract Method}
+\begin{description}
+	\item[Context]{Code fragments that can be grouped together}
+	\item[Solution]{Turn fragment into a method whose name explains purpose of method}
+\end{description}
+
+\section{Integration}
+\begin{itemize}
+	\item Combining parts of software product to form a whole
+\end{itemize}
+\subsection{Timing}
+\begin{description}
+	\item[Late and one time]{Integration done when all components are completed}
+	\begin{itemize}
+		\item Not recommended due to possible component incompatibilities
+	\end{itemize}
+	\item[Early and frequent]{Evolve each part in parallel in small steps}
+\end{description}
+\subsection{Extent}
+\begin{itemize}
+	\item Big bang vs incremental
+\end{itemize}
+\subsection{Build Automation}
+\begin{itemize}
+	\item Automating steps of build process using scripts (compiling, linking, packaging)
+	\item Help in dependency management
+\end{itemize}
+\subsubsection{Continuous Integration and Continuous Deployment (CI/CD)}
+\begin{description}
+	\item[CI]{Integration, building and testing happens automatically after code changes}
+	\item[CD]{Changes deployed to end-users as code changes}
+\end{description}
+
+\section{Reuse}
+\begin{itemize}
+	\item Robustness of software system can be enhanced while reducing manpower and time requirement
+	\item Reused software may have bugs or not mature enough
+\end{itemize}
+\subsection{Application Programming Interface (API)}
+\begin{itemize}
+	\item Specifies the interface for other programs to interact with software component
+\end{itemize}
+\subsection{Libraries}
+\begin{itemize}
+	\item Collection of modular code that is general and can be used by other programs
+	\item Ensure that library functionality fits your needs
+	\item Check license if it allows reuse in the way you use
+\end{itemize}
+\subsection{Framework}
+\begin{itemize}
+	\item Reusable implementation of a software providing generic functionality
+	\item Customisable to produce a specific application
+	\item Similar overall structure and execution flow for specific category of software system
+	\item Meant to be customised\slash extended rather than 'as-is'
+	\item \keyword{Hollywood principle}{Inversion of control, framework code calls your code}
+\end{itemize}
+\subsection{Platform}
+\begin{itemize}
+	\item Runtime environment for application
+	\item Bundled with libraries, tools, framework and tech
+\end{itemize}
+
+\section{Quality Assurance}
+\begin{itemize}
+	\item Ensuring software being built has required levels of quality
+\end{itemize}
+\begin{description}
+	\item[Verification]{Requirements implemented correctly}
+	\item[Validation]{Requirements are correct}
+\end{description}
+\subsection{Code reviews}
+\begin{itemize}
+	\item Systematic examination of code for improvements
+	\item PR review, pair prgming, formal inspection
+\end{itemize}
+\subsection{Formal verification}
+\begin{itemize}
+	\item Mathematical techniques to prove correctness of prgm
+\end{itemize}
+
+\section{Testing}
+\begin{itemize}
+	\item Executing a set of test cases by specifying input to \textbf{software under test (SUT)} and expected behaviour
+	\begin{itemize}
+		\item Failure is a mismatch btw expected and actual behaviour
+	\end{itemize}
+\end{itemize}
+\keyword{Testability}{Indication of how easy it is to test SUT depending on design and implementation}
+\subsection{Exploratory vs scripted}
+\begin{itemize}
+	\item \keyword{Scripted}{Writing set of test cases based on expected behaviour and perform testing based on test cases}
+	\begin{itemize}
+		\item Systematic $\rightarrow$ more bugs detected within sufficient time
+	\end{itemize}
+	\item \keyword{Exploratory testing}{Devise test cases on the fly based on results of past test cases}
+	\begin{itemize}
+		\item Simultaneous learning, test design and execution
+		\item Dependent on tester experience and intuition
+		\item Quick error discovery 
+	\end{itemize}
+\end{itemize}
+
+\subsection{Regression Testing}
+\begin{itemize}
+	\item \keyword{Regression}Modification of system that results in unintended and undesirable effects on system 
+	\item Re-testing software to detect regression
+	\item Test all related components even if tested before
+	\item More effective when done frequently after each small change (automation)
+\end{itemize}
+\subsection{Developer testing}
+\begin{itemize}
+	\item Testing done by developers as opposed to end-users\slash professionals
+	\item Early bug detection $\rightarrow$ easier and cheaper to fix
+	\item Do not wait til the end cus of large search space or major reworks
+	\item Bugs may hide other bugs
+\end{itemize}
+\subsection{Unit testing}
+\begin{itemize}
+	\item Testing individual units to ensure each piece works correctly using Stubs
+	\item For each class\slash method separately 
+\end{itemize}
+\subsubsection{Stubs}
+\begin{itemize}
+	\item Same interface as the component it replaces but with a simple implementation that is unlikely to have bugs
+	\item Should have same responses as component for predetermined inputs
+	\item Isolates SUT from dependencies to test unit in isolation
+\end{itemize}
+\subsection{Integration testing}
+\begin{itemize}
+	\item Testing whether different parts of the software work together
+	\item Aims to discover bugs in the interactions in components\slash "glue code"
+\end{itemize}
+\subsection{System testing}
+\begin{itemize}
+	\item Take whole system and test against system specifications
+	\item Based on specified external behaviour of system \slash NFRs
+\end{itemize}
+\subsection{Alpha beta testing}
+\begin{itemize}
+	\item Deploying to users to test
+	\item \keyword{Alpha}Performed under controlled conditions set by SE team
+	\item \keyword{Beta}{Given to selected subset of users to test in natural work settings}
+\end{itemize}
+\subsection{Dogfooding}
+\begin{itemize}
+	\item SE team use own product IRL to test
+\end{itemize}
+\subsection{Acceptance testing}
+\begin{itemize}
+	\item Test system to ensure it meets user requirements
+	\item Defined at the beginning of project based on user case specification
+\end{itemize}
+\subsection{Automation}
+\subsubsection{Test Drivers}
+\begin{itemize}
+	\item Code that 'drives' SUT for purpose of testing
+	\item Invokes SUT with test input and verifies if behaviour is as expected (throwing errors)
+\end{itemize}
+\subsubsection{JUnit}
+\begin{itemize}
+	\item Tool for automated testing of java programs
+\end{itemize}
+\subsubsection{GUI testing}
+\begin{itemize}
+	\item Recommended to move logic out of GUI
+	\item Tools: Visual Studio, TestFX, Selenium
+\end{itemize}
+\subsection{Test Coverage}
+\begin{itemize}
+	\item Metric used to measure how much testing exercises the code
+\end{itemize}
+\begin{description}
+	\item[Function\slash method coverage]{Based on no. functions executed}
+	\item[Statement coverage]{Number of lines of code executed}
+	\item[Decision\slash branch coverage]{Based on decision points exercised (if else)}
+	\item[Condition coverage]{For all boolean sub-expressions - evaluated to T and F with different test cases}
+	\item[Path coverage]{Possible paths through a given part of the code executed}
+	\begin{itemize}
+		\item More complicated than statement and branch
+	\end{itemize}
+	\item[Entry\slash exit coverage]{Possible calls to and exits from operations in the SUT}
+\end{description}
+\subsection{Dependency injection}
+\begin{itemize}
+	\item 'Injecting' objects to replace current dependencies with different object
+	\item Insert stubs to isolate SUT (Used with unit test)
+	\begin{itemize}
+		\item Polymorphism - stub extends\slash inherits expected class
+	\end{itemize}
+\end{itemize}
+\subsection{Test-Driven Development}
+\begin{itemize}
+	\item Writing tests before writing SUT thereby defining precise behaviour of SUt using test code
+\end{itemize}
+\section{Test Case design}
+\subsection{Equivalence partition}
+\begin{itemize}
+	\item Identify groups of inputs that are likely to be processed in the same way
+	\item Ensure all partitions are tested, limiting number of inputs from each partition
+\end{itemize}
+\subsection{Boundary value analysis}
+\begin{itemize}
+	\item Testing at boundaries of equivalence partitions
+	\item Choose 3 values around boundary (before, at, after)
+\end{itemize}
+\subsection{Combining inputs}
+\begin{description}
+	\item[All combinations]
+	\item[At least once]{3 test case for 3 attributes}
+	\item[All pairs]{For any given pair of inputs, all combinations btw them are tested}
+	\begin{itemize}
+		\item Only need to test pairwise interactions 
+		\item Less cases than all combinations strategy
+	\end{itemize}
+	\item[Random strategy]{Random subset of the other strategies}
+\end{description}
+\subsubsection{Heuristic}
+\begin{itemize}
+	\item Each valid input at least once in a positive test case
+	\begin{itemize}
+		\item Ensure that the valid input results in positive results
+	\end{itemize}
+	\item No more than 1 invalid input in a test case
+	\begin{itemize}
+		\item Else would not know which input is the "wrong" one
+	\end{itemize}
+\end{itemize}
+\section{Revision Control (RC)}
+\begin{itemize}
+	\item Managing multiple versions of a piece of info
+	\item Track history for better collaboration
+	\item Mistake recovery
+\end{itemize}
+\subsection{Repository}
+\begin{itemize}
+	\item Database where meta-data about revision history are stored
+	\begin{description}
+		\item[Staging]{Specifying files to track and ignore}
+		\item[Commit]{Save snapshot of current state of tracked files in RC history}
+		\item[Diff]{Compare changes btw 2 points in history}
+		\item[Checkout]{Restore state of working directory at a point in the past}
+	\end{description}
+	\item Commits are uniquely identified by auto-generated hash or tagged
+\end{itemize}
+\subsubsection{Remote repository}
+\begin{itemize}
+	\item Repos hosted on remote computers
+	\begin{description}
+		\item[Clone]{Create a copy of that repo in a location on your computer wit all version history}
+		\item[Upstream repo]{Original repo that was cloned}
+		\item[Pull]{Receive new commits in second repo from upstream repo}
+		\item[Push]{Copy new commits to destination repo with write access and a shared history}
+		\item[Fork]{Remote copy of a remote repo without write permissions}
+		\item[Pull req]{Mechanism for contributing code to a remote repo with shared history}
+	\end{description}
+\end{itemize}
+\subsection{Branching}
+\begin{itemize}
+	\item Evolving multiple versions of software in parallel
+\end{itemize}
+\begin{description}
+	\item[RCS]{Revision Control Software}
+	\item[Merged]{New commit that maps all changes in other branch to curr}
+	\item[Conflicts]{Merging 2 branches that changed the same parts}
+	\begin{itemize}
+		\item RCS cannot decide changes to keep
+		\item Manual conflict resolution
+	\end{itemize}
+\end{description}
+\subsection{CRCS and DRCS}
+\begin{description}
+	\item[Centralized RCS]{Central remote repo shared by team}
+	\begin{itemize}
+		\item Members pull and push changes btw local repo and central repo
+	\end{itemize}
+	\item[Distributed RCS]{Multiple remote repo pulling and pushing in arbitary ways}
+\end{description}
+\subsection{Forking}
+\begin{itemize}
+	\item All team members fork main repo and create PR from fork to main repo for changes
+\end{itemize}
+\section{Software Development Life Cycle (SDLC)}
+\begin{itemize}
+	\item Provides roadmap for software developers to manage the development effort
+	\item Requirements, analysis, design, implementation and testing
+\end{itemize}
+\subsection{Waterfall/Sequential model}
+\begin{itemize}
+	\item Models software development as a linear process through the development stages
+	\item Each stage of the process should produce some artifacts to be used in the next stage
+	\item Useful model when the problem statement is well-understood and stable
+	\begin{itemize}
+		\item IRL requirements are rarely understood at the beginning and keep changing 
+	\end{itemize}
+\end{itemize}
+\subsection{Iterative models}
+\begin{itemize}
+	\item Multiple iterations that produces an improved version of the product
+	\item Feedback is fed to the next iteration and improved
+	\begin{description}
+		\item[Breadth-first]{All major components evolved in parallel}
+		\item[Depth-first]{Fleshing out individual components before moving to other features\slash components}
+	\end{description}
+\end{itemize}
+\subsection{Agile}
+\begin{itemize}
+	\item Requirements prioritised based on needs of users and are clarified regularly
+	\item Transparency and responsibility sharing among team members
+	\item Team works on rough plan and high level design that evolves
+\end{itemize}
+\subsection{Examples}
+\subsubsection{Extreme Programming (XP)}
+\begin{itemize}
+	\item Priority on customer satisfaction, teamwork
+	\begin{itemize}
+		\item Delivers software as needed
+		\item Respond to changing customer requirements continuously
+	\end{itemize}
+	\item Communicate with stakeholders (managers, customers and developers) and keep design simple and clean
+	\includegraphics[scale=0.26]{sdlc-xp}
+\end{itemize}
+\subsubsection{Scrum}
+\begin{itemize}
+	\item Process skeleton containing sets of practices and roles 
+	\begin{itemize}
+		\item Scrum master, product owner, team
+	\end{itemize}
+	\item Divided into iterations called Sprints (timeboxed to specific duration and effort)
+	\item Preceded by planning meeting where tasks are identified and commitments made
+\end{itemize}
+\subsubsection{Unified Process}
+\begin{itemize}
+	\item Four phases - Inception, Elaboration, Construction and Transition
+	\begin{description}
+		\item[Inception]{Understand problem and requirements by communication with customer}
+		\item[Elaboration]{Refine and expand requirements}
+		\item[Construction]{Major implementation effort to support use case}
+		\item[Transition]{Ready the system for actual production use}
+	\end{description}
+	\item Flexible, customisable process model framework
+\end{itemize}
+\subsubsection{Capability Maturity Model Integration}
+\begin{itemize}
+	\item Process improvement approach by defining maturity levels for processes
+	\item Criteria to determine maturity level of processes
+\end{itemize}
+\section{Quiz}
+\tiny{
+\subsection{2}
+\begin{itemize}
+	\item Module\slash SE details, Software Development Life Cycle (SDLC)
+	\item Integrated Development Environment (IDE), Revision Control (git terms)
+	\item Testing (regression)
+\end{itemize}
+
+\subsection{5}
+\begin{itemize}
+	\item Object diagram
+	\item Requirements (stakeholders, brownfield, NFR, quality, priority)
+	\begin{itemize}
+		\item Gathering requirements via brainstorming, wireframes
+	\end{itemize}
+	\item Writing DG (glossary, feature list, user stories)
+	\item Code quality (refactoring, naming, comments)
+	\item Assertions, streams
+\end{itemize}
+\subsection{6}
+\begin{itemize}
+	\item Sequence diagrams
+	\item Architecture diagrams (free-form)
+\end{itemize}
+\subsection{7}
+\begin{itemize}
+	\item Use cases (MSS)
+	\item Design principles, abstraction, coupling, cohesion
+	\item Integration and project management
+\end{itemize}
+\subsection{8}
+\begin{itemize}
+	\item Diagrams (class, sequence, object)
+	\item Testing (types, coverage)
+\end{itemize}
+\subsection{9}
+\begin{itemize}
+	\item Diagrams (OODM, Activity)
+	\item Principles and SDLC
+\end{itemize}
+\subsection{10}
+\begin{itemize}
+	\item Design patterns (singleton, facade, command)
+	\item Defensive programming, test case design
+\end{itemize}
+\subsection{11}
+\begin{itemize}
+	\item Design patterns (MVC, Observer)
+	\item Architecture styles
+	\item Testing heuristics, QA (validation vs verification), reuse (platform, frameworks)
+\end{itemize}
+}
 \end{multicols*}
 \end{document}
