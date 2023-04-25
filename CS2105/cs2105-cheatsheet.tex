@@ -409,6 +409,7 @@
     \item \keyword{Root Name Server}{Contacted by local name server that cannot resolve name. Provides IP address of TLD servers.}
     \item \keyword{Top-level Domain Server}{(TLD) Provides IP address of authoritative server}
     \item \keyword{Authoritative DNS Server}{Organization's own DNS server. Provides mappings for organization's named hosts.}
+    \item If local DNS server does not have requested record in cache, it will start \textbf{recursive} DNS resolution process.
 \end{itemize}
 
 \begin{itemize}
@@ -437,6 +438,11 @@ Local DNS servers does both
 \subsubsection{DNS Cache poisoning}
 \begin{itemize}
 	\item DNS spoofing attack - Rogue DNS records introduced in resolver's cache, leading to incorrect IP address reply
+\end{itemize}
+\subsection{Telnet}
+\begin{itemize}
+	\item Protocol to test open ports and enables terminal-to-terminal communication 
+	\item Test connectivity, issue commands
 \end{itemize}
 
 % -----------------------------------------------------------------------
@@ -488,18 +494,17 @@ Local DNS servers does both
 
 \subsection{UDP}
 
-\begin{itemize}
-    \item On top of network layer, UDP adds:
-    \begin{enumerate}
-        \item Connectionless multiplexing/de-multiplexing
-        \begin{itemize}
-            \item UDP segments contain both source and destination ports
-            \item \keyword{Multiplexing}{Sent to target processes}
-            \item \keyword{Demultiplexing}{Delivering the received segments at the receiver side to the correct app layer processes}
-        \end{itemize}
-        \item Checksum
-    \end{enumerate}
-\end{itemize}
+On top of network layer, UDP adds:
+\begin{enumerate}
+	\item Connectionless multiplexing/de-multiplexing
+    \begin{itemize}
+    	\item UDP segments contain both source and destination ports
+        \item \keyword{Multiplexing}{Sent to target processes}
+        \item \keyword{Demultiplexing}{Delivering the received segments at the receiver side to the correct app layer processes}
+    \end{itemize}
+    \item Checksum
+\end{enumerate}
+
 
 \subsubsection{UDP Segment Header}
 \includegraphics[scale=0.19]{udp-segment-header}
@@ -515,8 +520,10 @@ Local DNS servers does both
     \item Treat UDP segment as sequence of 16-bit integers
     \item Add every 16-bit integer (Carry added back to result)
     \item Invert to get UDP checksum (1's complement)
-    \item When receiving, sum segment again. All 1s if correct.
 \end{enumerate}
+\begin{itemize}
+    \item At receiver, segments are summed with checksum. All 1s if correct.
+\end{itemize}
 
 \subsection{Reliable Data Transfer (rdt)}
 
@@ -535,6 +542,9 @@ Local DNS servers does both
     \begin{itemize}
         \item Perform checksum to detect bit errors
         \item \keyword{Stop and wait protocol}{Sender sends one packet at a time and wait for response}
+        \begin{itemize}
+        	\item Maximum send\slash receive window for N packets is 1\slash N
+        \end{itemize}
         \item \keyword{ACK}{Receiver tells sender that packet received is ok}
         \item \keyword{NAK}{Receiver tells sender that packet received has errors (retransmission)}
     \end{itemize}
@@ -781,18 +791,31 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 	\item Internal host can communicate without router
 	\item Connect to external networks with router
 	\item Same network prefix
-	\item Valid subnet masks
-	\begin{itemize}
-		\item 254, 252, 248, 240, 224, 192, 128
-	\end{itemize}
 \end{itemize}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+Format & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8\\
+\hline
+Subnet &128&192& 224 & 240 & 248 & 252 & 254 & 255\\
+\hline
+Powers & 2 & 4 & 8 & 16&32&64&128&256\\
+\hline
+
+\end{tabular}
+\end{center}
 
 \subsubsection{Special subnet}
-\begin{itemize}	
-	\item Private IP addresses - 10.0.0.0/8, 172.16.0.0/12, 192,168.0.0/16
-	\item Loopback address 127.0.0.0/8
-	\item Broadcast 255.255.255.255/32
-\end{itemize}
+\begin{description}	
+	\item[Private IP addresses] {10.0.0.0\slash8, 172.16.0.0\slash12, 192,168.0.0\slash16}
+	\begin{itemize}
+		\item DHCP assigned IP address on LAN
+	\end{itemize}
+	\item[Loopback address] 127.0.0.0\slash8
+	\item[Broadcast] 255.255.255.255\slash32 - local broadcast within subnet useful for discovering DHCP servers
+	\item[Default network]0.0.0.0 - Any connection
+	\item[Self-assigned]169.254.x.x - Device assigns itself if unable to receive IP from DHCP server
+\end{description}
 
 \subsubsection{CIDR}
 \includegraphics[scale=0.25]{ip-cidr}
@@ -818,14 +841,14 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 	\item Client \#: 68, sends "DHCP request" and "DHCP discover"
 \end{itemize}
 
-\includegraphics[scale=0.28]{dhcp}
+\includegraphics[scale=0.26]{dhcp}
 \\What happens when multiple servers in network?
 \begin{itemize}
 	\item Transaction ID specifies the DHCP connection
 \end{itemize}
 
 %--------------------------------------------------------------------------------------------------------------------------------
-\section{07. IP (cont)}
+\section{07. IP Routers}
 \subsection{IP fragmentation}
 \keyword{MTU}{Maximum Transfer Unit, maximum amount of data a link-level frame can carry}\\
 \keyword{Fragmentation}{Large datagrams that are broken up by routers}
@@ -833,12 +856,15 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 	\item Fragmentation frequently occur in router but only reassembled at the destination
 \end{itemize}
 \includegraphics[scale=0.2]{ipv4-datagram-format}
+\end{multicols*}
+\begin{multicols*}{4}
 \begin{itemize}
+	\item Fragmentation does not replicate header of upper layer
+	\item Checksum is the sum of all 16 bit segments in the header for verification of the header information
+	\item Upper layer protocol eg. TCP, UDP, ICMP, IGMP
 	\item Frag flag = 1 if there are more fragments from same segment, 0 = last fragment
 	\item Offset - in units of 8-bytes specifying the offset of fragment wrt beginning of unfragmented IP datagram
 \end{itemize}
-\end{multicols*}
-\begin{multicols*}{4}
 \textbf{Problem:}\\
 Not enough IP addresses to specify all devices
 \subsection{Network Address Translation}
@@ -848,9 +874,9 @@ Using private IP addresses to map devices within an organisation and enable comm
 \end{itemize}
 \subsubsection{Implementation}
 \begin{itemize}
-	\item Routers replace source Ip address, port num of every outgoing datagram to NAT IP address and new port num
-	\item Remember (in NAT translation table) the mapping of the source vs NAT info
-	\item Replace NAT ip address and port num in destination fields of incoming datagrams with corresponding source IP/port stored in NAT translation table
+	\item Stored as a table of $<$WAN IP, WAN port$>$ to $<$LAN IP, LAN port$>$ ~786,432 bytes
+	\item Sending: Src ip $\rightarrow$ NAT ip of router, src port $\rightarrow$ random port (dst same)
+	\item Return: Dst ip and port replaced with LAN ip and port saved
 \end{itemize}
 
 \subsubsection{Motivation}
@@ -869,6 +895,15 @@ Using private IP addresses to map devices within an organisation and enable comm
 \subsection{Routing}
 Hierachial routing on internet due to size and decentralised administration\\
 Goal: Find the least cost to connect 2 hosts through routers
+\begin{itemize}
+	\item Routers maintain a routing table, with $<$subnet, next hop\slash interface$>$ pairings
+	\item Routing tables determine the routes that packets go
+	\item Routing algorithms populate routing tables
+	\item Typically not load-balancing
+	\begin{itemize}
+		\item If cost is better, router will send all packets instead of splitting based on cost
+	\end{itemize}
+\end{itemize}
 \subsubsection{Intra Autonomous system(AS) routing}
 \begin{itemize}
 	\item Finds good path between routers within AS
@@ -881,7 +916,7 @@ Goal: Find the least cost to connect 2 hosts through routers
 \begin{itemize}
 	\item Handles interfaces between AS
 	\item Admin wants control over traffic routing
-	\item Policy \> performance
+	\item Policy $>$ performance
 	\item Protocol - BGP
 \end{itemize}
 
@@ -892,7 +927,7 @@ Cost associated along each link based on various factors
 	\item Distance, \$
 \end{itemize}
 
-\subsubsection{Distance vector}
+\subsubsection{Distance vector (DV)}
 Iterative Bellman-Ford computation
 \begin{enumerate}
 	\item Starting router queries all the neighbours around it
@@ -900,7 +935,7 @@ Iterative Bellman-Ford computation
 	\begin{enumerate}
 		\item Router can send the table of distance vectors to the new router (routing tables)
 	\end{enumerate}
-	\item No/incomplete distance vector record: WAit for (change in local link cost or message from neighbour)
+	\item No/incomplete distance vector record: Wait for (change in local link cost or message from neighbour)
 	\item Recomputes DV estimates using DV received from neighbour
 	\item Notify neighbours if DV to any destination changes
 \end{enumerate}
@@ -963,6 +998,9 @@ Used by hosts and routers to communicate network information
 	\end{itemize}
 \end{itemize}
 \section{08. Link layer}
+\begin{itemize}
+	\item Standard size MTU for ethernet is 1500 bytes (Excluding header of 18-20 bytes)
+\end{itemize}
 \subsection{Motivation}
 \begin{itemize}
 	\item Sending data between N nodes via cable
@@ -1103,6 +1141,7 @@ Used by hosts and routers to communicate network information
 	\end{itemize}
 	\item Enforce minimum frame size to ensure collision is detected (account for propagation delay)
 	\item Not collision free but efficient, fair and decentralised
+	\item Minimal time taken for the collision to be detected is RTT == $d_{transmission}$
 \end{itemize}
 
 \section{09. Link layer LAN}
@@ -1115,7 +1154,11 @@ Used by hosts and routers to communicate network information
 	\item First 3 bytes specify vendor of adapter
 	\item Can run ifconfig $<$interface$>$ on unix systems to get the information
 \end{itemize}
-\keyword{Local Area Network (LAN)}{Network that interconnects computers within geographical area}	
+\keyword{Local Area Network (LAN)}{Network that interconnects computers within geographical area}\\
+\keyword{Hidden Node problem}{Interference between multiple transmitting terminals simultaneously transmitting data}
+\begin{itemize}
+	\item Receiving terminal unable to receive data from either terminals
+\end{itemize}
 \subsection{Ethernet}
 \begin{itemize}
 	\item Dominant wired Lan technology
@@ -1432,6 +1475,11 @@ Constantly high bit rate sequence of images displayed
 \begin{itemize}
 	\item Analog audio signal sampled at constant rate
 	\item Audio curve quantized to send through analog using converters
+	\begin{itemize}
+		\item \keyword{Quantized}{Rounding signal to be represented by x bits}
+		\item sampling rate * x-bit representation $\rightarrow$ bit rate
+	\end{itemize}
+	\item \keyword{Channel}{Representation of sound coming from a single source (eg. 2 channel earphones for each ear)}
 	\item \keyword{ADC/DAC}{Analog-to-Digital Converter (and vice versa)}
 \end{itemize}
 
