@@ -94,6 +94,50 @@
         }
     }
 \end{center}
+
+\section{Design}
+\subsection{Abstraction}
+\begin{itemize}
+	\item Establishing a level of complexity and suppress complex details below that level
+\end{itemize}
+\begin{description}
+	\item[Data]{Lower level data items are abstracted and thinking focused on bigger entities}
+	\item[Control]{Abstracting details of actual control flow to focus on tasks at higher level}
+\end{description}
+\subsection{Coupling}
+\begin{itemize}
+	\item Degree of dependence btw components, classes and methods
+	\item Harder maintenance, integration, testing and reuse 
+	\item Items are coupled when a change to one requires a change in another
+\end{itemize}
+\subsection{Cohesion}
+\begin{itemize}
+	\item How strongly-related and focused various responsibilities of a component are
+	\item Keeping related functionalities together
+\end{itemize}
+\subsection{Separation of concerns principle SoC} 
+\begin{itemize}
+	\item Achieve better modularity by separating code into distinct sections
+	\item each section address separate concerns
+	\item Reduce functional overlap btw sections
+	\item Reduce coupling and increase cohesion
+\end{itemize}
+\subsection{Principles}
+\begin{description}
+	\item[SOLID]
+	\begin{description}
+		\item[Single Responsiblity Principle]{Classes should only change when responsibilities changes $\approx$ cohesion}
+		\item[Open-Closed Principle]{Code entity shld be easy to adapt and reuse w\slash o modifying code entity}
+		\begin{itemize}
+			\item Using interfaces
+		\end{itemize}
+		\item[Liskov Substitution Principle]{Derived classes must be substitutable for its base class}
+		\item[Interface Segregation Principle]
+		\item[Dependency Inversion Principle]
+	\end{description}
+	\item[Law of Demeter]{Objects shld have limited knowledge and interact with few other objects}
+	\item
+\end{description}
 \section{Models}
 \begin{itemize}
 	\item Simpler view of a complex entity
@@ -191,10 +235,7 @@
 	\begin{itemize}
 		\item If class A has multiplicity 2, means 2 objects of A associated to 1 object of other class
 	\end{itemize}
-	\item \keyword{Navigability}There is a reference from one class to another (can be unidirectional or bidirectional)
-	\begin{itemize}
-		\item This is optional
-	\end{itemize}
+	\item \keyword{Navigability}There is a reference from one class to another (can be unidirectional or bidirectional)(optional)
 \end{itemize}
 \subsubsection{Composition vs Aggregation}
 \begin{itemize}
@@ -501,6 +542,24 @@
 	\item Write to readers
 	\item Explain what and why not how
 \end{itemize}
+\subsubsection{Commits}
+\begin{itemize}
+	\item Use imperative mood in subject line
+	\item Capitalise first letter of subject line
+	\item Do not end subject line with period
+	\item Separate subject from body with blank line
+	\item Body wraps at 72 chars
+	\item Blank lines used to separate paragraphs
+	\item Explain WHAT, WHY not HOW
+	\item Structure for body
+	\begin{enumerate}
+		\item Current situation
+		\item Why it needs to change
+		\item What is being done about it
+		\item Why it is done that way
+		\item Any other relevant info
+	\end{enumerate}		
+\end{itemize}
 \section{Refactoring}
 \begin{itemize}
 	\item Process of improving a program's internal structure in small steps without modifying its external behaviour
@@ -793,9 +852,9 @@
 \begin{itemize}
 	\item All team members fork main repo and create PR from fork to main repo for changes
 \end{itemize}
-\section{Software Development Life Cycle (SDLC)}
+\section{Software Development Life Cycle}
 \begin{itemize}
-	\item Provides roadmap for software developers to manage the development effort
+	\item SDLC provides roadmap for software developers to manage the development effort
 	\item Requirements, analysis, design, implementation and testing
 \end{itemize}
 \subsection{Waterfall/Sequential model}
@@ -858,13 +917,27 @@
 	\item Process improvement approach by defining maturity levels for processes
 	\item Criteria to determine maturity level of processes
 \end{itemize}
-\section{Quiz}
 \tiny{
+\section{Quiz}
+\subsection{1}
+\begin{itemize}
+	\item OOP, Java, Exceptions
+\end{itemize}
 \subsection{2}
 \begin{itemize}
 	\item Module\slash SE details, Software Development Life Cycle (SDLC)
 	\item Integrated Development Environment (IDE), Revision Control (git terms)
 	\item Testing (regression)
+\end{itemize}
+\subsection{3}
+\begin{itemize}
+	\item Coding standards, commit messages
+	\item Testing (developer and unit (JUnit))
+\end{itemize}
+\subsection{4}
+\begin{itemize}
+	\item Model design (Class diagram)
+	\item Java varargs, code quality (naming, code reviews, static analysis)
 \end{itemize}
 
 \subsection{5}
