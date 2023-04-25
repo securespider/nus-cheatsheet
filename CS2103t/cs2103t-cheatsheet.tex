@@ -170,23 +170,21 @@
 \subsubsection{Entities}
 \begin{itemize}
 	\item Entities should be in this format `instanceName:Class`
-	\includegraphics[scale=0.3]{sequence-diagram-obj-creation}
 	\item X at the end of the lifeline of an object to show its deletion
 	\item Method calls to static that are received by the class itself should have a $<<class>>$ at the top
 \end{itemize}
 \subsubsection{Paths}
 \begin{itemize}
 	\item Note that the boxes are not rectangles
+	\item Alt boxes may be neither
 \end{itemize}
-\includegraphics[scale=0.33]{sequence-diagram-loop}
-\includegraphics[scale=0.33]{sequence-diagram-alt}
-\includegraphics[scale=0.3]{sequence-diagram-opt}
+\includegraphics[scale=0.28]{seq-diagram}
 
 \subsection{Activity Diagram}
 \begin{itemize}
 	\item Consist of start, action, flow/edge
 \end{itemize}
-\includegraphics[scale=0.17]{activity-diagram-basic}
+\includegraphics[scale=0.25]{activity-diagram}
 \subsubsection{Alternate paths}
 \begin{itemize}
 	\item Branch node shows start of alternate path with guard conditions
@@ -201,19 +199,19 @@
 	\item Execution along all parallel path \textbf{MUST} be complete before execution on outgoing path of join
 \end{itemize}
 \subsubsection{Rakes}
-\includegraphics[scale=0.5]{activity-diagram-rake}
 \begin{itemize}
 	\item Indicate that a part of the activity is given as a separate diagram
 \end{itemize}
 \subsubsection{Swim lanes}
-\includegraphics[scale=0.4]{activity-diagram-swimlane}
+\includegraphics[scale=0.3]{activity-diagram-swimlane}
 \begin{itemize}
 	\item Partition activity diagram to show who is doing which action
 \end{itemize}
 
 
 \subsection{Class Diagram}
-\includegraphics[scale=0.33]{class-diagram}
+\includegraphics[scale=0.25]{class-diag1}\\
+\includegraphics[scale=0.25]{class-diag2}
 \subsubsection{Class representation}
 \begin{itemize}	
 	\item Can contain default values eg. +max:int=0
@@ -273,6 +271,7 @@
 	\item Class name and object name (optional) must be underlined in the format `objectName:ClassName`
 	\item Should not include methods, only attributes that are relevant to the task
 \end{itemize}
+\includegraphics[scale=0.25]{object-diag}
 
 \subsection{Non-functional requirements}
 \begin{itemize}
@@ -299,6 +298,7 @@
 	\item User story should not include any implementation details
 \end{itemize}
 \subsection{Use cases}
+\includegraphics[scale=0.25]{use-case-diag}
 \begin{itemize}
 	\item Interaction between the user and system for specific functionality of system
 	\item Should only describe externally visible behaviour not internal details of a system
