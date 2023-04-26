@@ -409,13 +409,14 @@
     \item \keyword{Root Name Server}{Contacted by local name server that cannot resolve name. Provides IP address of TLD servers.}
     \item \keyword{Top-level Domain Server}{(TLD) Provides IP address of authoritative server}
     \item \keyword{Authoritative DNS Server}{Organization's own DNS server. Provides mappings for organization's named hosts.}
+    \item If local DNS server does not have requested record in cache, it will start \textbf{recursive} DNS resolution process.
 \end{itemize}
 
 \begin{itemize}
 	\item Iterated query: "Not sure, ask this server"    
 \end{itemize}
-\includegraphics[scale=0.08]{dns-iterative-query}
-\includegraphics[scale=0.1]{dns-recursive-query}
+\includegraphics[scale=0.13]{dns-iterative-query}
+\includegraphics[scale=0.15]{dns-recursive-query}
 \begin{itemize}
     \item Recursive query: "Okay, let me find for you"
     \begin{itemize}
@@ -432,11 +433,16 @@ Local DNS servers does both
 	\item Timeout after some time based on TTL
 	\item Best effort name-to-address translation (can be out-of-date)
 	\item \keyword{Resource record}{Mapping btw hostname and IP}
-	\item Format: <NAME, TYPE, VALUE, TTL>
+	\item Format: $<$NAME, TYPE, VALUE, TTL$>$
 \end{itemize}
 \subsubsection{DNS Cache poisoning}
 \begin{itemize}
 	\item DNS spoofing attack - Rogue DNS records introduced in resolver's cache, leading to incorrect IP address reply
+\end{itemize}
+\subsection{Telnet}
+\begin{itemize}
+	\item Protocol to test open ports and enables terminal-to-terminal communication 
+	\item Test connectivity, issue commands
 \end{itemize}
 
 % -----------------------------------------------------------------------
@@ -444,8 +450,8 @@ Local DNS servers does both
 
 \subsection{UDP Socket}
 
-\includegraphics[scale=0.17]{udp-socket}\\
-\includegraphics[scale=0.18]{udp}
+\includegraphics[scale=0.20]{udp-socket}\\
+\includegraphics[scale=0.20]{udp}
 
 \begin{itemize}
     \item No connection beforehand. Just send it.
@@ -456,10 +462,10 @@ Local DNS servers does both
         \item \keyword{Datagram}{Group of bytes}
     \end{itemize}
 \end{itemize}
-\subsection{TCP Socket}
 
-\includegraphics[scale=0.3]{tcp-socket}\\
-\includegraphics[scale=0.35]{tcp}
+\subsection{TCP Socket}
+\includegraphics[scale=0.22]{tcp-socket}\\
+\includegraphics[scale=0.3]{tcp}
 
 \begin{itemize}
     \item Client establishes connection to server via welcome socket
@@ -488,18 +494,17 @@ Local DNS servers does both
 
 \subsection{UDP}
 
-\begin{itemize}
-    \item On top of network layer, UDP adds:
-    \begin{enumerate}
-        \item Connectionless multiplexing/de-multiplexing
-        \begin{itemize}
-            \item UDP segments contain both source and destination ports
-            \item \keyword{Multiplexing}{Sent to target processes}
-            \item \keyword{Demultiplexing}{Delivering the received segments at the receiver side to the correct app layer processes}
-        \end{itemize}
-        \item Checksum
-    \end{enumerate}
-\end{itemize}
+On top of network layer, UDP adds:
+\begin{enumerate}
+	\item Connectionless multiplexing/de-multiplexing
+    \begin{itemize}
+    	\item UDP segments contain both source and destination ports
+        \item \keyword{Multiplexing}{Sent to target processes}
+        \item \keyword{Demultiplexing}{Delivering the received segments at the receiver side to the correct app layer processes}
+    \end{itemize}
+    \item Checksum
+\end{enumerate}
+
 
 \subsubsection{UDP Segment Header}
 \includegraphics[scale=0.19]{udp-segment-header}
@@ -515,8 +520,10 @@ Local DNS servers does both
     \item Treat UDP segment as sequence of 16-bit integers
     \item Add every 16-bit integer (Carry added back to result)
     \item Invert to get UDP checksum (1's complement)
-    \item When receiving, sum segment again. All 1s if correct.
 \end{enumerate}
+\begin{itemize}
+    \item At receiver, segments are summed with checksum. All 1s if correct.
+\end{itemize}
 
 \subsection{Reliable Data Transfer (rdt)}
 
@@ -535,13 +542,15 @@ Local DNS servers does both
     \begin{itemize}
         \item Perform checksum to detect bit errors
         \item \keyword{Stop and wait protocol}{Sender sends one packet at a time and wait for response}
+        \begin{itemize}
+        	\item Maximum send\slash receive window for N packets is 1\slash N
+        \end{itemize}
         \item \keyword{ACK}{Receiver tells sender that packet received is ok}
         \item \keyword{NAK}{Receiver tells sender that packet received has errors (retransmission)}
     \end{itemize}
 \end{itemize}
 
 \includegraphics[scale=0.2]{rdt-2.0}
-
 \includegraphics[scale=0.2]{rdt-2.0-fsm}
 
 \subsubsection{rdt 2.1}
@@ -554,9 +563,9 @@ Local DNS servers does both
 \end{itemize}
 
 \includegraphics[scale=0.2]{rdt-2.1}
-
+\\ Sender
 \includegraphics[scale=0.2]{rdt-2.1-sender-fsm}
-
+\\ Receiver
 \includegraphics[scale=0.2]{rdt-2.1-receiver-fsm}
 
 \subsubsection{rdt 2.2}
@@ -566,6 +575,7 @@ Local DNS servers does both
     \item Receiver sends ACK for last packet received. \textbf{ACK must include seq number of packet}.
     \item Receiver send duplicate ACK to retransmit current packet
 \end{itemize}
+\includegraphics[scale=0.2]{rdt-2.2-fsm}
 
 \subsubsection{rdt 3.0}
 
@@ -632,6 +642,10 @@ Pipeline vs Parallel (HTTP)
         \item Discard \textbf{out-of-order} packets
     \end{itemize}
     \item Not efficient, since future packets discarded if out-of-order
+    \item Min window size = utilization * (2x+1)
+    \begin{itemize}
+    	\item x = prop delay
+    \end{itemize}
 \end{itemize}
 
 \subsection{Selective Repeat}
@@ -716,7 +730,7 @@ Creates n+1 sockets for n clients (additional 1 for listening)\\
 \end{itemize}
 
 \subsubsection{Retransmission Scenarios}
-Send ACKs every other packet OR after timeout of packet OR receive gapped packet
+Send ACKs every other packet OR after timeout of packet OR receive gapped packet\\
 \includegraphics[scale=0.25]{tcp-acks}
 \\\includegraphics[scale=0.23]{tcp-retransmission1}
 \includegraphics[scale=0.23]{tcp-retransmission2}
@@ -747,10 +761,9 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 \begin{enumerate}
 	\item Bits are b and bytes are B (8 bits = byte)
 \end{enumerate}
-
 \rule{8cm}{1pt}
 
-% -----------------------------------------------------------------------
+%-----------------------------------------------------------------------
 \section{06: IP Addressing}
 
 \subsection{Function}
@@ -782,18 +795,31 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 	\item Internal host can communicate without router
 	\item Connect to external networks with router
 	\item Same network prefix
-	\item Valid subnet masks
-	\begin{itemize}
-		\item 254, 252, 248, 240, 224, 192, 128
-	\end{itemize}
 \end{itemize}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+Format & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8\\
+\hline
+Subnet &128&192& 224 & 240 & 248 & 252 & 254 & 255\\
+\hline
+Powers & 2 & 4 & 8 & 16&32&64&128&256\\
+\hline
+
+\end{tabular}
+\end{center}
 
 \subsubsection{Special subnet}
-\begin{itemize}	
-	\item Private IP addresses - 10.0.0.0/8, 172.16.0.0/12, 192,168.0.0/16
-	\item Loopback address 127.0.0.0/8
-	\item Broadcast 255.255.255.255/32
-\end{itemize}
+\begin{description}	
+	\item[Private IP addresses] {10.0.0.0\slash8, 172.16.0.0\slash12, 192,168.0.0\slash16}
+	\begin{itemize}
+		\item DHCP assigned IP address on LAN
+	\end{itemize}
+	\item[Loopback address] 127.0.0.0\slash8
+	\item[Broadcast] 255.255.255.255\slash32 - local broadcast within subnet useful for discovering DHCP servers
+	\item[Default network]0.0.0.0 - Any connection
+	\item[Self-assigned]169.254.x.x - Device assigns itself if unable to receive IP from DHCP server
+\end{description}
 
 \subsubsection{CIDR}
 \includegraphics[scale=0.25]{ip-cidr}
@@ -810,25 +836,36 @@ Send ACKs every other packet OR after timeout of packet OR receive gapped packet
 \subsection{DHCP}
 \keyword{Dynamic Host Configuration Protocol}{Lease IP address from network server when joining network}
 \begin{itemize}
-	\item Runs over UDP , Client \#:68
+	\item Runs over UDP, broadcasted in ethernet (FF:FF:.. dst mac address)
+	\begin{itemize}
+		\item Broadcast is used to ensure that all responding servers know that client has chosen a server
+	\end{itemize}
 	\item Router can act as DHCP
 	\item Server \#: 67, sends "DHCP ack" and "DHCP offer" 
-	\item Client \#: 68, sends "DHCP request" and "DHCP discover" 
+	\item Client \#: 68, sends "DHCP request" and "DHCP discover"
 \end{itemize}
 
-\includegraphics[scale=0.28]{dhcp}
+\includegraphics[scale=0.26]{dhcp}
 \\What happens when multiple servers in network?
 \begin{itemize}
 	\item Transaction ID specifies the DHCP connection
 \end{itemize}
 
 %--------------------------------------------------------------------------------------------------------------------------------
-\section{07. IP (cont)}
+\section{07. IP Routers}
 \subsection{IP fragmentation}
 \keyword{MTU}{Maximum Transfer Unit, maximum amount of data a link-level frame can carry}\\
 \keyword{Fragmentation}{Large datagrams that are broken up by routers}
-\includegraphics[scale=0.2]{ipv4-datagram-format}
 \begin{itemize}
+	\item Fragmentation frequently occur in router but only reassembled at the destination
+\end{itemize}
+\includegraphics[scale=0.2]{ipv4-datagram-format}
+\end{multicols*}
+\begin{multicols*}{4}
+\begin{itemize}
+	\item Fragmentation does not replicate header of upper layer
+	\item Checksum is the sum of all 16 bit segments in the header for verification of the header information
+	\item Upper layer protocol eg. TCP, UDP, ICMP, IGMP
 	\item Frag flag = 1 if there are more fragments from same segment, 0 = last fragment
 	\item Offset - in units of 8-bytes specifying the offset of fragment wrt beginning of unfragmented IP datagram
 \end{itemize}
@@ -841,9 +878,9 @@ Using private IP addresses to map devices within an organisation and enable comm
 \end{itemize}
 \subsubsection{Implementation}
 \begin{itemize}
-	\item Routers replace source Ip address, port num of every outgoing datagram to NAT IP address and new port num
-	\item Remember (in NAT translation table) the mapping of the source vs NAT info
-	\item Replace NAT ip address and port num in destination fields of incoming datagrams with corresponding source IP/port stored in NAT translation table
+	\item Stored as a table of $<$WAN IP, WAN port$>$ to $<$LAN IP, LAN port$>$ ~786,432 bytes
+	\item Sending: Src ip $\rightarrow$ NAT ip of router, src port $\rightarrow$ random port (dst same)
+	\item Return: Dst ip and port replaced with LAN ip and port saved
 \end{itemize}
 
 \subsubsection{Motivation}
@@ -862,6 +899,15 @@ Using private IP addresses to map devices within an organisation and enable comm
 \subsection{Routing}
 Hierachial routing on internet due to size and decentralised administration\\
 Goal: Find the least cost to connect 2 hosts through routers
+\begin{itemize}
+	\item Routers maintain a routing table, with $<$subnet, next hop\slash interface$>$ pairings
+	\item Routing tables determine the routes that packets go
+	\item Routing algorithms populate routing tables
+	\item Typically not load-balancing
+	\begin{itemize}
+		\item If cost is better, router will send all packets instead of splitting based on cost
+	\end{itemize}
+\end{itemize}
 \subsubsection{Intra Autonomous system(AS) routing}
 \begin{itemize}
 	\item Finds good path between routers within AS
@@ -874,7 +920,7 @@ Goal: Find the least cost to connect 2 hosts through routers
 \begin{itemize}
 	\item Handles interfaces between AS
 	\item Admin wants control over traffic routing
-	\item Policy \> performance
+	\item Policy $>$ performance
 	\item Protocol - BGP
 \end{itemize}
 
@@ -885,7 +931,7 @@ Cost associated along each link based on various factors
 	\item Distance, \$
 \end{itemize}
 
-\subsubsection{Distance vector}
+\subsubsection{Distance vector (DV)}
 Iterative Bellman-Ford computation
 \begin{enumerate}
 	\item Starting router queries all the neighbours around it
@@ -893,7 +939,7 @@ Iterative Bellman-Ford computation
 	\begin{enumerate}
 		\item Router can send the table of distance vectors to the new router (routing tables)
 	\end{enumerate}
-	\item No/incomplete distance vector record: WAit for (change in local link cost or message from neighbour)
+	\item No/incomplete distance vector record: Wait for (change in local link cost or message from neighbour)
 	\item Recomputes DV estimates using DV received from neighbour
 	\item Notify neighbours if DV to any destination changes
 \end{enumerate}
@@ -955,8 +1001,10 @@ Used by hosts and routers to communicate network information
 		\item Extract source IP address from the reply to get the device X hops away
 	\end{itemize}
 \end{itemize}
-
 \section{08. Link layer}
+\begin{itemize}
+	\item Standard size MTU for ethernet is 1500 bytes (Excluding header of 18-20 bytes)
+\end{itemize}
 \subsection{Motivation}
 \begin{itemize}
 	\item Sending data between N nodes via cable
@@ -978,7 +1026,7 @@ Used by hosts and routers to communicate network information
 \end{description}
 \subsubsection{Devices}
 \begin{itemize}
-	\item Implemented in NIC or on a chip (ethernet card/wifi adapter)
+	\item Implemented in NIC (network interface card) or on a chip (ethernet card/wifi adapter)
 	\item Adapters are semi-autonomous and implements link and physical layer
 \end{itemize}
 \subsection{Error Detection and correction}
@@ -1097,7 +1145,526 @@ Used by hosts and routers to communicate network information
 	\end{itemize}
 	\item Enforce minimum frame size to ensure collision is detected (account for propagation delay)
 	\item Not collision free but efficient, fair and decentralised
+	\item Minimal time taken for the collision to be detected is RTT == $d_{transmission}$
 \end{itemize}
 
+\section{09. Link layer LAN}
+\subsection{Media Access Control (MAC)}
+\begin{itemize}
+	\item Used to send and receive link layer frames
+	\item Found on every NIC adapter
+	\item If dest MAC == nic mac, extract datagram and pass to protocol stack | else discard frame without interruption
+	\item 48 bits burnt in NIC ROM (read only memory) administered by IEEE
+	\item First 3 bytes specify vendor of adapter
+	\item Can run ifconfig $<$interface$>$ on unix systems to get the information
+\end{itemize}
+\keyword{Local Area Network (LAN)}{Network that interconnects computers within geographical area}\\
+\keyword{Hidden Node problem}{Interference between multiple transmitting terminals simultaneously transmitting data}
+\begin{itemize}
+	\item Receiving terminal unable to receive data from either terminals
+\end{itemize}
+\subsection{Ethernet}
+\begin{itemize}
+	\item Dominant wired Lan technology
+	\item 802.3 Standards with different band speeds and physical layer media
+	\item Frame Structure\\
+	\includegraphics[scale=0.2]{ethernet-frame-structure}
+	\item Note that hosts can use other network-layer protocol besides IP (Type field)
+	\item Preamble used to synchronise receiver and sender clock rates
+	\begin{itemize}
+		\item 7 bytes of 10101010 (0xAA)
+		\item 1 byte of 10101011 (0xAB) (start of frame)
+	\end{itemize}
+\end{itemize}
+\subsubsection{Data delivery service}
+\begin{itemize}
+	\item Unreliable (no ACK or NAK to sender NIC)
+	\begin{itemize}
+		\item Data in dropped frames will only be recovered if initial sender uses higher layer RDT
+	\end{itemize}
+	\item Uses CSMA/CD with binary (exponential) backoff
+\end{itemize}
+\subsubsection{Topology}
+\begin{itemize}
+	\item \textbf{Bus topology} popular till mid 90s (broadcast Lan)
+	\item Cons:
+	\begin{itemize}
+		\item Backbone cable (network fails if damaged)
+		\item Difficult to troubleshoot problems
+		\item Slow and not ideal for large networks
+	\end{itemize}
+	\item \textbf{Star} prevelant today 
+	\item \keyword{Hubs}{physical layer device}
+	\begin{itemize}
+		\item Cheap with easy maintenance
+		\item Slow and may not be ideal for larger networks (Collision)
+	\end{itemize}
+	\item \keyword{Switch}{Link layer device with no collisions}
+	\begin{itemize}
+		\item Store and forward packet switch
+	\end{itemize}
+\end{itemize}
+\subsection{Switch}
+\subsubsection{Function}
+\begin{itemize}
+	\item Examine incoming frame Mac address 
+	\item Selectively store and forward frame to one or more outgoing links (CSMA/CD)
+	\item Transparent (hosts unaware of switches)
+	\item Plug and play - no need configuration
+\end{itemize}
+\subsubsection{Mechanism}
+\begin{itemize}
+	\item Nodes have dedicated direct connection to switch
+	\item Ethernet protocol used without collision due to switching
+	\item Maintains switching forwarding table for \keyword{selective forwarding}{only sending frames to the correct interfaces}
+	\begin{itemize}
+		\item Format \textit{Mac address of host, interface to reach host, TTL}
+	\end{itemize}
+	\item \keyword{Self learning}{Records sender/location pair in switch table everytime frames are received}
+\end{itemize}
+\begin{enumerate}
+	\item Record incoming link, Mac address of sending host
+	\item Index switch table using Mac destination address
+	\item If entry found for destination,
+	\begin{enumerate}
+		\item if destination is in the same segment as source ? drop : forward frame on destination interface		
+	\end{enumerate}
+	\item else flood - forward on all interface except arriving interface
+\end{enumerate}
+\subsubsection{vs Router}
+\begin{itemize}
+	\item Checks MAC vs IP address
+	\item Both store and forward
+	\item Forward frame to link/broadcast vs Route computation
+\end{itemize}
+\subsection{Address Resolution Protocol}
+\begin{itemize}
+	\item Maps 32-bit IP address to 48 bit MAC address for some neighbouring host in same subnet
+	\item TTL - time until address mapping will be forgotten
+	\begin{itemize}
+		\item Hosts may disconnect from subnet so useless entries must be cleared
+	\end{itemize}
+\end{itemize}
+Resolution when in same subnet
+\begin{enumerate}
+	\item Broadcast ARP query with B's ip as dest
+	\begin{itemize}
+		\item Dest mac == FF-FF-FF-FF-FF-FF
+		\item All nodes in same subnet receives but only B replies
+	\end{itemize}
+	\item B replies to A with its MAC address
+	\item A cache B's IP-Mac address mapping in ARP table until TTL
+\end{enumerate}
+\begin{enumerate}
+	\item Sends packet with correct MAC and IP but no response because different subnet
+	\item Resends packet with dest MAC == router MAC
+	\item Datagram removed passed to IP where routing calculations determine the subnet it is in (at router)
+	\item Router attaches dest MAC address again or use ARP with correct IPs
+	\item Receiver receives the information
+\end{enumerate}
+\subsection{IP vs MAC address}
+\begin{itemize}
+	\item 32 bits vs 48 bits
+	\item Network-layer address used to move datagrams from src to dest vs link layer address to move frames over each link
+	\item Dynamic assignment;hierachial vs permanent
+\end{itemize}
+
+\section{10: Network Security}
+\subsubsection{Security issues}
+\begin{description}
+	\item[Eavesdrop]{Intercept messages}
+	\item[Impersonation]{Fake/spoof source address in packet}
+	\item[Hijacking]{Take over ongoing connection by replacing sender or receiver (man in the middle)}
+	\item[Denial of service]{Prevent service from being used by others (overloading resources)}
+\end{description}
+\subsubsection{Objectives}
+\begin{description}
+	\item[Confidentiality]{Only sender and intended receiver should understand message contents}
+	\item[Authentication]{Sender, receiver can confirm identity of each other}
+	\item[Message integrity]{Message is not altered (in transit or afterwards) without detection}
+	\item[Access and available]
+\end{description}
+\textbf{Cryptography}
+\begin{itemize}
+	\item Allow sender to disguise data so that an intruder can gain no information from the intercepted data
+	\item Allow receiver to recover original data from the disguised data
+	\item \keyword{Plaintext}{Message in the original readable form}
+	\item \keyword{Ciphertext}{Encrypted message}
+	\item \keyword{Key}{String of numbers or characters provided as input parameter to the encryption/decryption algorithm}
+\end{itemize}
+
+\subsection{Symmetric key cryptography}
+\begin{itemize}
+	\item Sender and receiver use the same key
+	\item Need prior communication via other secure means to decide common key
+	\item Difficult to agree on key in the first place
+\end{itemize}
+\subsubsection{Caesar cipher}
+\begin{itemize}
+	\item \keyword{Substitution cipher}{Fixed shift of alphabet(eg. a -\> d, b -\> e..)}
+	\item Only 25 possible values so easy to break with brute force search
+\end{itemize}
+
+\subsubsection{Monoalphabetic cipher}
+\begin{itemize}
+	\item Substitute one letter for another (random distance)
+	\item Mapping set of 26 letters to 26 so 26! mappings possible (brute force)
+	\item \keyword{Statistical analysis}{Derive patterns in encrypted text OR possible contents to derive the mapping}
+\end{itemize}
+Breaking the encryption scheme
+\begin{description}
+	\item[Ciphertext only attack]{Has ciphertext she can analyse}
+	\item[Known-plaintext attack]{User has plaintext corresponding to ciphertext}
+	\item[Chosen-plaintext attack]{Can get ciphertext for chosen plaintext}
+\end{description}
+
+\subsubsection{Polyalphabetic cipher}
+\begin{itemize}
+	\item Multiple mapping for each letter
+	\item Using cyclic pattern for choosing which substitution cipher to use
+	\item eg. Block cipher
+	\begin{itemize}
+		\item Each message is broken into k-bit blocks which is encrypted independently
+		\item Number of keys: $2^K$
+		\item eg. Data Encryption Standard/DES (56-bit key and 64-bit block), N-DES (encrypt DES N times with N different keys)
+		\item eg. Advanced Encryption Standard/AES (128-bit blocks with 128/192/256 bit keys) (way more secure encryption vs DES)
+	\end{itemize}
+\end{itemize}
+
+
+\subsection{Public key cryptography}
+\begin{itemize}
+	\item Sender and receiver do not share secret key but uses a public encryption key known to all
+	\item Receiver uses private decryption key only known by receiver
+	\item Requires 2 different keys - encryption/decryption and impossible to compute value of each key given other
+\end{itemize}
+\subsubsection{Rivest Shamir, Adleman algorithm (RSA)}
+\textbf{Creating private/public key pair}
+\begin{enumerate}
+	\item Choose 2 large prime numbers. p,q
+	\item Compute $n=pq$, $z=(p-1)(q-1)$
+	\item Choose e ($<$ n ) that has no common factors with z
+	\item Choose d s.t. ed-1 is exactly divisible by z
+	\item Public key is (n,e), private key is (n,d)
+\end{enumerate}
+\textbf{Encryption/decryption}
+\begin{enumerate}
+	\item Encrypt - Compute $c = m^{e}mod(n)$
+	\item Decrypt - Compute $c^dmod(n)$
+\end{enumerate}
+\textbf{In practice}
+\begin{itemize}
+	\item RSA is computationally expensive so RSA is only used to sync session/symmetric keys (DES keys)
+\end{itemize}
+
+\subsection{Cryptographic hash}
+\subsubsection{Motivation}
+\begin{itemize}
+	\item Maintain message integrity BUT checksum/CRC not robust enough to detect attacks
+	\item Need a function s.t. computationally infeasible to find any 2 messages with the same hash output
+	\item Small change in input should result in a large change in the hash output
+	\item Need consistent fixed length/size msg digest
+\end{itemize}
+\subsubsection{Implementation}
+\begin{itemize}
+	\item Attacker can replace both the message and the hash output without anyone detecting
+	\begin{itemize}
+		\item Implement \keyword{message authentication code}{Sender sends (m, H(m+s)) instead of (m, H(m))}
+		\item s is a secret key known to the receiver and no one else
+		\item Receiver can generate authentication code directly from m and compare with the received code
+	\end{itemize}
+\end{itemize}
+
+\subsection{Authentication}
+\begin{itemize}
+	\item Confirm identity of each other using digital signatures
+	\begin{description}
+		\item[Verifiable]{Check if signature and message generated by intended sender}
+		\item[Unforgeable]{Only intended sender can generate signature and message}
+	\end{description}
+\end{itemize}
+\subsubsection{RSA}
+\begin{itemize}
+	\item $K_B^-(K_B^+(m))=m=K_B^+(K_B^-(m))$
+	\item Recipient knows that whoever sent the message must have encrypted using their own private key
+	\item Recipient can verify that no one else but the intended sender sent it because the public key can be used to decrypt the information
+	\item Since RSA is computationally intensive, sender signs the hash of message rather than the content which is verified at the recipient
+\end{itemize}
+
+\subsubsection{Certification Authority}
+\begin{itemize}
+	\item Binds public key to particular entity and creates a certificate containing the entity key digitally signed by CA
+	\item Public database of all public keys
+	\item CA also signs its messages to prevent interception
+	\item Maintain a list of trusted CAs by the devices
+\end{itemize}
+
+\subsection{Firewall}
+\subsubsection{Objective}
+\begin{itemize}
+	\item Isolate Organisation's internal net from larger internet -- allowing some packets to pass and blocking others
+	\item Prevent DoS attacks
+	\begin{description}
+		\item[Syn flooding]{Attacker establish many bogus TCP connections, leaving no resources for "real" connections}
+	\end{description}
+	\item Prevent illegal modification/access internal data
+	\item Allow only authorised access to inside network
+\end{itemize}
+
+\subsubsection{Stateless packet filtering}
+\begin{itemize}
+	\item Router filters packet-by-packet, decision to forward/drop based on:
+	\begin{itemize}
+		\item source/dest IP and ICMP message type
+		\item TCP/UDP src/dst port numbers
+		\item TCP SYN/ACK bits
+	\end{itemize}
+\end{itemize}
+\includegraphics[scale=0.2]{stateless-filtering-examples}
+
+\subsubsection{Access Control List}
+\begin{itemize}
+	\item Table of rules, applied top to bottom to incoming packets (action, condition) pairs
+\end{itemize}
+
+\subsubsection{Limitation}
+\begin{itemize}
+	\item IP spoofing - router cant know if data comes from claimed source
+	\item Tradeoff btw flexibility of communication with outside world and level of security
+\end{itemize}
+
+\section{11. Multimedia Networking}
+\subsection{Types}
+\subsubsection{Applications}
+\begin{itemize}
+	\item Streaming stored audio, video
+	\begin{description}
+		\item[Streaming]{Begin playout before downloading entire file}
+		\item[Stored]{Can transmit faster than audio/video being rendered to be cached at user side}
+	\end{description}
+	\item Conversational ("2 way live") voice/video over IP
+	\begin{itemize}
+		\item Interactive nature with human-to-human conversation limit delay tolerance (sub 400ms)
+	\end{itemize}
+	\item Streaming ("one way live") audio/video
+\end{itemize}
+
+\subsection{Multimedia}
+\subsubsection{Video}
+Constantly high bit rate sequence of images displayed
+\begin{itemize}
+	\item Compression to reduce data usage
+	\item Redundancy within/btw images to reduce bits used
+	\begin{itemize}
+		\item Spatial coding (sending colour and number of pixels instead of duplicate pixels)
+		\item Temporal coding (Sending difference betw frames instead of complete frames)
+	\end{itemize}
+\end{itemize}
+\textbf{Bit rate}
+\begin{description}
+	\item[Constant bit rate]{Video encoding rate fixed}
+	\begin{itemize}
+		\item Not responsive to video complexity 
+		\item Bitrate has to be set high by default to handle complex segments
+		\item Consistent so well-suited for real-time encoding (streaming)
+	\end{itemize}
+	\item[Variable bit rate]{Video encoding rate changes as amount of spatial/temporal coding changes}
+	\begin{itemize}
+		\item Longer time to process data
+		\item More suited for on-demand video 
+	\end{itemize}
+\end{description}
+
+\subsubsection{Audio}
+\begin{itemize}
+	\item Analog audio signal sampled at constant rate
+	\item Audio curve quantized to send through analog using converters
+	\begin{itemize}
+		\item \keyword{Quantized}{Rounding signal to be represented by x bits}
+		\item sampling rate * x-bit representation $\rightarrow$ bit rate
+	\end{itemize}
+	\item \keyword{Channel}{Representation of sound coming from a single source (eg. 2 channel earphones for each ear)}
+	\item \keyword{ADC/DAC}{Analog-to-Digital Converter (and vice versa)}
+\end{itemize}
+
+\subsection{Streaming}
+\subsubsection{Objective}
+\begin{description}
+	\item[Continuous playout]{Playback must match original timing (even if network delays are variable)}
+	\item[Client interactivity]{User may pause, fast-forward, rewind, jump through video etc}
+	\item[Lost packets]{Video packets have to be retransmitted or just ignored}
+\end{description}
+\subsubsection{Mechanism}
+\includegraphics[scale=0.2]{multimedia-streaming-buffering}
+\begin{enumerate}
+	\item Intial fill of buffer until playout begins
+	\item Buffer fill level varies based on fill rate while keeping playout rate constant
+\end{enumerate}
+\begin{itemize}
+	\item fill rate $>$ playout rate: buffer will not empty assuming delay is large enough to absorb variability in fill rate
+	\begin{itemize}
+		\item Initial playout delay tradeoff - buffer starvation less likely but user wait longer to start watching
+	\end{itemize}
+	\item fill rate $<$ playout rate: Buffer eventually empties (causing freezing of video playout until buffer fills)
+\end{itemize}
+\subsubsection{UDP}
+\begin{itemize}
+	\item Server sends at rate appropriate for client with short playout delay
+	\item UDP is faster and no congestion control (transmission without rate control restrictions)
+	\item Error is handled by application (decide what it wants to do)
+	\item Video chunks encapsulated using RTP (Real Time Transport protocol)
+	\begin{itemize}
+		\item Maintains seq num, time stamps, video encoding
+	\end{itemize}
+	\item Control Connection maintained separately using RTSP (Real Time Streaming Protocol)
+	\begin{itemize}
+		\item Establish controlling media sessions btw endpoints eg. commands like play, record, pause
+	\end{itemize}
+\end{itemize}
+\textbf{Drawbacks}
+\begin{itemize}
+	\item Need separate media control server like RTSP increasing cost and complexity
+	\item UDP may not go through firewalls
+\end{itemize}
+
+\subsubsection{HTTP}
+\begin{itemize}
+	\item Multimedia file received via HTTP GET at maximum rate under TCP
+\end{itemize}
+\textbf{Advantages}
+\begin{itemize}
+	\item Passes more easily through firewalls
+	\item Network infrastructure more tuned towards http/tcp connections
+\end{itemize}
+\textbf{Drawbacks}
+\begin{itemize}
+	\item Fill rate fluctuates due to TCP congestion control, retransmission (in order delivery)
+	\item Larger playout delay 
+\end{itemize}
+
+\subsection{VoIP}
+\begin{itemize}
+	\item Voice over IP
+	\item End-to-end delay requirement: Need to maintain conversational aspect 
+	\begin{itemize}
+		\item Higher delays $>$ 400ms noticeable, impairs interactivity
+	\end{itemize}
+	\item Minimum dataloss (conversation unintelligible)
+\end{itemize}
+\textbf{Challenge}
+IP is a best-effort service that has no upperbound on delay and packet loss
+\subsubsection{Characteristics}
+\begin{itemize}
+	\item Speaker only sends packets when user is speaking (in 20msec chunks)
+	\item Application-layer header added to each chunk
+	\item Chunk+header encapsulated under TCP/\textbf{UDP} segment
+\end{itemize}
+\subsubsection{Loss}
+\begin{description}
+	\item[Network loss]{Datagram lost due to network congestion (router buffer overflow or dropped or firewall)}
+	\item[Delay loss]{Datagram arrives too late for playout at receiver}
+	\item[Tolerance]{Depending on voice encoding/loss concealment, packet loss rates btw 1-10\% is tolerated}
+\end{description}
+\subsubsection{Fixed playout delay}
+\includegraphics[scale=0.23]{multimedia-voip-fixed-delay}
+\begin{itemize}
+	\item Receiver attempts to playout each chunk at constant q msec after chunk generation
+	\item Large q $\rightarrow$ less packet loss, small q $\rightarrow$ Better interactive experience
+\end{itemize}
+\subsubsection{Adaptive playout delay}
+\includegraphics[scale=0.2]{adaptive-playout-delay}
+\begin{itemize}
+	\item Low playout delay, low late loss rate \textbf{during talking spurts}
+	\item Estimate network delay and adjust playout delay at beginning of talk spurt
+	\item Silent periods compressed and elongated to ensure chunks played out at constant rate during talking spurt
+	\item Adaptively estimate packet delay 
+	\begin{itemize}
+		\item Exponential Weighted Moving Average calculated for every received packets
+		\includegraphics[scale=0.24]{adaptive-playout-emwa-calc}
+		\item $playout-time_i = t_i+d_i+4v_i$
+		\item Remaining packets are played out periodically
+	\end{itemize}
+\end{itemize}
+\subsubsection{Forward Error Correction}
+\begin{itemize}
+	\item Send enough bits to allow recovery without retransmission
+	\item Retransmission of whole packet is too slow 
+\end{itemize}
+\begin{description}
+	\item[XOR n chunks]{Create redundant chunk by XORing original chunks and send n+1 chunks}
+	\begin{itemize}
+		\item Reconstruct original n chunks if at most one lost chunks from n+1 chunks
+		\item Bandwidth increased by 1/n
+		\item Playout delay increase as receiver must wait for n+1 chunks before playout
+	\end{itemize}
+	\item[Piggyback]{Send lower res audio stream as redundancy tog with subsequent packets}
+	\begin{itemize}
+		\item Only works for non-consecutive losses
+		\includegraphics[scale=0.2]{piggyback-voip-loss}
+	\end{itemize}
+	\item[Interleaving chunks]{Audio chunks divided into smaller units and put in different packets}
+	\begin{itemize}
+		\item Packets contain small units from different chunks
+		\item Even if packets are lost, most of every original chunk is there
+		\item Missing mini-chunk can be concealed by packet repetition or interpolation
+		\item No redundancy overhead but increases playout delay 
+	\end{itemize}
+\end{description}
+\subsection{Dynamic Adaptive Streaming over HTTP}
+\subsubsection{Motivation}
+\begin{itemize}
+	\item HTTP streaming is wasteful as needs large client buffer
+	\item All client receives the same encoding of video despite variation in device/network bandwidth
+\end{itemize}
+\subsubsection{Mechanism}
+\textbf{Server}
+\begin{itemize}
+	\item Divides video file into multiple chunks which is stored at encoded at different rates
+	\item Manifest file provides URL for different encoding
+\end{itemize}
+\textbf{Client}
+\begin{itemize}
+	\item Periodically mesasures server-client bandwidth and consults manifest to request one chunk at a time
+	\item Chooses maximum coding rate sustainable given current bandwidth (which will vary)
+	\item Client determines when to request chunk, what encoding to request and the url server to request chunk from
+\end{itemize}
+\subsubsection{Implementation}
+\begin{enumerate}
+	\item Data is encoded into different qualities and cut into short segments
+	\item Client downloads Manifest File which describes available videos and qualities
+	\item Client/player executes adaptive bitrate algorithm (ABR) to determine segment to download next and plays it
+\end{enumerate}
+\subsubsection{Pros and cons}
+\begin{itemize}
+	\item Server is simple and has no firewall problems
+	\item Standard web caching works
+	\item \textbf{However} DASH based on media segment transmissions
+	\item Only buffers a few segments at client side and does not provide low latency interactive 2way applications
+\end{itemize}
+
+\subsection{Content Distribution Networks (CDN)}
+\begin{itemize}
+	\item Store/serve multiple copies of videos at multiple geographically distributed sites
+	\item Deep into access networks at ISPs and close to users
+	\item Service provider returns manifest which allows users to contact CDN for multimedia
+\end{itemize}
+\section{Summary}
+\begin{center}
+\begin{tabular}{|l|p{0.5in}|p{0.5in}|p{0.5in}|}
+\hline
+\textbf{Layer} & Transport & Network & Link\\
+\hline
+\textbf{Unit} & Packet & Fragment & Frame\\
+\hline
+\textbf{Service} & Process-to-Proc & End-to-End & Host-to-host\\
+\hline
+\textbf{Addressing} & Port Number & IP address & MAC address\\
+\hline
+\textbf{Devices} & End host & Routers & Switches\\
+\hline
+\textbf{Protocols} & TCP/UDP & IP, ICMP, DHCP & CSMA/CD, ARP\\
+\hline
+\end{tabular}
+\end{center}
 \end{multicols*}
 \end{document}
