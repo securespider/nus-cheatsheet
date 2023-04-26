@@ -203,7 +203,6 @@ Includes information about business income and expenses for \textbf{the year}
 	\item[Net Sales]{Sales after adjusting for discounts and returned goods (Revenue)}
 	\item[Profits attributable to ordinary shareholders of the parent company]{Profits excluding non-controlling interest}
 	\item[Short-term financial assets]{Fixed deposits, shares that can be converted to cash within a year}
-	
 \end{description}
 
 \subsection{Profitability Ratios}
@@ -214,6 +213,9 @@ Includes information about business income and expenses for \textbf{the year}
 	\item[Profit Margin]{$\dfrac{Net~Profits}{Net~sales}$}
 	\item[Return on total assets]{$\dfrac{Net~Profit}{Average~Total~Assets}$}
 	\item[Return on ordinary shareholders' equity]{$\dfrac{Net~Profit}{Average~total~equity}$}
+	\begin{itemize}
+		\item Equity should be net of any dividends\slash other equity instruments
+	\end{itemize}
 	\item[Earnings per share]{$\dfrac{Ordinary~shareholders~profits-Pref~Dividends}{Weighted~average~number~of~shares~during~year}$}
 \end{description}
 \subsubsection{Equity Categories}
@@ -523,6 +525,12 @@ When customer defaults
 	\item Additional cost accrued as initial acquisition cost of asset
 	\item Includes future cost of dismantling/clean-up of assets
 	\item All related liability is non-current
+	\item If bought as a bundle
+	\begin{enumerate}
+		\item Sum standalone price for each item in bundle
+		\item Get ratio of standalone item price to sum
+		\item Bundle price * ratio = acquisition cost of item
+	\end{enumerate}
 \end{itemize}
 
 \subsection{Capital vs Revenue expenditure}
@@ -779,7 +787,35 @@ Simplified algorithm to derive via indirect method:
 		\item Company recorded at cost less repayments and plus accrued interest
 	\end{itemize}
 \end{description}
-
-
+\section{Finals prep}
+\subsection{Costs}
+\begin{description}
+	\item[COGM]{Cost of goods manufactured = COGS + $\triangle$final goods}
+	\item[Cost of production]{COGM + $\triangle$unfinished goods}
+\end{description}
+\subsection{Impairments}
+\begin{itemize}
+	\item Permanent reduction in value of company asset
+	\item Asset's fair value is less than its carrying value on the balance sheet
+	\item Impairment only detected during testing as an impairment loss
+\end{itemize}
+\subsection{Chow Sang}
+\subsubsection{PPE (15.140-142)}
+\begin{itemize}
+	\item Buildings were revalued so impairment loss due to new valuation
+	\item Original carry amount = 6,873,000
+\end{itemize}
+\subsubsection{Credit loss for account receivables (22.151)}
+\includegraphics[scale=0.4]{acc-receivable-credit-loss}
+\subsubsection{Share option schemes (35.167)}
+\begin{itemize}
+	\item Old scheme - Employees get shares that can be exercised at 14.89
+	\item New scheme - Exercise price is highest of 
+	\begin{itemize}
+		\item Closing price of shares stated in stock exchange
+		\item Average closing price for 5 busi days
+		\item Nominal value of share
+	\end{itemize}
+\end{itemize}
 \end{multicols*}
 \end{document}
