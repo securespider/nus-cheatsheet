@@ -1,5 +1,5 @@
 \documentclass{article}
-\linespread{.7}
+\linespread{.5}
 \usepackage[a4paper, margin=3mm, landscape]{geometry}
 \usepackage{multicol}
 \usepackage{xcolor}
@@ -80,6 +80,7 @@
 
 % -----------------------------------------------------------------------
 \begin{document}
+\begin{small}
 \begin{multicols*}{3}
 \footnotesize
 
@@ -246,8 +247,6 @@ Why OS dont occupy entire hardware layer
 	\item Carry out instruction execution
 	\item Dedicated to specific instruction type
 \end{itemize}
-\end{multicols*}
-\begin{multicols*}{4}
 \subsubsection{Registers}
 \begin{itemize}
 	\item Internal storage for fastest access speed
@@ -771,9 +770,6 @@ Non-preemptive used dominantly cos minimal user interaction needed
 		\item Constant(regardless whether the process has given up processing halfway) OR Variable(full time quantum given to a process)
 	\end{itemize}
 \end{itemize}
-
-\end{multicols*}
-\begin{multicols*}{3}
 \subsubsection{Algorithms}
 \begin{enumerate}
 	\item Round Robin (RR)
@@ -1033,8 +1029,6 @@ Use cases of synchronisation (mutexes)
 	\item Philosophers need pair to eat without deadlocks and starvation
 	\item Philosophers makes the same decision (takes the same side of chopsticks everytime)
 \end{itemize}
-\end{multicols*}
-\begin{multicols*}{4}
 \subsubsection{Livelock}
 \begin{itemize}
 	\item To prevent deadlock, philosophers put down chopstick if cannot get the other side
@@ -1056,7 +1050,6 @@ Use cases of synchronisation (mutexes)
 %------------------------------------------------------------------------------------------------------------------------------
 
 \section{09. Memory abstraction}
-\subsection{Basics}
 \subsubsection{Hardware}
 \begin{itemize}
 	\item uses Random Access Memory
@@ -1066,16 +1059,23 @@ Use cases of synchronisation (mutexes)
 	\item Can be treated as a 1D array of \keyword{AU}{Addressable unit}
 	\item \keyword{Contiguous}{Consecutive memory address with unique index (physical address)}
 \end{itemize}
+\subsubsection{Content}
+\begin{itemize}
+	\item Text (for instructions), Data (global variables), Heap (dynamic allocation)
+	\item Stack (for function invocation)
+	\item Btw heap and stack is region of unallocated memory
+\end{itemize}
 \subsubsection{Memory usage of process}
 Types of data
 \begin{enumerate}
-	\item \keyword{Transient data}{Valid only for a specific duration}
+	\item \keyword{Transient data}{Valid only for a specific duration (parameters, local var)}
 	\item \keyword{Persistent data}{Valid for complete duration of prgm until explicitly deallocated}
 \end{enumerate}
 \subsubsection{Role of OS}
 \begin{enumerate}
-	\item Allocate, manage and protect memory space for each process
-	\item Provide memory-related system calls to processes
+	\item Allocate and manage memory space for each process
+	\item Protect memory space of distinct processes
+	\item Provide memory-related system calls
 	\item Manage memory space for internal OS use
 \end{enumerate}
 
@@ -1089,35 +1089,47 @@ Types of data
 \begin{itemize}
 	\item Address reallocation
 	\begin{itemize}
-		\item Change all the memory addresses when starting process to the new changed memory address
+		\item Offset all memory references when process is loaded to actual memory address
 		\item Problems: Slow runtime because have to run through all the instructions
+		\item Difficulty in distinguishing memory references
 	\end{itemize}
 	\item Base and limit registers
 	\begin{itemize}
-		\item Base register as the "starting point" of all memory references
+		\item All memory references compiled as offset from base register
+		\item When loading, base register initialised to starting address of process memory space
 		\item Limit register as the range of memory space of current process (protect memory space integrity)
-		\item All memory references are compiled as an offset of base register 		
+		\item Memory access checked against limit
 	\end{itemize}
 \end{itemize}
 \subsubsection{Logical address}
 \begin{itemize}
-	\item How the program views its memory space
+	\item How each process views its memory space
 	\item Mapping between physical and logical address needed
-	\item Self contained, independent logical memory space
+	\item Each process has a self contained, independent logical memory space
 \end{itemize}
 \subsection{Contiguous Memory allocation}
-Same process occupies memory as one piece during whole execution
+\subsubsection{Assumptions}
+\begin{itemize}
+	\item Processes occupies contiguous memory region
+	\item Physical memory must accommodate 1..* processes with complete memory space
+\end{itemize}
+\subsubsection{Multitasking/context switching}
+\begin{itemize}
+	\item Multiple concurrent processes in memory
+	\item Free memory via removing terminated processes\slash swapping to secondary storage
+\end{itemize}
 \subsubsection{Fixed size partitions}
 \begin{itemize}
-	\item Fixed number of partitions and size (Minimum addressable units of partition is larger)
-	\item \keyword{Internal fragmentation} Wasted leftover space when process does not occupy whole partition
+	\item Fixed number of partitions of equal size 
+	\item Larger min addressable units of partition 
+	\item \keyword{Internal fragmentation} More memory allocated to program than used
 	\item Pros: Easy to manage and fast to allocate
-	\item Cons: Partition size need to be large enough to contain the largest process without wasting space
+	\item Cons: Partition size need to be large enough to contain the largest process
 \end{itemize}
 \subsection{Variable size partitions}
-\keyword{External fragmentation}{Waste of space outside of partition (unallocated to any process)}
+\keyword{External fragmentation}{Unallocated contiguous memory surrounding partitions insufficient to satisfy memory request of process}
 \begin{itemize}
-	\item Pros: Flexible and removes internal fragmentation
+	\item Pros: Flexible, no internal fragmentation
 	\item Cons: Need more info in OS and takes longer time to locate appropriate region
 \end{itemize}
 \subsubsection{Allocation algorithms}
@@ -1140,50 +1152,65 @@ Same process occupies memory as one piece during whole execution
 	\end{itemize}
 \end{itemize}
 \subsubsection{Merging and Compaction}
-Merging
-\begin{itemize}
-	\item When occupied partition is freed, it can join surrounding partitions to form a larger partition
-\end{itemize}
-Compaction
-\begin{itemize}
-	\item Mving occupied partitions around to create bigger consolidated holes
-\end{itemize}
+\begin{description}
+	\item[Merging] Freed partitions can join surrounding holes
+	\item[Compaction] Mv occupied partitions to create bigger consolidated holes
+	\begin{itemize}
+		\item Time consuming (can be amortised)
+	\end{itemize}
+\end{description}
 
-\subsubsection{Multiple free lists}
+\subsection{Multiple free lists}
 \begin{itemize}
-	\item Keep multiple lists of different hole sizes and take the hole from list that most closely match request size
-	\item Partition size increases exponentially but fast allocation (compared to iterating through all address to find free partitions)
+	\item Dictionary of list of free holes
+	\begin{itemize}
+		\item Key = size, value = addresses
+	\end{itemize}
+	\item Find smallest hole that accommodates req size
+	\item Partition size increases exponentially 
+	\item Faster allocation (vs iterating all holes)
 \end{itemize}
-\textbf{Buddy system}
+\subsubsection{Buddy system}
 \begin{itemize}
 	\item Free block split into half repeatedly to meet request size
 	\item Merge buddy blocks when both free
-	\item Pros: Efficient partition splitting, deallocation and for locating good match
+	\item Efficient partition splitting and dealloc 
+	\item Locate good match for holes 
 \end{itemize}
-Allocation algorithm ($2^k$ is largest allocatable block)
+\subsubsection{Allocation algorithm}
+\begin{itemize}
+	\item Free block split half repeatedly to meet req size
+	\item Buddy block pair merge when free
+\end{itemize}
+N = req size, $2^K$ = largest allocable block size\\
+A[J] = linked list of free blocks with size $2^J$
 \begin{enumerate}
 	\item Find smallest s such that $2^s \geq N$
 	\item Access A[S] for free block
 	\begin{enumerate}
 		\item Free block exists
 		\begin{itemize}
-			\item Remove block from free block list and allocate
+			\item Remove block from free block list
 		\end{itemize}
 		\item Find smallest R from S+1 - K such that A[R] has a free block B
-		\item Split B and restart from step 1
+		\item Split B and restart from step 2
 	\end{enumerate}
 \end{enumerate}
-Deallocation algorithm
+\subsubsection{Deallocation algorithm}
 \begin{enumerate}
-	\item Check if buddy is free
+	\item Check if buddy (sizeof=$2^S$) is free in A[S]
 	\begin{enumerate}
-		\item If buddy is free remove both blocks from list and merge to get a larger block
+		\item If buddy is free 
+		\begin{itemize}
+			\item Remove both blocks from list
+			\item Add merged block, B' to A[S+1]
+			\item Repeat steps for B'
+		\end{itemize}
 	\end{enumerate}
-	\item If buddy not free then insert block into list
 \end{enumerate}
 2 blocks B and C of size $2^S$ are buddies if
 \begin{itemize}
-	\item Lowest S bits (0..S-1) of B and C are identical
+	\item Right S bits (0..S-1) of B and C are identical
 	\item S+1th bit of B and C is different
 \end{itemize}
 
@@ -1193,37 +1220,55 @@ Deallocation algorithm
 \end{itemize}
 \subsection{Paging scheme}
 \begin{itemize}
-	\item Divide into \keyword{physical frames}{memory split into regions of fixed size}
+	\item \keyword{Physical frames}{Phy mem split into regions of fixed size}
 	\item Frames sizes are decided by hardware
 	\begin{itemize}
 		\item Reduce number of access to memory
 		\item Dedicated component to support paging by speeding address translation
 	\end{itemize}
-	\item Logical memory also split into same size (logical page)
+	\item \keyword{Logical page}{Logical mem split into regions of same size}
+	\item Pages of process loaded into any available mem frame at execution time
+	\item Logical mem remains contiguous
 \end{itemize}
-\subsubsection{Page table}
+\subsubsection{Page table - Lookup mechanism}
 \begin{itemize}
-	\item Lookup mechanism for mapping logical pages to physical frames
-	\item Physical address = $frame_number*sizeof(physical_frame)+offset$
-	\item Note that frame sizes should be a power of 2 (ease of calculation)
-	\item No external fragmentation - any information can be stored in any page
-	\item Possible internal fragmentation (but low)
-	\item Abstraction of logical and physical address
+	\item Map logical pages to physical frames
+	\item Frame sizes should be power of 2 
+\end{itemize}
+\subsubsection{Translation}
+%\begin{itemize}
+%	\item Logical address = Page num + offset
+%	\item Page num = $m-n$ most significant bits
+%	\item $2^n$ = frame size, m = logical add size
+%	\item page num $\rightarrow$ frame num via table
+%	\item Physical address = Frame num + offset
+%\end{itemize}
+\includegraphics[scale=0.3]{paging-translation}
+\subsubsection{Benefits}
+\begin{itemize}
+	\item No external fragmentation 
+	\begin{itemize}
+		\item Every single free frame can be used
+	\end{itemize}
+	\item Insignificant internal fragmentation
+	\item Separation of logical and physical address
 	\begin{itemize}
 		\item Greater flexibility
+		\item Simple translation
 	\end{itemize}
 \end{itemize}
 \includegraphics[scale=0.2]{paging-example}
 \subsubsection{Implementation}
 \begin{enumerate}
-	\item Pure software
+	\item Pure software solution
+	\item Page table info in Process Control Block (PCB)
 	\begin{itemize}
-		\item OS stores page table information in PCB with 2 access to memory per reference
+		\item 2 mem access per reference
 		\begin{enumerate}
 			\item Read the indexed page table entry to get the frame number
 			\item Access the actual memory item
 		\end{enumerate}
-	\item Memory context of each process includes page table/pointers to page table
+	\item Memory context of process includes page table\slash pointers to it
 	\end{itemize}
 	\item Hardware support
 	\begin{itemize}
@@ -1232,11 +1277,11 @@ Deallocation algorithm
 		\item Possible to have multiple TLB per core
 		\begin{description}
 			\item[TLB-hit]{Frame number retrieved to generate physical address}
-			\item[TLB-miss]{Memory access to page table -\> retrieved frame number used to generate physical address and update TLB}
+			\item[TLB-miss]{Memory access to page table $\rightarrow$ frame number used to generate physical address and update TLB}
 		\end{description}
-		\item Very small and fast (reducing average Memory Access Time)
+		\item Very small and fast (reducing Average Memory Access Time)
 		\begin{itemize}
-			\item $P(TLB~hit)*latency(TLB~hit)+P(TLB~miss)*latency(TLB~miss)$
+			\item AMAT = $P(TLB~hit)*latency(TLB~hit)+P(TLB~miss)*latency(TLB~miss)$
 			\item Latency of filling in TLB hidden by hardware
 		\end{itemize}
 		\item Part of hardware context, so entries will be flushed when context switch occurs
@@ -1247,7 +1292,7 @@ Deallocation algorithm
 	\end{itemize}
 \end{enumerate}
 
-\subsubsection{Paging scheme}
+\subsubsection{Protection}
 \begin{itemize}
 	\item Access-right bits
 	\begin{itemize}
@@ -1259,51 +1304,253 @@ Deallocation algorithm
 		\item Exclude pages that are out-of-range for particular process from mapping
 		\item Check against bits in hardware whether the page can be accessed by process
 	\end{itemize}
-	\item Page sharing
+\end{itemize}
+\subsubsection{Page sharing}
+\begin{itemize}
+	\item Several processes' logical pages mapped to same physical frame
 	\begin{itemize}
-		\item Allow several processes to share the same physical memory frame
-		\item Shared code pages (code that may be used by many processes)
-		\item Copy on write (share pages until one tries to change value from it)
+		\item Used in shared code pages - code used by many processes
+		\item Implementing copy on write - pages shared until child changes its value
 	\end{itemize}
 \end{itemize}
+
 
 \subsection{Segmentation scheme}
 \subsubsection{Motivation}
 \begin{itemize}
 	\item Process contains different types of memory regions (data, text, heap, stack)
 	\begin{itemize}
-		\item Does not really matter the order of memory regions
+		\item Order of memory regions does not matter
 	\end{itemize}
 	\item Regions are variable sized and grow/shrink at execution time 
 	\begin{itemize}
-		\item Provision gaps in-between
-		\item Difficult to check what is the permissions of memory access (which range it is)
+		\item Gaps btw regions shld be provisioned early
+		\item Difficult to check the permissions of memory access (which range it is)
 	\end{itemize}
 \end{itemize}
 \subsubsection{Implementation}
 \begin{itemize}
-	\item Process broken into segments of variable sizes
+	\item Process broken into named segments of variable sizes
 	\item Manage memory at level of memory segments
-	\item Mapped into contiguous physical partitions of the same size
+	\item Segments itself are mapped to contiguous physical partitions
 	\begin{itemize}
-		\item Contains name (base address + segment\_id) and limit (range of segment)
-		\item 
+		\item base address and limit (range of segment)
+	\end{itemize}
+	\item Logical address $<$SegID\slash name, Offset$>$
+	\begin{itemize}
+		\item SegID used to find $<$Base add, Limit$>$ in segment table
 	\end{itemize}
 \end{itemize}
-\subsubsection{Evaluation}
+\subsubsection{Evaluation (Pros and Cons)}
 \begin{itemize}
-	\item + Independent contiguous memory space matches programmers view of memory
-	\item + More efficient bookkeeping
-	\item + Segments can grow/shrink and be protected/shared independently
-	\item - Cause external fragmentation due to variable sized contiguous memory regions
+	\item[+] Independent contiguous memory space matches programmers view of memory
+	\item[+] More efficient bookkeeping
+	\item[+] Segments can grow/shrink and be protected/shared independently
+	\item[-] Cause external fragmentation due to variable sized contiguous memory regions
 \end{itemize}
 \subsection{Segmentation with paging}
 \begin{itemize}
 	\item Each segment contains fixed sized pages with its own page table
 	\item Segment grows by allocating new page and adding to its page table 
 \end{itemize}
+\section{11. Virtual Memory Management}
+\subsection{Motivation}
+\begin{itemize}
+	\item Logical memory space may be $>>$ than phy mem
+	\item Not portable to different phy memory sizes
+\end{itemize}
+\subsection{Extension of paging scheme}
+\begin{itemize}
+	\item Split logical address space into fixed size pages
+	\begin{itemize}
+		\item May reside in phy mem or secondary storage
+	\end{itemize}
+	\item 2 new page types to denote phy location of information
+	\begin{description}
+		\item[Memory resident]{Pages in phy memory}
+		\item[Non-memory resident]{Pages in secondary mem}
+		\item \keyword{Resident bits}{Used to denote whether resident in mem}
+	\end{description}
+	\item \keyword{Page fault}{CPU access non-memory resident page}
+	\begin{itemize}
+		\item CPU can only access mem resident pages
+		\item OS needs to bring pages from secondary storage to phy mem
+	\end{itemize}
+\end{itemize}
+\subsubsection{Execution}
+\begin{enumerate}
+	\item{Check page table if page is mem resident}
+	\begin{itemize}
+		\item[+]{Access phy mem loc directly}
+		\item[-]{Throw page fault \textbf{exception}}
+	\end{itemize}
+	\item Locate page in secondary memory
+	\item Load page into phy memory
+	\item Update page table
+	\item Re-execute step 1 with mem-resident page
+\end{enumerate}
+\subsubsection{Page Fault}
+\begin{itemize}
+	\item Page transfer is I/O operation done by DMA controller
+	\begin{itemize}
+		\item Direct Access Media - abstract I/O from CPU
+	\end{itemize}
+	\item Faulted process is in \textbf{blocked} state
+	\item \keyword{Thrashing}{System slow down due to multiple page faults}
+\end{itemize}
+\subsubsection{Locality}
+\begin{description}
+	\item[Temporal]{Mem address likely used multiple times}
+	\item[Spatial]{Adjacent mem address likely accessed soon}
+\end{description}
+\subsection{Paging scheme}
+\subsubsection{Objectives}
+\begin{itemize}
+	\item Reduce startup cost when allocating pages during initialization
+	\item Reduce footprint of processes in phy mem
+\end{itemize}
+\subsubsection{Demand Paging}
+\begin{itemize}
+	\item Only allocate mem resident pages when page fault
+	\item Processes start with no mem resident pages
+	\item[+]{Fast startup time and small mem footprint}
+	\item[-]{Sluggish proc initially due to multiple page faults}
+	\item[-]{Thrash other processes during page fault}
+\end{itemize}
+\subsection{Page table structure}
+\subsubsection{Consideration}
+\begin{itemize}
+	\item Large logical and phy mem space $\rightarrow$ Large page size
+	\item Every proc needs a page table
+	\item Minimize page table size
+	\begin{itemize}
+		\item High overhead 
+		\item Page table may occupy several frames (Difficult to keep track locations)
+	\end{itemize}
+\end{itemize}
+\subsubsection{2-level paging}
+\begin{itemize}
+	\item Split page table into regions with page table num
+	\item Regions allocated when mem usage grows
+	\item Page directory keep track of smaller page tables
+\end{itemize}
+\textbf{Problems}
+\begin{itemize}
+	\item 2 serialized memory access to get frame number
+	\begin{itemize}
+		\item MMU cache frequent page directory entries
+		\item Speed up page-table walk upon TLB miss
+		\item Usual: log$\rightarrow$page directory$\rightarrow$page table$\rightarrow$phy frame
+		\item MMU: log page$\rightarrow$page-table$\rightarrow$phy frame
+		\item TLB: log page$\rightarrow$phy frame
+	\end{itemize}
+\end{itemize}
+\subsubsection{Inverted Page Table}
+\begin{itemize}
+	\item Map physical frames to $<$pid, page number$>$
+	\item Upper bound on table size (limited to num phy frames)
+	\item One table for all processes but slow translation
+	\begin{itemize}
+		\item Need search whole table to find the phy frame that has the specific page
+	\end{itemize}
+\end{itemize}
 
-\section{11. File System}
+\subsection{Page Replacement Algorithms}
+\begin{itemize}
+	\item Deciding the phy memory frame to \textit{evict} during page fault
+	\item $T_{mem~access}=(1-p)T_{mem}+p*T_{page~fault}$
+	\begin{itemize}
+		\item p = probability page fault, $T_mem$ = access time for mem resident page
+	\end{itemize}
+\end{itemize}
+\subsubsection{Optimal Page Replacement}
+\begin{itemize}
+	\item Replace page that will not be needed again for longest period of time
+	\item[-] Impossible to know future memory references
+\end{itemize}
+\subsubsection{FIFO Page Replacement}
+\begin{itemize}
+	\item Evict oldest loaded memory page
+	\item Maintain queue of resident page numbers and update queue during page faults
+	\item \keyword{Belady's Anomaly}{More physical frames the higher likelihood of page faults}
+	\begin{itemize}
+		\item FIFO does not exploit temporal locality (commonly used frames evicted)
+	\end{itemize}
+\end{itemize}
+\subsubsection{Least Recently Used (LRU)}
+\begin{itemize}
+	\item Replace page that has not been used in the longest time
+	\item OS keeps track of last access time
+	\item Logical Time counter incremented for every mem reference
+	\begin{itemize}
+		\item Page table entry has a time-of-use field which increases when referenced
+		\item Replace pages that have the smallest TOU
+		\item O(n) operation and overflow possible (TOU strictly increasing)
+	\end{itemize}
+	\item Maintain stack of page numbers
+	\begin{itemize}
+		\item Page removed from stack and pushed to top when referenced
+		\item Replace page at bottom of stack during replacement
+		\item Hard to implement in hardware (entries removed randomly)
+	\end{itemize}
+	\item Second-Change Page Replacement
+	\begin{itemize}
+		\item Modified circular FIFO to give second chance to pages accessed
+		\item Every PTE maintains \keyword{Reference bit}{1= accessed since last reset}
+	\end{itemize}
+	\begin{enumerate}
+		\item Oldest FIFO page is selected
+		\item If ref bit == 0: page replaced, else..
+		\item Page is skipped
+		\begin{itemize}
+			\item Ref bit cleared to 0 
+			\item \textbf{NOTE!!} Page does not refresh its position in queue
+			\item Next FIFO page selected\slash given chance
+		\end{itemize}
+	\end{enumerate}
+\end{itemize}
+\subsubsection{Page Replacement}
+\begin{description}
+	\item[Victim page]{Page that will be replaced}
+	\item[Global]{Victim page chosen among all physical frames}
+	\begin{itemize}
+		\item \keyword{Self adjustment}{Processes that need more frames can get more}
+		\item Badly behaved processes affect others
+		\item Non-deterministic number of frames allocated to processes during each run
+	\end{itemize}
+	\item[Local]{Victim page chosen from pages of process that caused page fault}
+	\begin{itemize}
+		\item More stable - number of frames allocated to each process remain constant 
+		\item Frame allocation matters - progress of process may be hindered
+	\end{itemize}
+\end{description}
+\subsection{Frame Allocation}
+\begin{itemize}
+	\item How to distribute N physical memory frames among M processes	
+\end{itemize}
+\subsubsection{Approach}
+\begin{description}
+	\item[Equal]{Every process gets equal num frames $N/M$}
+	\item[Proportional]{Each process, P gets $\dfrac{size_p}{size_{total}}*N$}
+\end{description}
+\subsubsection{Problems}
+\begin{itemize}
+	\item Difficulty in finding right number of frames to prevent thrashing
+	\item \keyword{Cascading thrashing}{Process steals page alloc from other proc}
+	\item I/O bandwidth costly and may degrade performance 
+\end{itemize}
+\subsubsection{Working Set Model}
+\begin{itemize}
+	\item \keyword{Working set}{Set of pages referenced by process during a period of time}
+	\item Working set may changes continuously but is relatively constant
+	\item Model aims to find a good window to reduce possibility of page faults 
+	\item $W(t,\triangle)$ = pages in interval at time t, $\triangle$ = window size
+	\item \keyword{Transient region}{Working set continuously changing in size}
+	\item \keyword{Stable region}{Working set stays the same for a long time}
+\end{itemize}
+
+
+\section{12. File System}
 \subsection{Introduction}
 \begin{itemize}
 	\item Provides abstraction on top of physical media
@@ -1338,10 +1585,11 @@ Deallocation algorithm
 \begin{itemize}
 	\item Abstraction for logical unit of information by processes
 	\item Contains information structured in specific styles
-	\item \keyword{Metadata}{Additional information associated with the file}
 \end{itemize}
-
 \subsubsection{Metadata}
+\begin{itemize}
+	\item Additional information associated with the file
+\end{itemize}
 \begin{description}
 	\item[Name]{Human readable reference to the file}
 	\begin{itemize}
@@ -1370,7 +1618,7 @@ Deallocation algorithm
 	\item[Time, date and owner info]
 	\item[Table of content]{Info for the FS on how to access the file}
 \end{description}
-\includegraphics[scale=0.2]{ls-la}
+\includegraphics[scale=0.23]{ls-la}
 
 \subsubsection{Structure}
 \begin{itemize}
@@ -1504,7 +1752,7 @@ Partitions can contain independent file systems and OS
 	\item[Directory structure, files info and file data]
 \end{description}
 
-\section{12. File System Implementation}
+\section{13. File System Implementation}
 \subsection{Allocation Policies}
 \subsubsection{Contiguous}
 \begin{itemize}
@@ -1640,17 +1888,40 @@ Partitions can contain independent file systems and OS
 	\item Return file descriptor to caller
 \end{enumerate}
 
-\subsubsection{Hard link}
-\begin{itemize}
-	\item Hard to determine when to delete I-Node
+\subsubsection{Deletion}
+\begin{enumerate}
+	\item Remove its directory entry from parent directory
 	\begin{itemize}
-		\item Can maintain I-Node reference count and decremented for every deletion
+		\item Point prev entry to next entry/end
+		\item Blank record may be needed
 	\end{itemize}
+	\item Mark specific I-Node in bitmap as free
+	\item Mark corresponding block in bitmap as free
+\end{enumerate}
+
+\subsubsection{Hard link}
+\includegraphics[scale=0.2]{hard-link}
+\begin{itemize}
+	\item New directory entry using same I-Node number as file
+	\item Filename can be different
 \end{itemize}
+\begin{description}
+	\item[Multiple references of I-Node]{Hard to determine when to delete I-Node}
+	\begin{itemize}
+		\item Maintain I-Node reference count
+		\item Decrement for every deletion
+	\end{itemize}
+\end{description}	
 
 \subsubsection{Sym Link}
+\includegraphics[scale=0.2]{sym-link}
 \begin{itemize}
-	\item Since only pathname is stored, link easily invalidated (during file name changes/deletion)
+	\item File created with I-Node pointing to memory location of symlink
+	\item Content of symlink == pathname of file
 \end{itemize}
+\begin{description}
+	\item[Only pathname stored]{Link easily invalidated (during file name changes/deletion)}
+\end{description}
 \end{multicols*}
+\end{small}
 \end{document}
