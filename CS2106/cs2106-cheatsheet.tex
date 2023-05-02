@@ -223,7 +223,6 @@ Why OS dont occupy entire hardware layer
 \begin{itemize}
 	\item Program is set of instructions to complete a certain task stored in secondary memory of computer
 	\item Process is instance of program that is currently executed
-	\item Note that threads are not new processes and share the same file descriptor
 	\begin{itemize}
 		\item Share the heap with the process but differ in stack
 	\end{itemize}
@@ -394,6 +393,7 @@ Table representing all processes containing entire execution context
 	\item Reload state of new process from PCB
 \end{enumerate}
 \begin{itemize}
+	\item Only saves the state of CPU registers
 	\item Involves a change to kernel mode and back
 \end{itemize}
 \subsection{Exceptions and interrupts}
@@ -472,11 +472,12 @@ Process information
 	\item[Cumulative CPU time]{For scheduling}
 \end{description}
 
-\subsection{fork()}
+\subsection{fork() syscall}
 Process creation
 \begin{description}
 	\item[Package]{unistd.h and sys/types.h}
 	\item[return]{PID of newly created process(parent) and 0 (child process)}
+	\item[handler]{Code is stored in the OS memory region}
 \end{description}
 \subsubsection{Behaviour}
 \begin{itemize}
@@ -558,9 +559,13 @@ Parent child synchronisation
 
 \subsection{Orphan and zombie process}
 \keyword{Zombie}{\textbf{All} processes that has exited but parent did not call wait}\\
+\begin{itemize}
+	\item Processes can be cleared by rebooting system
+\end{itemize}
 \keyword{Orphan}{Child process whose parent has been terminated}
 \begin{itemize}
 	\item Parenthood will be propagated up to init which may use wait() to clean up
+	\item Can be manually terminated from interpreter or reboot system
 \end{itemize}
 
 
@@ -962,6 +967,11 @@ Only \textbf{ONE} process should be in the critical section at one time
 \end{itemize}
 
 \subsection{Thread implementation}
+\begin{itemize}
+	\item Threads are \textbf{NOT} new processes
+	\item Threads share the same stack, file descriptors and page tables
+\end{itemize}
+
 \begin{enumerate}
 	\item User thread
 	\begin{itemize}
@@ -1231,13 +1241,13 @@ A[J] = linked list of free blocks with size $2^J$
 	\item Processes informations can be split into disjoint physical memory chunks
 	\item \keyword{Address space}{Amount of memory allocated for all possible addresses for system}
 	\begin{itemize}
-		\item "32-bit system $\rightarrow 2^{32}$ address space 
+		\item "32-bit system" $\rightarrow 2^{32} * $  addressing size = address space 
 	\end{itemize}
 \end{itemize}
 \subsection{Paging scheme}
 \begin{itemize}
 	\item \keyword{Physical frames}{Phy mem split into regions of fixed size}
-	\item Frames sizes are decided by hardware
+	\item Frames sizes are decided by hardware (CPU)
 	\begin{itemize}
 		\item Reduce number of access to memory
 		\item Dedicated component to support paging by speeding address translation
@@ -1449,7 +1459,7 @@ A[J] = linked list of free blocks with size $2^J$
 \subsubsection{Consideration}
 \begin{itemize}
 	\item Large logical and phy mem space $\rightarrow$ Large page size
-	\item Every proc needs a page table
+	\item Every proc needs a page table (pointer in register)
 	\item Minimize page table size
 	\begin{itemize}
 		\item High overhead 
@@ -1890,7 +1900,7 @@ Partitions can contain independent file systems and OS
 \end{itemize}
 \subsection{FAT}
 \begin{itemize}
-	\item Used by Microsoft
+	\item Used by Microsoft with 2 main structures (directory and data)
 	\item File data allocated to blocks with allocation info kept as linked list
 	\item Data block pointers in File Allocation Table with block info (free\slash next occupied block\slash EOF\slash unusable)
 	\item OS cache table in Ram to facilitate linked list traversal
@@ -1899,6 +1909,7 @@ Partitions can contain independent file systems and OS
 \subsubsection{Directory Structure}
 \begin{itemize}
 	\item Special file with linear list of directory entries
+	\item Typically contains pointers to . and .. dir for each dir entry
 	\item \keyword{Directory entry}{Fixed-size, 32 bytes for file\slash dir info}
 	\includegraphics[scale=0.24]{directory-entry}
 \end{itemize}
