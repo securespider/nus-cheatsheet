@@ -169,11 +169,12 @@ Difference
 \begin{itemize}
 	\item OS runs in \keyword{kernel mode}{Access to all hardware resources}
 	\item User programs run in \keyword{User mode}{Limited access}
+		\columnbreak
 	\item User programs use syscalls to communicate with OS for hardware processes
 	\item User - Full virtual address space for code but cannot write outside of virtual address space
 	\item Kernel - All code share same address space
 \end{itemize}
-\includegraphics[scale=0.28]{os-interaction}
+\includegraphics[scale=0.22]{os-interaction}
 \begin{description}
 	\item[A]{OS executes machine instructions}
 	\item[B]{Normal machine instructions executed}
@@ -194,7 +195,8 @@ Why OS dont occupy entire hardware layer
 	\item Well understood and has good performance
 	\item Highly \keyword{coupled}{internal structure interconnected that unintentionally affect each other}
 \end{itemize}
-\includegraphics[scale=0.25]{monolithic-os}
+\includegraphics[scale=0.16]{monolithic-os}
+\includegraphics[scale=0.18]{microkernel-os}
 
 \subsubsection{Microkernel}
 \begin{itemize}
@@ -206,7 +208,6 @@ Why OS dont occupy entire hardware layer
 	\item Lower performance
 	\item Unix is monolithic kernel, Windows is hybrid 
 \end{itemize}
-\includegraphics[scale=0.28]{microkernel-os}
 \subsection{Virtual Machines}
 \begin{itemize}
 	\item Software emulation of hardware
@@ -218,13 +219,22 @@ Why OS dont occupy entire hardware layer
 %--------------------------------------------------------------------------------------------------------------------
 
 \section{02. Process abstraction}
+\subsubsection{Program vs process}
+\begin{itemize}
+	\item Program is set of instructions to complete a certain task stored in secondary memory of computer
+	\item Process is instance of program that is currently executed
+	\item Note that threads are not new processes and share the same file descriptor
+	\begin{itemize}
+		\item Share the heap with the process but differ in stack
+	\end{itemize}
+\end{itemize}
 \subsection{Motivation}
 \begin{itemize}
 	\item Allow concurrent usage of hardware
 	\item Multiple programs sharing the same processors/IO
 \end{itemize}
 \subsection{Computer organisation}
-\includegraphics[scale=0.27]{computer-organisation}
+\includegraphics[scale=0.23]{computer-organisation}
 \subsubsection{Memory}
 \begin{itemize}
 	\item Storage for instruction and data
@@ -255,29 +265,24 @@ Why OS dont occupy entire hardware layer
 \begin{itemize}
 	\item Memory context
 	\begin{itemize}
-		\item Code
-		\item Data
+		\item Code, data
 	\end{itemize}
 	\item Hardware context
 	\begin{itemize}
-		\item Register
-		\item PC value
-		\item Frame Pointer
+		\item Register, PC value, frame pointer
 	\end{itemize}
 	\item OS context
 	\begin{itemize}
-		\item Process properties
-		\item Resources used
-		\item Files
+		\item Process properties, resource used, files
 	\end{itemize}
 \end{itemize}
-
 \subsection{Function calls}
 Suppose a function f() calls g()
 \begin{itemize}
 	\item f is caller and g is callee
 \end{itemize}
 Steps of control flow
+\columnbreak
 \begin{enumerate}
 	\item Setup parameters
 	\item Trf ctrl to callee
@@ -309,10 +314,11 @@ Additional
 
 
 \subsection{Stack memory}
-Memory to store function invocation\\
+Memory to store function invocation and control flow\\
 \keyword{Stack Pointer}{Indicates the first free location in the stack region}\\
 \keyword{Frame Pointer}{Points to the frame and is used for traversing around the stack easily}\\
-\includegraphics[scale=0.1]{stack-frame}\\
+\includegraphics[scale=0.08]{stack-frame}
+\includegraphics[scale=0.2]{stack-frame-diagram}\\
 Information needed for function invocation - Stack frame
 \begin{itemize}
 	\item Return address of caller
@@ -321,7 +327,6 @@ Information needed for function invocation - Stack frame
 	\item Stack and frame pointer of caller
 	\item GPR values (register spilling)
 \end{itemize}
-\includegraphics[scale=0.3]{stack-frame-diagram}\\
 Callee stack frame will be on top of the caller
 
 
@@ -334,17 +339,23 @@ Problems:
 		\item Size not known at program compilation time
 		\item Cannot specify a region in data 
 	\end{itemize}
-	\item No definite dellocation timing
+	\item No definite deallocation timing
 	\begin{itemize}
 		\item Must be freed explicitly by the program
 		\item Cannot place in stack region
 	\end{itemize}
 \end{itemize}
 Solution:\\
-Add a region "Heap for dynamic allocation\\
-Problems with heap memory:
+Add Heap region for dynamic allocation\\
 \begin{itemize}
-	\item Generation of holes in between data due to variable deallocation timing
+	\item BUT: Generates holes btw data due to variable deallocation timing
+\end{itemize}
+\subsection{Stack vs Heap}
+\begin{itemize}
+	\item Objects are stored in heap and stack stores references to it
+	\columnbreak
+	\item Objects in heap are globally accessible 
+	\item Data are primitive variables eg. int, char.. even when not initialized
 \end{itemize}
 
 %-----------------------------------------------------------------------------------------------------------------------
@@ -363,16 +374,18 @@ Features:
 	\item[Blocked]{Sleeping/waiting for event - cannot execute until event available}
 	\item[Terminated]{Finished execution and requires OS cleanup}
 \end{description}
-\includegraphics[scale=0.23]{process-model}
-\subsection{Process control block}
-Table representing all processes containing entire execution context stored in OS memory
-\begin{itemize}
+\includegraphics[scale=0.2]{process-model}
+\subsection{Process control block (PCB)}
+Table representing all processes containing entire execution context 
+\begin{itemize}	
+	\item Maintained by OS in OS memory for every process
 	\item PC, FP, SP and other GPR (only updated when swapped out)
 	\item Memory region info (Text, data, heap and stack)
 	\begin{itemize}
 		\item It is a "point" to real memory space \textbf{NOT actual memory space used by process}
 	\end{itemize}
-	\item PID and process state
+	\item PID, privileges, process state
+	\item Pointer to parent process
 \end{itemize}
 \subsubsection{Context switching}
 \begin{enumerate}
@@ -689,7 +702,7 @@ Asynchronous notification about an event sent to process/threads
 	\item Can only call async safe functions within handler (signal/wait cannot be called in POSIX)
 	\item eg. Kill, stop, continue, error
 \end{itemize}
-\includegraphics[scale=0.35]{common-signals}
+\includegraphics[scale=0.38]{common-signals}
 
 %--------------------------------------------------------------------------------------------------------------------
 
@@ -863,7 +876,7 @@ Only \textbf{ONE} process should be in the critical section at one time
 		\item Not general - cannot extend to allowing multiple access instead of Mutex
 	\end{itemize}
 \end{itemize}
-\includegraphics[scale=0.46]{peterson-algorithm}
+\includegraphics[scale=0.34]{peterson-algorithm}
 \begin{itemize}
 	\item Assembly implementation
 	\begin{itemize}
@@ -873,7 +886,7 @@ Only \textbf{ONE} process should be in the critical section at one time
 		\item Employs busy waiting still
 	\end{itemize}
 \end{itemize}
-\includegraphics[scale=0.5]{test-and-set}
+\includegraphics[scale=0.4]{test-and-set}
 \begin{itemize}
 	\item High level synchronization mechanism (Semaphore)
 	\begin{itemize}
@@ -1009,9 +1022,9 @@ Use cases of synchronisation (mutexes)
 	\end{itemize}
 	\item Busy waiting vs blocking version and message passing
 \end{itemize}
-\includegraphics[scale=0.28]{producer-consumer}
+\includegraphics[scale=0.23]{producer-consumer}
 
-\subsection{Reader writer}
+\subsection{Reader writer/Barbershop}
 \begin{itemize}
 	\item Processes share data structure D
 	\begin{itemize}
@@ -1046,7 +1059,6 @@ Use cases of synchronisation (mutexes)
 \begin{itemize}
 	\item Randomly decide which side chopstick the philosophers take first
 \end{itemize}
-
 %------------------------------------------------------------------------------------------------------------------------------
 
 \section{09. Memory abstraction}
@@ -1217,6 +1229,10 @@ A[J] = linked list of free blocks with size $2^J$
 \section{10. Disjoint memory schemes}
 \begin{itemize}
 	\item Processes informations can be split into disjoint physical memory chunks
+	\item \keyword{Address space}{Amount of memory allocated for all possible addresses for system}
+	\begin{itemize}
+		\item "32-bit system $\rightarrow 2^{32}$ address space 
+	\end{itemize}
 \end{itemize}
 \subsection{Paging scheme}
 \begin{itemize}
@@ -1234,6 +1250,7 @@ A[J] = linked list of free blocks with size $2^J$
 \begin{itemize}
 	\item Map logical pages to physical frames
 	\item Frame sizes should be power of 2 
+	\item $size_{page\_table} * s_{page} = s_{mem\_address} * s_{entry} * s_{addressing}$
 \end{itemize}
 \subsubsection{Translation}
 %\begin{itemize}
@@ -1359,6 +1376,13 @@ A[J] = linked list of free blocks with size $2^J$
 	\item Logical memory space may be $>>$ than phy mem
 	\item Not portable to different phy memory sizes
 \end{itemize}
+\subsubsection{Advantages}
+\begin{itemize}
+	\item Security: Cannot be corrupted by other processes
+	\item Efficient for caching virtual mem pages (locality)
+	\item Simplify memory management, programming and protection
+	\item Memory sharing
+\end{itemize}
 \subsection{Extension of paging scheme}
 \begin{itemize}
 	\item Split logical address space into fixed size pages
@@ -1367,14 +1391,14 @@ A[J] = linked list of free blocks with size $2^J$
 	\end{itemize}
 	\item 2 new page types to denote phy location of information
 	\begin{description}
-		\item[Memory resident]{Pages in phy memory}
+		\item[Memory resident]{Pages in phy memory stored in kernel space}
 		\item[Non-memory resident]{Pages in secondary mem}
 		\item \keyword{Resident bits}{Used to denote whether resident in mem}
 	\end{description}
 	\item \keyword{Page fault}{CPU access non-memory resident page}
 	\begin{itemize}
-		\item CPU can only access mem resident pages
-		\item OS needs to bring pages from secondary storage to phy mem
+		\item CPU can only access mem resident pages - blocks process
+		\item OS needs to bring pages from secondary storage to phy mem 
 	\end{itemize}
 \end{itemize}
 \subsubsection{Execution}
@@ -1396,6 +1420,10 @@ A[J] = linked list of free blocks with size $2^J$
 		\item Direct Access Media - abstract I/O from CPU
 	\end{itemize}
 	\item Faulted process is in \textbf{blocked} state
+	\item May send SIGSEGV if accessing mem region without access rights
+	\begin{itemize}
+		\item Sig thrown when offset $>$ page size
+	\end{itemize}
 	\item \keyword{Thrashing}{System slow down due to multiple page faults}
 \end{itemize}
 \subsubsection{Locality}
@@ -1432,7 +1460,8 @@ A[J] = linked list of free blocks with size $2^J$
 \begin{itemize}
 	\item Split page table into regions with page table num
 	\item Regions allocated when mem usage grows
-	\item Page directory keep track of smaller page tables
+	\item Page directory in PCB keeps track of smaller page tables
+	\item Memory context of process only stores the page directory
 \end{itemize}
 \textbf{Problems}
 \begin{itemize}
@@ -1453,6 +1482,7 @@ A[J] = linked list of free blocks with size $2^J$
 	\begin{itemize}
 		\item Need search whole table to find the phy frame that has the specific page
 	\end{itemize}
+	\item Does not support memory page sharing
 \end{itemize}
 
 \subsection{Page Replacement Algorithms}
@@ -1493,7 +1523,7 @@ A[J] = linked list of free blocks with size $2^J$
 		\item Replace page at bottom of stack during replacement
 		\item Hard to implement in hardware (entries removed randomly)
 	\end{itemize}
-	\item Second-Change Page Replacement
+	\item Second-Change Page Replacement\slash CLOCK
 	\begin{itemize}
 		\item Modified circular FIFO to give second chance to pages accessed
 		\item Every PTE maintains \keyword{Reference bit}{1= accessed since last reset}
@@ -1624,17 +1654,19 @@ Organization&Paging\slash Segmentation determined by OS and hardware&Different F
 		\item Types of access: Read, write, execute, append, delete, list (read metadata of file)
 		
 		\item \keyword{access control list}{List of user identity and allowed access types (very customisable but too much overhead)}
-		\begin{itemize}
-			\item Command: getfacl\\
-			\includegraphics[scale=0.22]{getfacl}
-		\end{itemize}
 		\item \keyword{permission bits}{Classify users into 3 classes (owner, group and all) and define permissions RWX for the classes}
-		
+		\begin{itemize}
+			\item Command: getfacl (get file acl)
+		\end{itemize}
 	\end{itemize}
+\end{description}
+
+\includegraphics[scale=0.22]{getfacl}
+\begin{description}
 	\item[Time, date and owner info]
 	\item[Table of content]{Info for the FS on how to access the file}
 \end{description}
-\includegraphics[scale=0.27]{ls-la}
+\includegraphics[scale=0.27]{ls-la} %removable
 
 \subsubsection{Types of file structures}
 \begin{itemize}
@@ -1694,24 +1726,24 @@ Organization&Paging\slash Segmentation determined by OS and hardware&Different F
 \subsubsection{Approach}
 Using 3 tables to store information
 \begin{enumerate}
-	\item Per-process open-file table
+	\item File is opened twice (can be same process)
 	\begin{itemize}
-		\item Keep track of open files for each process
-		\item Every entry points to system-wide open-file table entry
+		\item IO occurs at independent offsets
+		\item 2 per-proc and 2 sys-wide w diff FD
 	\end{itemize}
-	\item System-wide open-file table
+	\item Multiple proc using same open file table entry
 	\begin{itemize}
-		\item Keep track of all open files in system 
-		\item Each entry points to V-node entry
-	\end{itemize}
-	\item V-node table (virtual node)
-	\begin{itemize}
-		\item Link with file on physical drive
-		\item Contains info about physical location of file on storage
+		\item Forks duplicate file descriptor (share offset)
+		\item Only one offset (IO change offset for both proc)
+		\item 2 per proc, same FD and sys-wide table
 	\end{itemize}
 \end{enumerate}
 \includegraphics[scale=0.23]{file-system-table-example}
-
+\subsection{Mmap}
+\begin{itemize}
+	\item Map a shared memory region or share files to multiple process
+	\item Both process can access shared data on RAM without system calls
+\end{itemize}
 \subsection{Directory}
 \subsubsection{Motivation}
 \begin{itemize}
@@ -1874,6 +1906,9 @@ Partitions can contain independent file systems and OS
 \subsection{Extended-2 FS (Ext2)}
 \begin{itemize}
 	\item Split into blocks (corresponding to 1 or more disk sectors) and grouped into Block Groups
+	\begin{itemize}
+		\item Data blks for same file should be in the same blk grp to reduce data fragmentation (spatial locality)
+	\end{itemize}
 	\item \keyword{I-Node}{Special structure describing each file/directory}
 	\begin{itemize}
 		\item Contains file metadata (access right, creation time etc) and data block add
@@ -1888,11 +1923,12 @@ Partitions can contain independent file systems and OS
 \end{itemize}
 \includegraphics[scale=0.24]{ext2-fs-layout}
 \includegraphics[scale=0.21]{i-node-table}
+
 \subsubsection{I-Node Data Block Pointers (15)}
 \begin{description}
 	\item[Direct Block]{1st 12 pointers to actual data}
-	\item[Single Indirect block]{13th pointer to a disk block containing some direct pointers}
-	\item[Double Indirect Block]{14th pointer to disk block with number of single indirect blocks}
+	\item[Single Indirect block]{13th pointer to a disk block full of direct pointers}
+	\item[Double Indirect Block]{14th pointer to disk block full of single indirect blocks}
 	\item[Triple Indirect Block]{15th pointer to block containing double indirect blocks}
 \end{description}
 
@@ -1956,6 +1992,11 @@ Partitions can contain independent file systems and OS
 \begin{description}
 	\item[Only pathname stored]{Link easily invalidated (during file name changes/deletion)}
 \end{description}
+\section{Finals}
+\begin{itemize}
+	\item Mapped file to SWAP will be dropped reread from file on disk
+	\item Process opens 3 FD (STDIN, STDOUT, STDERR) auto upon initialization
+\end{itemize}
 \end{multicols*}
 \end{small}
 \end{document}
