@@ -14,7 +14,7 @@
     /Title (template.pdf)
     /Creator (TeX)
     /Producer (pdfTeX 1.40.0)
-    /Author (Jason Qiu)
+    /Author (securespider)
     /Subject (template)
     /Keywords (cheatsheet, pdf)
 }
@@ -88,11 +88,26 @@
     \fbox{
         \parbox{0.8\linewidth}{
             \centering \textcolor{black}{
-                {\Large\textbf{Cheatsheet template}} \\
-                \normalsize{Taken from Jason Qiu @ github.com/jasonqiu212}} \\
+                {\Large\textbf{CS3230}} \\
+                \normalsize{Design and Analysis of Algorithms}} \\
                 {\footnotesize \textcolor{gray}{github.com/securespider}}
         }
     }
 \end{center}
+\section{01. Stable matching}
+Both sides rank each other and goal is to pair each up
+\textbf{Constraints}
+No \keyword{rogue couples}{matched partner likes someone more than current partner that also likes them back}
+\subsection{Gale-Shapley Algo}
+\includegraphics[scale=0.2]{01-gale-shapley-algo}
+\subsubsection{Invariant}
+\begin{itemize}
+	\item If woman not on boy list, she has a better current fav
+	\item Boy choice is strictly worsening
+	\item Girl choice cannot worsen (weakly increasing)
+\end{itemize}
+
+
+
 \end{multicols*}
 \end{document}
