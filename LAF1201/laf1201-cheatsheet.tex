@@ -1,0 +1,153 @@
+\documentclass{article}
+\linespread{0.7}
+\usepackage[a4paper, margin=3mm, landscape]{geometry}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{listings}
+\usepackage{soul}
+\usepackage{graphicx}
+
+\pdfinfo{
+    /Title (template.pdf)
+    /Creator (TeX)
+    /Producer (pdfTeX 1.40.0)
+    /Author (securespider)
+    /Subject (template)
+    /Keywords (cheatsheet, pdf)
+}
+
+\graphicspath{ {./img/} }
+
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\columnseprule}{0.25pt}
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+    {-1ex plus -.5ex minus -.2ex}%
+    {0.5ex plus .2ex}%x
+{\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+    {-1explus -.5ex minus -.2ex}%
+    {0.5ex plus .2ex}%
+{\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+    {-1ex plus -.5ex minus -.2ex}%
+    {1ex plus .2ex}%
+{\normalfont\small\bfseries}}%
+\makeatother
+
+% Adjust spacing for all itemize/enumerate
+\setlength{\leftmargini}{0.5cm}
+\setlength{\leftmarginii}{0.5cm}
+\setlist[itemize,1]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+\setlist[itemize,2]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+
+% Font
+\renewcommand{\familydefault}{\sfdefault}
+
+% Define colors for math formulas
+\definecolor{myblue}{cmyk}{1,.72,0,.38}
+\everymath\expandafter{\the\everymath \color{myblue}}
+
+% Custom command for keywords
+\definecolor{highlight}{RGB}{251,243,218}
+\newcommand{\keyword}[2][]{\sethlcolor{highlight}\hl{\textbf{#2}} #1 - }
+\newcommand{\ilkeyword}[1]{\sethlcolor{highlight}\hl{\textbf{#1}}}
+
+% Define colors and style for code
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codered}{HTML}{CC241D}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
+\lstdefinestyle{codestyle}{
+    backgroundcolor = \color{backcolor},
+    commentstyle = \color{codegray},
+    keywordstyle = \color{codered},
+    stringstyle = \color{codegreen},
+    basicstyle = \ttfamily,
+    breakatwhitespace = false,
+    showstringspaces = false,
+    breaklines = true,
+    showtabs = false,
+    tabsize = 2
+}
+\lstset{style = codestyle}
+
+% -----------------------------------------------------------------------
+\begin{document}
+\begin{multicols*}{5}
+\footnotesize
+
+% Title box
+\begin{center}
+    \fbox{
+        \parbox{0.8\linewidth}{
+            \centering \textcolor{black}{
+                {\Large\textbf{Subject code}} \\
+                \normalsize{[subject]}} \\
+                {\footnotesize \textcolor{gray}{github.com/securespider}}
+        }
+    }
+\end{center}
+\section{01. Introduction}
+\subsection{Introduce}
+\begin{description}
+	\item[Comment tu t'appelles]{What you call yourself}
+	\item[Je m'appelle xx]{My name is xx}
+	\item[vous]{each person/formal vers}
+	\item[appelle/appelles/appellez/appelons]
+\end{description}
+\subsection{English-french words}
+\begin{description}
+	\item[petite]{small}
+	\item[souvenir]{memory/souvenir}
+	\item[barrage]{dam}
+	\item[rendezvous]{appointment}
+\end{description}
+\subsection{TB}
+\begin{description}
+	\item[Bonjour]{good day}
+	\item[Bonsoir]{good evening}
+	\item[femme]{woman}
+	\item[fille]{girl}
+	\item[homme]{man}
+	\item[garçon]{boy}
+	\item[c'est]{it is}
+	\item[elle/il]{she/him}
+	\item[nous/elles/ils]{we/they(girl)/they(guy+girl)}
+	\item[au revoir]{bye}
+	\item[salut]{hello}
+	\item[province]{france w/o paris}
+	\item[connais]{know/been to}
+	\item[matin/midi/'apres midi/soir/nuit]{morning/noon/afternoon/evening/night}
+	\item[écoutez et répondez]{listen and respond}
+	\item[parlez]{speak}
+	\item[lisez]{read}
+	\item[écrivez]{write}
+	\item[voisine/voisin]{neighbour(vuazin/}
+\end{description}
+\subsubsection{Day of week}
+\begin{itemize}
+	\item lundi/mardi/mercredi/jeudi/vendredi	
+	\item samedi/dimarche
+\end{itemize}
+\subsubsection{Numbers}
+\begin{description}
+	\item[un/deux/trois/quatre/cinq]{1/2/3/4/5}
+	\item[six/sept/huit/neuf/dix]{6/7/8/9/10}
+	\item[plus/moins/égaler]{plus/minus/equals}
+\end{description}
+\subsubsection{Questions}
+\begin{description}
+	\item[qui]
+	\item[quoi]
+	\item[comment]
+	\item[]{how much}
+\end{description}
+\end{multicols*}
+\end{document}
