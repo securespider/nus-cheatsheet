@@ -94,7 +94,7 @@
         }
     }
 \end{center}
-\section{01. Intro}
+\section{01.1 Intro}
 \subsection{Data science vs engineering}
 \begin{itemize}
 	\item \keyword{Science}{Learn, optimise, analytics, aggregate and labelling}
@@ -147,6 +147,34 @@ Decision support system storing historical data from organisations
 \subsubsection{Data Pipeline}
 \begin{itemize}
 	\item Processing underlying raw data in ordered sequence of steps
+\end{itemize}
+
+\section{01.2 Data Pipelines}
+\subsection{Considerations}
+\subsubsection{Big data}
+\begin{description}
+	\item[Velocity]{Streaming, captured and processed in real time}
+	\item[Volume]{Scalable wrt time}
+	\item[Variety]{Recognise and process diff formats}
+\end{description}
+\subsubsection{Business}
+\begin{itemize}
+	\item Handling streaming data?
+	\item How much data to expect (Time horizon/how much storage consumed)
+	\item What type/how much processing in DP
+	\item Where is data source? Need micro-services?
+\end{itemize}
+\subsection{Architecture}
+\subsubsection{Batch-based DP}
+\begin{itemize}
+	\item $N$ independent tasks to process with $k$ stages
+	\item Each stage takes max of $T$ time process input
+	\item Diff stage can operate concurrently
+	\item $t(N,k) = T\times(N+k-1)$
+\end{itemize}
+\subsubsection{Streaming-based DP}
+\begin{itemize}
+	\item 
 \end{itemize}
 \end{multicols*}
 \end{document}
