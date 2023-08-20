@@ -167,6 +167,7 @@ Decision support system storing historical data from organisations
 \subsection{Architecture}
 \subsubsection{Batch-based DP}
 \begin{itemize}
+	\item Analysis of data that has been stored over a period of time
 	\item $N$ independent tasks to process with $k$ stages
 	\item Each stage takes max of $T$ time process input
 	\item Diff stage can operate concurrently
@@ -174,13 +175,27 @@ Decision support system storing historical data from organisations
 \end{itemize}
 \subsubsection{Streaming-based DP}
 \begin{itemize}
+	\item Processing as data flows through system
 	\item Logging and persistent result storage
 \end{itemize}
 \subsubsection{Lambda Architecture}
 \begin{itemize}
 	\item Combination of batch and streaming
+	\item Separate processing engine for "batch" and "speed" layers combining in "service" layer
 	\item Accounts for real-time streaming and historical batch analysis
 	\item Encourage raw data storage and create new dst for queries
+	\item Min errors for both layers reliably at fast speeds
 \end{itemize}
+\subsubsection{Kappa Architecture}
+\begin{itemize}
+	\item Replay data and process both layers in same single stream processing engine
+	\item Good for big data architecture with cheaper hardware and focus on stream
+\end{itemize}
+\subsection{Design}
+\begin{enumerate}
+	\item Identify application and decide if DP needed
+	\item Identify DP category (architecture)
+	\item Understand working mechanism, parameters/variables
+\end{enumerate}
 \end{multicols*}
 \end{document}
