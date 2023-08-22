@@ -100,6 +100,8 @@
 	\item[DHCP]{Getting IP address, gateway and DNS server}
 	\begin{itemize}
 		\item Uses DHCP Discover, Offer, Request, Acknowledge
+		\item DHCP renew to  
+		\item DHCP release if no longer in use
 	\end{itemize}
 	\item[ARP]{MAC address from IP address}
 	\begin{itemize}
@@ -121,6 +123,77 @@
 	\item[Supernet]{Merging small networks into larger network w single prefix}
 	\item[NAT]{Network Address Translation: Changing private addresses to public addresses}
 \end{description}
+\section{02. ARP/DHCP}
+\subsection{ARP}
+\begin{description}
+	\item[Proxy ARP]{Host or router responds to ARP request for host on other networks}
+	\item[Gratuitous ARP]{Sends ARP request for its own IP}
+	\begin{itemize}
+		\item Detect if there is other host sharing same IP address
+		\item Utilised after IP assigned by DHCP
+	\end{itemize}
+\end{description}
+\subsubsection{Vulnerability (ARP Poisoning)}
+\begin{itemize}
+	\item Forgery of requests and reply
+	\item Stateless protocol: Replies can be sent without requests
+	\item \hl{Must} update ARP cache with new reply
+\end{itemize}
+\subsection{DHCP}
+\begin{itemize}
+	\item Allocation of IP addresses from a pool
+	\begin{itemize}
+		\item Static configuration for indefinite time (routers)
+		\item Automatic configuration 
+		\item Dynamic configuration for specific duration (loans)
+	\end{itemize}
+	\item Server waits on UDP 67 and Client communicates on UDP 68
+\end{itemize}
+\includegraphics[scale=0.3]{02-dhcp}
+\subsubsection{Relay Agent}
+\begin{itemize}
+	\item Device that forwards requests to one of more DHCP server
+	\begin{itemize}
+		\item DHCP server does not have to be in same subnet
+	\end{itemize}
+	\item Places its IP address in \hl{router-address field}
+	\item Increments hop count by 1
+\end{itemize}
+\subsubsection{Packet Format}
+\includegraphics[scale=0.2]{02-dhcp-packet}
+\begin{description}
+	\item[Field OP]{1 - request, 2 - reply}
+	\item[HTYPE and HLEN]{Network hardware type and length of address}
+	\begin{itemize}
+		\item Ethernet is type 1 and length 6
+	\end{itemize}
+	\item[Hops]{Initialised as 0 and increments whenever passing through another router}
+	\item[Xid]{Transaction ID to match response to request}
+	\item[Seconds]{Type since client boot}
+	\item[Flags]{Indicate broadcast(1) and other reserved use}
+	\begin{itemize}
+		\item When client cannot accept unicast, MSB set to 1 (broadcast)
+	\end{itemize}
+	\item[..]{All known is field, the rest set to 0}
+	\item[Option]{Used mostly in reply for addi info to client}
+	\includegraphics[scale=0.2]{02-option-format}
+\end{description}
+\subsubsection{Server}
+\begin{itemize}
+	\item Server stores a (key, value) pair for each client
+	\item Key identifies client (IP-subnet and MAC address)
+	\item Value is IP address assigned and lease time
+	\begin{itemize}
+		\item Leased time represented in seconds in relation to client clock
+		\item Lease expiration = time client sent DHCPReq + Lease duration DHCPAck
+		\item 0xFFFFFFFF == infinite time
+	\end{itemize}
+\end{itemize}
+\subsubsection{Process}
+\includegraphics[scale=0.2]{02-transition-diagram}
+\begin{itemize}
+	\item Rebinding may have diff info vs Renew = same info
+\end{itemize}
 
 
 
