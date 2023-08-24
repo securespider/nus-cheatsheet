@@ -137,5 +137,28 @@
 	\item $y^{\star}=\mu + \sigma \phi^{-1}(\dfrac{c_u}{c_u+c_o})$
 	\item Out of sample validation
 \end{itemize}
+\section{Optimization}
+\begin{itemize}
+	\item Select a decision that max/min objective
+	\item $Z^*=min(f(x)) ~~|~~ x\in\chi$
+	\item $max(f(x)) = - min(-f(x))$
+	\item Optimization problem can be
+	\begin{description}
+		\item[Infeasible]{Sample set is $\null$}
+		\item[Unbounded]{$Z^*$ is continuously decreasing}
+		\item[Exists]{$f(x)\geq M$ and $x^*\in$sample where $f(x^*)=Z^*$}
+	\end{description}
+\end{itemize}
+\subsubsection{Multivariable}
+\begin{itemize}
+	\item Weighted average of variables
+	\item Risk quantified as Variance bounded by expectation
+\end{itemize}
+\subsection{Univariate Optimization}
+\begin{itemize}
+	\item Bounded by $a\leq x\leq b$ ($a$, $b$ can be infinite)
+	\item Only one decision variable
+	\item Continuous in [a,b] and derivative $f'(x)$ should exist
+\end{itemize}
 \end{multicols*}
 \end{document}
