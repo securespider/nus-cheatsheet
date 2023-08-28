@@ -128,5 +128,40 @@
 		\item larger = penalise weights more
 	\end{itemize}
 \end{itemize}
+\section{02. Regression II}
+\begin{itemize}
+	\item $t_n = y(x_n, w) + \epsilon$
+	\begin{itemize}
+		\item $\epsilon$ is random "noise" modelled via some distribution 
+	\end{itemize}
+	\item Assumption is that each point is IID
+	\begin{itemize}
+		\item Independently identically distributed variables
+	\end{itemize}
+	\item MLE is a generalised model estimator given a set of data and predicted distribution
+\end{itemize}
+
+\subsubsection{Examples}
+\begin{itemize}
+	\item MSE is a loss function for MLE assuming data is normally distributed
+	\item Variance of gaussian known but mean is unknown
+	\item Model used to derive mean and minimise loss/maximum likelihood
+\end{itemize}
+
+\subsection{Bayesian Linear Regression}
+\begin{itemize}
+	\item $posterior=\dfrac{likelihood\times prior}{evidence}=\dfrac{p(y | w)p(w)}{p(y)}$
+	\item Repeatedly updating model based on additional data points
+	\item Initial estimator (prior) that can be modelled in different distributions
+	\begin{itemize}
+		\item By CLM, posterior distribution becomes independent to prior
+		\item Prior models normal distribution
+	\end{itemize}
+	\item Maximum-a-Posteriori estimation (MAP)
+	\begin{itemize}
+		\item For given prior, after observing data, how to update distr of params?
+		\item Adds "regularisation" component to normally distributed datasets
+	\end{itemize}
+\end{itemize}
 \end{multicols*}
 \end{document}
