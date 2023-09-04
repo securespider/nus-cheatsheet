@@ -197,6 +197,56 @@ Decision support system storing historical data from organisations
 	\item Identify DP category (architecture)
 	\item Understand working mechanism, parameters/variables
 \end{enumerate}
-\section{04.
+\section{04. Big Data Computing Technology Platform}
+\subsection{Packaging}
+\begin{description}
+	\item[Compact]{Nodes closely packaged in racks where nodes are not attached to peripherals}
+	\item[Slack]{Nodes attached to peripherals connected remotely}
+\end{description}
+\subsubsection{Interconnection Medium}
+Considerations
+\begin{enumerate}
+	\item Available link speeds
+	\item Message Passing Interface (MPI) latency
+	\item Network processor/routing mechanism/flow control
+	\item Differing network topologies
+\end{enumerate}
+\textbf{Self routing/Destination tag}
+%\includegraphics[scale=0.2]{self-routing}
+\begin{itemize}
+	\item Every processor can be routed to every memory without external controller
+	\item Switch should know what stage it is in to know which bit to look for
+	\item Bit of stage defines which output interface it leaves (0-above, 1-below)
+\end{itemize}
+\subsection{Control}
+\begin{description}
+	\item[Centralized]{Nodes owned, ctrl by central operator}
+	\begin{itemize}
+		\item Easy to manage 
+		\item Used by compact and slack clusters
+	\end{itemize}
+	\item[Decentralized]{Nodes have individual owners}
+	\begin{itemize}
+		\item Minimize coupling and can be used w many OS
+		\item Only slack can have
+	\end{itemize}
+\end{description}
+\subsubsection{Homogeneity}
+\begin{description}
+	\item[Homogeneous]
+	\item[Heterogeneous]
+\end{description}
+\subsection{Resource sharing}
+\begin{description}
+	\item[Share-nothing]{Each node do itself and send results together after}
+	\item[Shared-disk]{When one node fail the other take over}
+	\begin{itemize}
+		\item Fault tolerance via checkpoints
+	\end{itemize}
+	\item[Shared-memory]{Connected via SScalable Coherence Interface ring}
+	\begin{itemize}
+		\item All common data/instruction written in shared space
+	\end{itemize}
+\end{description}
 \end{multicols*}
 \end{document}
