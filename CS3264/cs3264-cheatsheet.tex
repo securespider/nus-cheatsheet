@@ -163,5 +163,27 @@
 		\item Adds "regularisation" component to normally distributed datasets
 	\end{itemize}
 \end{itemize}
+\section{03. Linear classification}
+\begin{itemize}
+	\item Binary splitting of points to classify them (separation line is linear)
+\end{itemize}
+\subsection{Bernoulli Distribution}
+\begin{itemize}
+	\item Binary possibilities with a probability of $p(t=1) = \mu$
+	\item $E[t] = \mu, var[t] = \mu(1-\mu)$
+\end{itemize}
+\subsection{Activation function}
+\begin{itemize}
+	\item Squashing function that constraints output to distinct classes
+\end{itemize}
+\subsubsection{Logistic sigmoid}
+\begin{itemize}
+	\item formula: $\sigma(z) = \dfrac{1}{1+exp(-Z)}$
+	\begin{enumerate}
+		\item $\sigma(-z) = 1-\sigma(z)$
+		\item $z = lg(\dfrac{\sigma(z)}{1-\sigma(z)}$ (log odds)
+		\item $\dfrac{d\sigma(z)}{dz}=\sigma(z)(1-\sigma(z))$
+	\end{enumerate}
+\end{itemize}
 \end{multicols*}
 \end{document}
