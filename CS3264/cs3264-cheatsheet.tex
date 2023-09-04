@@ -185,5 +185,29 @@
 		\item $\dfrac{d\sigma(z)}{dz}=\sigma(z)(1-\sigma(z))$
 	\end{enumerate}
 \end{itemize}
+\subsection{Approach}
+\begin{description}
+	\item[Data]{Logistic sigmoid on $w^T\phi_n$}
+	\begin{itemize}
+		\item Note that $T_n \in \{0,1\}$ and $y_n = \sigma(w^T\phi_n)$
+	\end{itemize}
+	\item[Model]{Bayesian model with Bernoulli likelihood and Normal prior}
+	\begin{itemize}
+		\item Likelihood: $y_n^{t_n}(1-y_n)^{1-t_n}$
+		\item Prior: $p(w)\sim N(w|0, \dfrac{1}{\alpha}I)$
+	\end{itemize}
+	\item[Loss]{MAP estimation $lg(p(w\|D))$}
+	\begin{itemize}
+		\item $argmin_w-[\sum^N_{n=1}t_nlgy_n+(1-t_n)lg(1-y_n)]+\dfrac{\alpha}{2}w^Tw$
+		\item Cross entropy error encourages $y_n$ to match $t_n$
+		\item Regulariser continues to prevent overfitting by minimising weights
+	\end{itemize}
+\end{description}
+\subsubsection{Solving}
+\begin{itemize}
+	\item No close form solution so Gradient Descent used on loss function
+	\item $w_{k+1}=w_k-\eta\nabla_w\mathcal{L}(w)$
+	\item $\nabla_w\mathcal{L}(w)=\sum^N_{n=0}(y_n-t_n)\phi_n + \alpha w$
+\end{itemize}
 \end{multicols*}
 \end{document}
