@@ -99,7 +99,7 @@ Both sides rank each other and goal is to pair each up
 \textbf{Constraints}
 No \keyword{rogue couples}{matched partner likes someone more than current partner that also likes them back}
 \subsection{Gale-Shapley Algo}
-\includegraphics[scale=0.2]{01-gale-shapley-algo}
+%\includegraphics[scale=0.2]{01-gale-shapley-algo}
 \subsubsection{Invariant}
 \begin{itemize}
 	\item If woman not on boy list, she has a better current fav
@@ -108,6 +108,45 @@ No \keyword{rogue couples}{matched partner likes someone more than current partn
 \end{itemize}
 
 
-
+\section{04. Greedy algorithms}
+\begin{itemize}
+	\item Consider jobs in some order and immediately take the job that is compatible with the previous jobs
+	\item Has some heuristic to sort the jobs
+\end{itemize}
+\subsection{Scheduling intervals}
+\begin{itemize}
+	\item Maximize number of jobs run
+	\item Heuristic: \hl{end time}, start time, interval size, fewest conflict
+\end{itemize}
+\subsection{Interval Partitioning}
+\begin{itemize}
+	\item Minimize number of classrooms to run lectures concurrently
+	\item Heuristic: \hl{start time}
+	\item Assign lecture to first compatible classroom
+\end{itemize}
+\subsection{Minimize lateness scheduling}
+\begin{itemize}
+	\item Heuristic: \hl{Earliest deadline}, Shortest processing time first, Smallest slack ($d_j-t_j)$
+	\item Start with an optimal solution and inductively reduce number of inversions until it reaches the greedy solution
+\end{itemize}
+\subsubsection{Inversions}
+\begin{itemize}
+	\item Pair of jobs i and j where dl(i)<dl(j) but j schedule before i
+	\item Greedy solution does not have any inversions
+\end{itemize}
+\subsection{Greedy analysis Strategies}
+\begin{enumerate}
+	\item Each step in greedy solution is at least as good as other solutions
+	\item Exchange argument: Transforming solution to greedy algorithm without hurting its quality
+	\item Structural: Every solution has a certain value and greedy algos can be in this bound
+\end{enumerate}
+\subsection{Optimal offline caching}
+\begin{itemize}
+	\item Eviction strategy that minimises number of cache misses
+	\item Heuristic: \hl{Farthest in future}
+	\begin{itemize}
+		\item Evict item in cache that is not requested until farthest in the future
+	\end{itemize}
+\end{itemize}
 \end{multicols*}
 \end{document}
