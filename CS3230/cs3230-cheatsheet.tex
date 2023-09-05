@@ -143,6 +143,10 @@ No \keyword{rogue couples}{matched partner likes someone more than current partn
 \subsection{Optimal offline caching}
 \begin{itemize}
 	\item Eviction strategy that minimises number of cache misses
+	\item Note that the full sequence of requests is known a priori
+	\begin{itemize}
+			\item vs Online: Request not known in advance
+	\end{itemize}
 	\item Heuristic: \hl{Farthest in future}
 	\begin{itemize}
 		\item Evict item in cache that is not requested until farthest in the future
