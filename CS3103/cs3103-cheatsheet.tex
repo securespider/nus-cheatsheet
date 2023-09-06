@@ -195,6 +195,55 @@
 	\item Rebinding may have diff info vs Renew = same info
 \end{itemize}
 
+\section{04. Network Application}
+\begin{description}
+	\item[Client-server]{Dedicated server with perma IP and ports}
+	\item[P2P]{Arbitary end system directly comunicate and serve each other}
+\end{description}
+\subsection{Transport}
+\subsubsection{Socket}
+\begin{itemize}
+	\item Interface between application and transport layer
+	\item OS-controlled interface via IP address and port no
+\end{itemize}
+\subsubsection{Protocol services}
+\begin{description}
+	\item[TCP]{Reliable transport btw sending and receiving process}
+	\begin{itemize}
+		\item Flow, congestion control
+		\item Does not provide timing, min throughput guarantee, security
+		\item Connection oriented (3 way handshake)
+	\end{itemize}
+	\item[UDP]{Unreliable data transfer but faster}
+	\begin{itemize}
+		\item Only demultiplexing provided: Passing to the correct app
+		\item Used for streaming where packet reliability not very impt
+		\item Used when application wants to manage their own protocol
+	\end{itemize}
+	\item[SSL]{Encrypted TCP connection with data integrity and endpoint auth}
+	\begin{itemize}
+		\item SSL is at app layer which contains libraries to interact directly TCP
+	\end{itemize}
+\end{description}
+\subsection{HTTP}
+\begin{itemize}
+	\item Stateless using TCP
+\end{itemize}
+\subsubsection{Persistence}
+\begin{description}
+	\item[Non persistence]{Server terminates connectoin after trf file}
+	\begin{itemize}
+		\item Response time = 2 RTT + transmit time
+		\item RTT = time taken for small packet from client to server and back
+	\end{itemize}
+	\item[Pers - pipeline]{$\geq 1$ RTT per referenced object}
+	\item[Pers + pipeline]{Possibly one RTT for all referenced object}
+\end{description}
+\subsection{Components}
+\begin{enumerate}
+	\item User agents/Mail readers
+	\item Message transfer agents (SMTP port 25)
+	\item Message Access Agents (POP3- port 110 and IMAP4 port 143)
 
 
 
