@@ -160,5 +160,22 @@
 	\item Only one decision variable
 	\item Continuous in [a,b] and derivative $f'(x)$ should exist
 \end{itemize}
+\section{04. Convex Optimization}
+\begin{itemize}
+	\item \keyword{Convex set}{$\forall x,y\in S, \lambda\in[0,1]$, $\lambda x + (1-\lambda)y\in S$}
+	\item \keyword{Convex function}{$X$ is convex set and $\forall x,y\in X, \lambda\in[0,1], f(\lambda x+(1-\lambda)y)\leq \lambda f(x)+(1-\lambda)f(y)$}
+	\item \keyword{epigraph}{$epi(f) = {(x,y)\in X: y\geq f(x)}$ Everything above the graph}
+	\begin{itemize}
+		\item Function f is convex iff epigraph is convex
+		\item If f is one dimensional and twice differentiable, f(x) is convex iff $f’’(x)\geq 0$
+		\item For convex functions f,g $rightarrow$ f+g, max{f,g} are convex
+		\item All local minimum in convex functions are global minimum
+	\end{itemize}
+\end{itemize}
+\section{05. Linear regression}
+\subsection{Simple linear regression}
+\begin{itemize}
+	\item Understand relationship between target and variable
+\end{itemize}
 \end{multicols*}
 \end{document}
