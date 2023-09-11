@@ -106,12 +106,73 @@ No \keyword{rogue couples}{matched partner likes someone more than current partn
 	\item Boy choice is strictly worsening
 	\item Girl choice cannot worsen (weakly increasing)
 \end{itemize}
-\section{02. Time complexity}
+\section{02. Algorithm Analysis}
+\begin{description}
+	\item[Algorithm]{Finite sequence of well-defined instruction to solve computational problem}
+	\begin{itemize}
+		\item Optimize running time
+		\item Runtime is machine and input dependent
+	\end{itemize}
+\end{description}
 \subsection{Word-RAM model}
 \begin{itemize}
     \item Word is basic unit of memory (few bytes)
 	\item Runtime $\approx$ number of instructions taken
+	\item Ram can be accessed in the same time irrespective of location
+	\item Every operation involves constant number of words and cycles by CPU
 \end{itemize}
+\subsubsection{Problem vs Algorithm}
+\begin{itemize}
+	\item Problem does not specify approach but algorithm defines ways/methods to solve prob
+\end{itemize}
+\subsection{Polynomial time}
+\begin{itemize}
+	\item There exist constants $c,d\in\mathbb{R}$ on every input of size N such that its running time is bounded by $cN^d$
+	\item Brute Force - Checks all possible solution and typically takes exponential time $2^N$
+	\item Generally efficient because c and d are low
+\end{itemize}
+\subsubsection{Worst-Case Analysis}
+\begin{itemize}
+	\item Bound on largest possible running of algorithm on input
+	\item Captures efficiency in practice 
+\end{itemize}
+vs Average case running time
+\begin{itemize}
+	\item Hard to accurately model real instances by random distributions
+	\item Tuned for certain distributions
+\end{itemize}
+\subsection{Asymptotic Order of Growth}
+\begin{itemize}
+	\item Compare for asymptotically large values of input sizes (rate of growth)
+	\item Suppress constant factor and lower-order terms
+\end{itemize}
+\subsubsection{Bounds}
+\begin{description}
+	\item[Upper Bound]{T(n) = O(f(n)): Exist constants $c,n_o\geq 0$ such that $\forall n\geq n_0$, we have $T(n)\leq cf(n)$}
+	\item[Lower Bound]{T(n) = $\omega$(f(n)): Exist constants $c,n_o\geq 0$ such that $\forall n\geq n_0$, we have $T(n)\geq cf(n)$}
+	\item[Tight Bound]{T(n) = $\theta$(f(n)): T(n) is both O(f(n)) and $\omega$(f(n))}
+\end{description}
+\subsubsection{Properties}
+\begin{description}
+	\item[Transitivity]{If f = O(g) and g = O(h) then f = O(h)}
+	\item[Additivity]{If f = O(h) and g = O(h) then f + g = O(h)}
+\end{description}
+\subsubsection{Bounds for some functions}
+\begin{itemize}
+	\item Polynomials - Just take the highest power
+	\item Logarithms - Base doesn't matter and always smaller than polynomial
+	\item Exponential - Always grows faster than polynomial
+\end{itemize}
+\subsection{Common runtimes}
+\begin{itemize}
+	\item O(n) - List traversal or merging lists
+	\item nlogn - sorting, intervals, divide and conquer algos (recursive)
+	\item $n^2$ - Finding pairs of elements
+	\item $n^k$ - Enumerate subsets of k nodes, set disjoints
+	\item Exponential - All subsets
+	
+\end{itemize}
+
 
 
 \section{03. Graph}
