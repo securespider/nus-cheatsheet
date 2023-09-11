@@ -99,12 +99,130 @@ Both sides rank each other and goal is to pair each up
 \textbf{Constraints}
 No \keyword{rogue couples}{matched partner likes someone more than current partner that also likes them back}
 \subsection{Gale-Shapley Algo}
-%\includegraphics[scale=0.2]{01-gale-shapley-algo}
+\includegraphics[scale=0.2]{01-gale-shapley-algo}
 \subsubsection{Invariant}
 \begin{itemize}
 	\item If woman not on boy list, she has a better current fav
 	\item Boy choice is strictly worsening
 	\item Girl choice cannot worsen (weakly increasing)
+\end{itemize}
+\section{02. Time complexity}
+\subsection{Word-RAM model}
+\begin{itemize}
+    \item Word is basic unit of memory (few bytes)
+	\item Runtime $\approx$ number of instructions taken
+\end{itemize}
+
+
+\section{03. Graph}
+\begin{itemize}
+	\item Describes relationships between nodes/entities
+\end{itemize}
+\subsection{Representation}
+\begin{description}
+	\item[Adjacency Matrix]{$NxN$ matrix where $A_uv=$<weight> if (u,v) is an edge}
+	\begin{itemize}
+		\item Good for big graphs/a lot of edges(dense)
+		\item O(1) time for checking edge
+		\item Space is O($n^2$)
+		\item Identifying all edges take O($n^2$) time
+	\end{itemize}
+	\item[Adjacency list]{List of linked lists representing nodes that are attached to each node}
+	\begin{itemize}
+		\item Good for sparse graphs/trees
+		\item O(deg(u)) for checking edge
+		\item Space is V+E
+		\item Identifying all edges takes O(V+E) time
+	\end{itemize}
+\end{description}
+\subsection{Path and Connectivity}
+\begin{itemize}
+	\item \keyword{Path}{Sequence P$\in \{v_0, v..v_k\}$ of nodes such that each adjacent pair is joined by an edge}
+	\begin{description}
+		\item[Simple]{All nodes are distinct}
+		\item[Cycle]{Path such that $v_0=v_k, k>2$ and first k-1 nodes are distinct}
+	\end{description}
+	\item \keyword{Connected}{There is a path for all pairs of nodes}
+	\item \keyword{Tree}{Undirected connected graph that does not contain a cycle}
+	\begin{itemize}
+		\item Any 2 implies Tree
+		\item G is connected
+		\item G does not contain cycle
+		\item G has n-1 edges
+	\end{itemize}
+	\item \keyword{Rooted tree}{Arrangement of tree such that root is top and nodes attached to parent is in different level}
+\end{itemize}
+\subsubsection{Connectivity problems}
+\begin{description}
+	\item[s-t connectivity]{Is there path between any 2 points s, t}
+	\item[s-t shortest path prob]{Length of shortest path btw s,t}
+\end{description}
+\subsection{Breadth First Search}
+\subsubsection{Algorithm}
+\begin{itemize}
+	\item Explore outward from some node, s in all directions adding nodes one layer at a time
+	\item Algorithm
+	\begin{enumerate}
+		\item Layer$_0$={s}
+		\item $L_1$={neighbours of $L_0$}
+		\item $L_n$ = {neighbours of $L_{n-1}$ not in all prev layers}
+	\end{enumerate}
+\end{itemize}
+\subsubsection{Properties}
+\begin{itemize}
+	\item Induction theorem: $\forall i, L_i$ consist of nodes at dist(s) = i
+	\item Let T be a BFS tree of $G = (V, E)$, and let $(x, y)$ be an edge of G. Then the level of x and y differ by at most 1.
+	\item BFS runs in O(V+\# E) given adjacency list
+\end{itemize}
+\subsection{Bipartite graph}
+\begin{itemize}
+	\item Independent sets such that no nodes within the set are connected to each other but are connected to nodes of other sets
+	\item Colour each node red or blue and every edge has strictly one red and blue end each
+	\item Bipartite graphs cannot contain odd length cycles
+\end{itemize}
+\subsubsection{Algo for Bipartiteness}
+\begin{itemize}
+	\item Let G be a connected graph and $L_0..L_k$ are layers produced by BFS
+\end{itemize}
+\begin{enumerate}
+	\item Edge between 2 nodes in same layer
+	\begin{itemize}
+		\item Graph is bipartite as we can colour alternate layers as red and blue
+	\end{itemize}
+	\item No edge btw nodes in same layer
+	\begin{itemize}
+		\item Graph cannot be bipartite as there is odd length cycle
+		\item Let x,y be the 2 points in same level and has edge btw them
+		\item Cycle: s-x-y-s (s-x == y-s) Odd length
+	\end{itemize}
+\end{enumerate}
+\subsection{Directed graph}
+\begin{itemize}
+	\item Asymmetric edges: (u,v) (edge from u to v) does not imply (v,u) 
+	\item Directed reachability problem: Find all nodes reachable from node s
+\end{itemize}
+\subsubsection{Strong Connectivity}
+\begin{description}
+	\item[Mutually reachable]{Path from u to v and vice versa}
+	\item[Strongly connected]{Every pair of nodes are mutually reachable}
+	\begin{itemize}
+		\item Strongly connected iff every node reachable from s and s reachable from every node
+	\end{itemize}
+	\item[Algorithm]{Pick any node and run bfs on G and $G^{rev}$ (reverse orientation of every edge in G)}
+	\begin{itemize}
+		\item G is strongly connected if all nodes reached in both BFS executions
+		\item Runs in O(m+n) time
+	\end{itemize}
+\end{description}
+\subsection{Directed Acyclic Graph}
+\begin{itemize}
+	\item Directed graph that has no directed cycle
+	\item \keyword{Precedence constraints}{Edge ($v_i, v_j$) means $v_i$ must preceed $v_j$}
+	\item \keyword{Topological order}{For every edge ($v_i, v_j$) we have $i<j$}
+	\begin{itemize}
+		\item If G has a topological order, then G is a DAG (Proof by contra)
+		\item If G is a DAG then G has a node without incoming edges (Proof contra)
+	\end{itemize}
 \end{itemize}
 
 
