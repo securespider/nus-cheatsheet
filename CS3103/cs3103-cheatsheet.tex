@@ -244,8 +244,68 @@
 	\item User agents/Mail readers
 	\item Message transfer agents (SMTP port 25)
 	\item Message Access Agents (POP3- port 110 and IMAP4 port 143)
-
-
+\section{05. Network Applications - DNS}
+\subsubsection{Domain}
+\begin{description}
+	\item[Domain]{Subtree of domain name space}
+	\begin{itemize}
+		\item Domain Name Space is hierarchically stored
+	\end{itemize}
+\end{description}
+\subsection{DNS name resolution}
+\subsubsection{Authoritative DNS server}
+\begin{description}
+	\item[Top-level domain]{Responsible for com, org..}
+	\item[Authoritative]{Organization’s own DNS server with hostname to IP mapping for organization’s named host}
+	\begin{itemize}
+		\item Maintained by organization or service provider
+	\end{itemize}
+\end{description}
+\subsubsection{Local DNS name server/Resolver}
+\begin{itemize}
+	\item Does not strictly belong to hierarchy
+	\item Has local cache of recent name-address translation
+	\item Acts as proxy by forwarding query into hierarchy
+\end{itemize}
+\subsubsection{Queries}
+\begin{description}
+	\item[Iterated query]{Local DNS asks each server along the domain}
+	\begin{itemize}
+		\item Each server replies to the local DNS server with the address of next server in domain
+	\end{itemize}
+	\item[Recursive]{Local server asks root which asks TLD..}
+	\begin{itemize}
+		\item All servers reply to the previous server in domain
+	\end{itemize}
+\end{description}
+\subsection{Zone}
+\begin{itemize}
+	\item Nodes that a server is responsible for or has authority over
+	\item Direct children of a node
+\end{itemize}
+\subsubsection{Primary/Secondary Server}
+\begin{itemize}
+	\item Stores information about the zone it is an authority for
+	\item Primary maintains zone file
+	\item Secondary is a copy of information about a zone via zone trf
+	\item Both are authoritative for the zone they server
+	\begin{itemize}
+		\item \keyword{Authoritative answers}{Guaranteed to be accurate}
+	\end{itemize}
+\end{itemize}
+\subsection{DNS Resource Records}
+\begin{itemize}
+	\item Format: (name, value, type, ttl)
+\end{itemize}
+\subsubsection{Types}
+\begin{description}
+	\item[Type=A]{*name is hostname and *value is IP}
+	\item[NS]{List a name server for domain *name is domain *value is hostname of authoritative name server}
+	\item[CNAME]{*name = alias name for canonical(real) name *value = canonical name}
+	\item[MX]{List mail server for domain *value = name of mailserver associated with name}
+	\item[SOA]{Indicate authority for domain data *name = domain *value = hostname of primary name server *ttl = time to live when cached}
+	\item[PTR]{*name = IP address *value = hostname}
+\end{description}HellH
 
 
 
