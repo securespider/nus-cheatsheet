@@ -193,5 +193,44 @@
 	\end{itemize}
 	\item $t=\dfrac{\beta_1}{SE(\beta_1)}$
 \end{itemize}
+\subsection{Qualitative predictor}
+\begin{itemize}
+	\item X is discrete instead of continous 
+	\item Can be split up into more x1,x2.. to take 1/0 values which affects result
+	\item x can take on more than 2 values (0,1,2..) to take on different observations
+	\begin{itemize}
+		\item Useful when observation has some topological ordering
+	\end{itemize}
+\end{itemize}
+\subsection{Linear Regression Assumptions}
+\begin{description}
+	\item[Additivity]{Changes of each predictor is independent of other predictor values}
+	\item[Linearity]{Unit change in X has constant change in Y (regardless of X)}
+\end{description}
+\subsubsection{Variable dependence}
+\begin{itemize}
+	\item IRL, variables affect each other
+	\item Model the interaction by putting \keyword{interaction term}{product of variables}
+	\item Variables are no longer linear but model is linear for beta
+	\item Coefficient of interaction term (once normalised) can tell the extent of interaction
+\end{itemize}
+\begin{description}
+	\item[Hierachical principle]{If include interaction term, the main effects/variables must be included}
+\end{description}
+\subsubsection{Non linear relationship}
+\begin{description}
+	\item[Taylor expansion]{Any function within some domain can be modelled as a high order polynomial}
+\end{description}
+\begin{itemize}
+	\item P-values cannot be used where variables are highly correlated with each other
+\end{itemize}
+\section{06. Classification}
+\subsection{Simple Logistic Regression}
+
+
+
+
+
+
 \end{multicols*}
 \end{document}
