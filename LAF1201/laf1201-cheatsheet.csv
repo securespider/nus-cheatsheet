@@ -2,197 +2,284 @@
 0,Comment tu t'appelles,What you call yourself
 1,Je m'appelle xx,My name is xx
 2,vous,each person/formal vers
-3,petite,small
-4,souvenir,memory/souvenir
-5,barrage,dam
-6,rendezvous,appointment
-7,Bonjour,good day
-8,Bonsoir,good evening
-9,femme,woman
-10,fille,girl
-11,homme,man
-12,garçon,boy
-13,c'est,it is
-14,elle/il,she/him
-15,nous/elles/ils,we/they(girl)/they(guy+girl)
-16,être/je suis/tu es/il est,is/are
-17,au revoir,bye
-18,salut,hello
-19,province,france w/o paris
-20,connais,know/been to
-21,matin/midi/'apres midi/soir/nuit,morning/noon/afternoon/evening/night
-22,écoutez et répondez,listen and respond
-23,parle/parles/parlez/parlons/parlent,speak
-24,lisez,read
-25,écrivez,write
-26,voisine/voisin,neighbour(vuazin/voizon)
-27,un/deux/trois/quatre/cinq,1/2/3/4/5
-28,six/sept/huit/neuf/dix,6/7/8/9/10
-29,plus/moins/égaler,plus/minus/equals
-30,qui,who
-31,que/quoi,what
-32,comment,how
-33,ou,where
-34,quand,when
-35,pourquoi,why
-36,combien,how much
-37,quel/quels/quelle/quelles,who/which
-38,"Elle, elle s'appelle xx","Her, she calls herself xx"
-39,"Lui, il ""","Him, he """
-40,encore,again
-41,blanc/blanche,white
-42,vert,green
-43,noir,black
-44,bleu,blue
-45,rouge,red
-46,jaune,yellow
-47,gris,gray
-48,violet,purple
-49,marron,brown
-50,orange,orange
-51,Chanteur/Chanteuse,Singer
-52,"Nageur/""",Swimmer
-53,"acteur/""",Actor
-54,un sac,bag
-55,une montre,watch
-56,un téléphone,telephone
-57,une maison,house
-58,-er,e/es/ez/ons/ent
-59,tiret,-
-60,le,eg. Canada
-61,les,Seychell\hl{es}
-62,la,eg. Franc\hl{e}
-63,l',\hl{A}lgéria
-64,ca va mal,Horrible
-65,vingt,20
-66,trente,30
-67,quarante,40
-68,cinquante,50
-69,soixante,60
-70,avoir | j'ai | tu as,have
-71,Ils ont quel âge?,What his age
-72,Quel âge vous avez,What is your age
-73,j'ai vingt ans,i have 20 years
-74,aussi,also
-75,un peu,a little
-76,je suis triste,sad
-77,j'ai soif,thirst
-78,je suis fatigué,tired
-79,j'ai chaud,hot
-80,j'ai froid,cold
-81,j'ai peur,shocked
-82,j'ai faim,hungry
-83,je suis en forme,Healthy
-84,quelle est sa xx,what is his/her xx
-85,encore une fois,repeat one more time
-86,e,err
-87,é,ayy-accent aigu
-88,e,air-accent grave e
-89,ê,air-accent circonflexe e
-90,-ais/-ois/-ien,Add to end
-91,né,born in
-92,Li\hl{re},read
-93,ecri\hl{re},to write
-94,coûte,price
-95,mots,words
-96,les mots de politesse,polite words
-97,centimes,cents
-98,eg. 1.50euro,un euro cinquante
-99,c'est un xx,its xx
-100,dit,say
-101,entendez,heard
-102,retrouvez,find
-103,désolé,sorry
-104,je vous en prie,ur welcome (polite)
-105,de rien,your welcome
-106,un mouchoir,cloth
-107,un mouchoir en papier,paper
-108,gomme,eraser
-109,remplir,fill in
-110,partout,everywhere
-111,naissance,birth
-112,aerobase,@
-113,il y a,There is/there are
-114,aller,go
-115,une bouteille,bottle
-116,une montre,watch
-117,des ciseaux,scissors
-118,des chaises,chair
-119,un probléme,problem
-120,un crayon,pencil
-121,une règle,ruler
-122,des lunettes,glasses
-123,une clé,key
-124,un parapluie,umbrella
-125,un téléphone,phone
-126,ne xx plus de,no longer/not anymore
-127,toujours,still/everyday
-128,maintenant,now
-129,c’est/ce sont,it is/they are
-130,des,some
-131,doudou,soft toy
-132,d’après une enquête,according to survey
-133,passons,spend
-134,cherche,find
-135,pardons,lost
-136,le footing,jogging
-137,la natation,swimming
-138,la football,soccer
-139,une/l’ escrime,fencing
-140,un box,boxing
-141,le chant,singing
-142,appendre,learn
-143,escalade,rock climbing
-144,Qu’est-ce que tu preferer,what do you like(verb)
-145,aimer/préférer/adorer,like
-146,détester/n’aime pas,dislike
-147,le sondage,survey
-148,la peinture,painting
-149,la lecture,to read
-150,les bandes dessinées (bayday),comic
-151,l’opera,the opera
-152,l’elison,linking vowels tog
-153,devient,becomes
-154,devant,in front
-155,mais,but
-156,dors,sleep
-157,à la folie,to madness
-158,faire,to do
-159,fais xx <activity>,do <activity>
-160,ne fais pas xx <activity>,not do..
-161,souvent,often
-162,Quelle heure est-il,What time is it
-163,heure,hour
-164,minute,minutes
-165,seconde,second (segond)
-166,5:15,cinq heures et quart
-167,5:30,“ et demie (ed-mi)
-168,5:40,six heures moins vingt
-169,5:50,“ moins dix
-170,5:45,“ moins le quart
-171,tôt,early
-172,tard,late
-173,aujourd’hui,today
-174,demain,tomorrow
-175,hier,yesterday
-176,Une affiche,poster
-177,une poster,“
-178,autre,other
-179,vouloir,want
-180,aller,go
-181,à la bibliothèque(f),to xx
-182,nouveau,again
-183,une équerre,setsquare
-184,un marqueur,marker
-185,repérez,spot
-186,mon(m/vowels)/ma(f),my
-187,ami(m)/amie(f),friend
-188,un souhait,wish
-189,une voiture,car
-190,perdre,lose
-191,et,and(never link)
-192,main,hand
-193,malade,sick
-194,jardin,garden
-195,quitte,leaving
-196,marionette,puppet
+3,appeler/je/tu/il/vous/nous/ils,call/-e/-es/-e/-ez/-ons/-ent
+4,petite,small
+5,souvenir,memory/souvenir
+6,barrage,dam
+7,rendezvous,appointment
+8,Bonjour,good day
+9,Bonsoir,good evening
+10,femme,woman
+11,petite fille,girl
+12,homme,man
+13,garçon,boy
+14,c'est,it is
+15,elle/il,she/him
+16,nous/elles/ils,we/they(girl)/they(guy+girl)
+17,être/je suis/tu es/il est,is/are
+18,au revoir,bye
+19,salut,hello
+20,voyelles,vowels
+21,consonnes,consonants
+22,serrer,shake
+23,la main,hand
+24,bise,kiss greeting
+25,pause,pause
+26,marche,continue
+27,suivez,follow
+28,province,france w/o paris
+29,connais,know/been to
+30,matin/midi/'apres midi/soir/nuit,morning/noon/afternoon/evening/night
+31,écoutez et répondez,listen and respond
+32,parle/parles/parlez/parlons/parlent,speak
+33,lisez,read
+34,écrivez,write
+35,voisine/voisin,neighbour(vuazin/voizon)
+36,un/deux/trois/quatre/cinq,1/2/3/4/5
+37,six/sept/huit/neuf/dix,6/7/8/9/10
+38,plus/moins/égaler,plus/minus/equals
+39,qui,who
+40,que/quoi,what
+41,comment,how
+42,ou,where
+43,quand,when
+44,pourquoi,why
+45,combien,how much
+46,quel/quels/quelle/quelles,who/which
+47,présenter,to present
+48,"Elle, elle s'appelle xx","Her, she calls herself xx"
+49,"Lui, il ""","Him, he """
+50,encore,again
+51,quelqu'un,someone
+52,se,yourself
+53,blanc/blanche,white
+54,vert,green
+55,noir,black
+56,bleu,blue
+57,rouge,red
+58,jaune,yellow
+59,gris,gray
+60,violet,purple
+61,marron,brown
+62,orange,orange
+63,Chanteur/Chanteuse,Singer
+64,Nageur/nageuse,Swimmer
+65,acteur/actrice,Actor
+66,musée,museum
+67,cuisinière,chef
+68,styliste,stylist
+69,chef/cheffe,chief
+70,professeur/professeure,professor
+71,étudiant/étudiante,student
+72,autuer/autrice,author
+73,avocat/avocate,lawyer
+74,pâtissier,pastry chef
+75,journaliste,journalist
+76,un sac,bag
+77,une montre,watch
+78,un téléphone,telephone
+79,une maison,house
+80,-er,e/es/ez/ons/ent
+81,épeler,spell
+82,tiret,-
+83,là,there
+84,carte,map
+85,le,the (m)
+86,la,the (f)
+87,les,the (p)
+88,l',the (start w vowel)
+89,tu parles quelles langues,speak what lang?
+90,choisir,choose
+91,habite,live
+92,ca va mal,Horrible
+93,jeu de rôles,roleplay
+94,11/12/13,"onze, douze, treize"
+95,14/15/16,quatorze/quinze/seize
+96,20/30/40,vingt/trente/quarante
+97,50/60,cinquante/soixante
+98,avoir/je/tu/il/vous/nous/ils,have/ai/as/a/avez/avons/ont
+99,Ils ont quel âge?,What are their age
+100,Quel âge vous avez,What is your age
+101,j'ai vingt ans,i have 20 years
+102,Quelle est sa nationalité,what ur nationality
+103,mais,but
+104,préférées,favorite
+105,lecture,(act of)reading
+106,aussi,also
+107,un peu,a little
+108,je suis content,happy
+109,je suis triste,sad
+110,je suis fatigué(e),tired
+111,je suis en forme,Healthy
+112,je suis malade,sick
+113,j'ai soif,thirst
+114,j'ai chaud,hot
+115,j'ai froid,cold
+116,j'ai peur,shocked
+117,j'ai faim,hungry
+118,j'ai sommeil,sleepy
+119,quelle est sa xx,what is his/her xx
+120,encore une fois,repeat one more time
+121,trouvez,find
+122,quels numéros,what numbers
+123,e,err
+124,é,ayy-accent aigu
+125,e,air-accent grave e
+126,ê,air-accent circonflexe e
+127,-ais/-ois/-ien,Add to end
+128,né,born in
+129,Li\hl{re},read
+130,ecri\hl{re},to write
+131,chiffres,figure
+132,puis,then
+133,jeu(x),game
+134,physique,physics
+135,chimie,chemistry
+136,partenaire,partner
+137,la culture,culture
+138,la technologie,technology
+139,l'amour,love
+140,des sciences,sciences
+141,des affaires,politics
+142,l'humour,comedy
+143,s'exprimer,express
+144,poliment,politely
+145,remplir,fill
+146,formulaire,form
+147,le coûte,price
+148,ce(m)/cette(f),this
+149,un sac,bag
+150,une robe,dress
+151,un café,coffee
+152,mots,words
+153,les mots de politesse,polite words
+154,centimes,cents
+155,eg. 1.50euro,un euro cinquante
+156,c'est un xx,its xx
+157,dit,say
+158,entendez,heard
+159,retrouvez,find
+160,désolé,sorry
+161,je vous en prie,ur welcome (polite)
+162,de rien,your welcome
+163,courriel,email
+164,mot de passe,password
+165,civilité,gender
+166,repérer,spot
+167,aide,help
+168,comprendre,to understand
+169,souligner,underline/emphasise
+170,entourer,circle/surround
+171,surligner,highlight
+172,données personnelles,personal data
+173,inscrivez-vous,register
+174,profitez,enjoy
+175,nombreux,many
+176,avantages,benefits
+177,partout,everywhere
+178,naissance,birth
+179,aerobase,@
+180,aller/je/tu/(il/on/ça)/vous/nous/ils,go/vais/vas/va/allons/allez/vont
+181,il y a,There is/there are
+182,aller,go
+183,un mouchoir,cloth
+184,un mouchoir en papier,paper
+185,une gomme,eraser
+186,un stylo,pen
+187,un ordinateur,computer
+188,un probléme,problem
+189,un crayon,pencil
+190,un parapluie,umbrella
+191,un téléphone,phone
+192,un bureau,desk
+193,un tableau,painting
+194,un ballon,ball
+195,un portefeuilles,wallet
+196,un appareils,devices
+197,des ciseaux,scissors
+198,des lunettes,glasses
+199,des livres,some books
+200,une bouteille,bottle
+201,une chaise,chair
+202,une montre,watch
+203,une règle,ruler
+204,une clé,key
+205,une souris,mouse
+206,une tasse,cup
+207,une glace,ice
+208,trousse,pencil case
+209,ne xx plus de,no longer/not anymore
+210,toujours,still/everyday
+211,maintenant,now
+212,travaille,work
+213,fume,smoke
+214,c’est/ce sont,it is/they are
+215,des,some
+216,doudou,soft toy
+217,d’après une enquête,according to survey
+218,passons,spend
+219,vie,life
+220,cherche,finding
+221,pardons,lost
+222,le footing,jogging
+223,la natation,swimming
+224,la football,soccer
+225,une/l’ escrime,fencing
+226,un box,boxing
+227,le chant,singing
+228,appendre,learn
+229,escalade,rock climbing
+230,Qu’est-ce que tu preferer,what do you like(verb)
+231,aimer/préférer/adorer,like
+232,détester/n’aime pas,dislike
+233,le sondage,survey
+234,la peinture,painting
+235,la lecture,to read
+236,les bandes dessinées (bayday),comic
+237,l’opera,the opera
+238,l’elison,linking vowels tog
+239,devient,becomes
+240,devant,in front
+241,mais,but
+242,dors,sleep
+243,à la folie,to madness
+244,faire,to do
+245,fais xx <activity>,do <activity>
+246,ne fais pas xx <activity>,not do..
+247,souvent,often
+248,Quelle heure est-il,What time is it
+249,il est <hr> heures <min>,its xx time
+250,heure,hour
+251,minute,minutes
+252,seconde,second (segond)
+253,5:15,cinq heures et quart
+254,5:30,“ et demie (ed-mi)
+255,5:40,six heures moins vingt
+256,5:50,“ moins dix
+257,5:45,“ moins le quart
+258,tôt,early
+259,tard,late
+260,aujourd’hui,today
+261,demain,tomorrow
+262,hier,yesterday
+263,Une affiche,poster
+264,une poster,poster
+265,autre,other
+266,vouloir,want
+267,aller,go
+268,à la bibliothèque(f),to xx
+269,nouveau,again
+270,une équerre,setsquare
+271,un marqueur,marker
+272,repérez,spot
+273,mon(m/vowels)/ma(f),my
+274,ami(m)/amie(f),friend
+275,un souhait,wish
+276,une voiture,car
+277,perdre,lose
+278,et,and(never link)
+279,main,hand
+280,malade,sick
+281,jardin,garden
+282,quitte,leaving
+283,marionette,puppet
