@@ -198,6 +198,33 @@ Decision support system storing historical data from organisations
 	\item Understand working mechanism, parameters/variables
 \end{enumerate}
 \section{04. Big Data Computing Technology Platform}
+\begin{itemize}
+	\item Collection of interconnected stand-alone computers
+	\item Work collectively and cooperatively as an integrated computing resource pool
+	\begin{itemize}
+		\item Clusters exploit massive parallelism at job level
+		\item Achieves high availability through stand-alone operations
+		\item \keyword{Fault tolerance}{If one goes down, other can take over}
+	\end{itemize}
+\end{itemize}
+\subsubsection{Benefits}
+\begin{itemize}
+	\item Scalable performance, high availability, fault tolerance
+	\item Modular growth and use of commodity components
+\end{itemize}
+\subsubsection{Beowulf Cluster}
+\begin{itemize}
+	\item Single compute job requires frequent communication among cluster nodes
+	\item Cluster share dedicated network
+	\item Nodes are homogeneous and coupled
+	\item eg. Each process requires information from other process
+\end{itemize}
+\subsection{Scalability}
+Limited by:
+\begin{itemize}
+	\item Multicore chip technology, cluster topology, packaging method, power consumption and cooling scheme
+	\item Memory capacity, disk IO bottlenecks, latency tolerance
+\end{itemize}
 \subsection{Packaging}
 \begin{description}
 	\item[Compact]{Nodes closely packaged in racks where nodes are not attached to peripherals}
@@ -243,7 +270,7 @@ Considerations
 	\begin{itemize}
 		\item Fault tolerance via checkpoints
 	\end{itemize}
-	\item[Shared-memory]{Connected via SScalable Coherence Interface ring}
+	\item[Shared-memory]{Connected via Scalable Coherence Interface ring}
 	\begin{itemize}
 		\item All common data/instruction written in shared space
 	\end{itemize}
