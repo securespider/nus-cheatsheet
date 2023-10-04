@@ -305,8 +305,41 @@
 	\item[MX]{List mail server for domain *value = name of mailserver associated with name}
 	\item[SOA]{Indicate authority for domain data *name = domain *value = hostname of primary name server *ttl = time to live when cached}
 	\item[PTR]{*name = IP address *value = hostname}
-\end{description}HellH
-
+\end{description}
+\section{07. IP-option, ICMP, NAT-Hole Punching}
+\subsection{IP Datagram Format}
+\begin{itemize}
+	\item Network byte order follows big endian byte ordering
+	\begin{itemize}
+		\item MSB is sent first
+	\end{itemize}
+\end{itemize}
+\textbf{Why length requirement in ethernet}
+\begin{description}
+	\item[Minimum]{Ensure if collision, it will be detected}
+	\item[Maximum]{Ensure there is no monopoly of the channel}
+\end{description}
+\subsection{Segmentation and Fragmentation}
+\begin{itemize}
+	\item Fragmentation occurs at the IP layer whereas segmentation at TCP layer
+	\item Note that fragmentation length must be divisible by 8 (except last fragment)
+	\begin{itemize}
+		\item Offset * 8 bytes = first byte of body in packet
+	\end{itemize}
+	\item HLEN (4bits) * 4bytes = length of header
+\end{itemize}
+\subsubsection{Strict-source-route option}
+\begin{itemize}
+	\item Packet will stop routing when pointer > length
+	\item Source specifies the path taken to get to the destination
+	\item Only 9 addresses will be listed and the remaining path is chosen by “best route”
+\end{itemize}
+\subsection{ICMP}
+\begin{itemize}
+	\item Error reporting mechanism that reports condition back to original source
+	\item Layer 3 protocol with error-reporting messages
+	\item 8-byte header (Type(1), code(1), checksum (2), other(4))
+% insert picture here icmp messages% 
 
 
 
