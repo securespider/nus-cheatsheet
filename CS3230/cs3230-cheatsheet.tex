@@ -339,5 +339,99 @@ vs Average case running time
 $$
 T(n)\leq T(\lceil\dfrac{n}{2}\rceil)+T(\lfloor\dfrac{n}{2}\rfloor) + n
 $$
+
+\section{07. Network Flow}
+\subsection{Minimum Cut/Max Flow Problem}
+\subsubsection{Environment}
+\begin{itemize}
+	\item Directed graph with "capacity" as edge weights c(e)
+	\item 2 nodes denoted as source and sink
+\end{itemize}
+\subsubsection{s-t cut}
+\begin{itemize}
+	\item Partition (A,B) of graph V with $s \in A$ and $t \in B$
+	\item Capacity of a cut: $cap(A,B) = \sum_{edges out of A} c(e)$
+\end{itemize}
+\subsubsection{s-t flow}
+\begin{itemize}
+	\item Function that satisfies:
+	\begin{itemize}
+		\item $\forall e\in E 0 \leq f(e) \leq c(e)$
+		\item $\forall v\in V - (s,t), \sum_{e in to V} = \sum_{e out of V} f(v)$
+	\end{itemize}
+	\item Value of flow: $v(f) = \sum_{e out of s} f(e)$
+\end{itemize}
+\subsubsection{Goals}
+\begin{description}
+	\item[Min s-t cut]{Find an s-t cut of minimum capacity}
+	\item[Max s-t flow]{Find an s-t flow of maximum value}
+\end{description}
+\subsubsection{Flow Value Lemma}
+\begin{itemize}
+	\item Let f be any flow, and let (A,B) be any s-t cut. The net flow sent across the cut is equal to the amount leaving s
+	$$\sum_{e out of A}f(e)-\sum_{e in to A}f(e)=v(f)$$
+\end{itemize}
+\subsubsection{Weak Duality}
+\begin{itemize}
+	\item Let f be any flow. Then for any s-t cut (A,B) we have $v(f)\leq cap(A,B)$
+\end{itemize}
+\subsubsection{Certificate of Optimality}
+\begin{itemize}
+	\item Let f be any flow and let (A,B) be any cut, if v(f) = cap(A,B) then f is a max flow and (A,B) is a min cut
+\end{itemize}
+\subsubsection{Residual Graph}
+\includegraphics[scale=0.4]{07-residual-edge}
+\begin{itemize}
+	\item Residual graph is all residual edges with positive residual capacity
+	\item $E_f=\{e:f(e) < c(e)\}\cup \{e^R:c(e) > 0\}$
+\end{itemize}
+\subsection{Ford Fulkerson}
+\begin{enumerate}
+	\item Find an augmenting path/flow 
+	\begin{itemize}
+		\item Can use BFS or DFS to find the path and get the bottleneck edge
+		\item Flow value is the smallest value
+		\item Keep track of the flow value
+	\end{itemize}
+	\item Augment the graph using residual edges
+	\item Repeat until no feasible paths possible
+\end{enumerate}
+\subsubsection{Proof}
+\begin{itemize}
+	\item Flow f is a max flow iff there are no augmenting path
+\end{itemize}
+\begin{enumerate}[label=(\roman*)]
+	\item There exists a cut (A,B) st v(f) = cap(A,B)
+	\item Flow f is a max flow
+	\item There is no augmenting path relative to f
+\end{enumerate}
+\begin{itemize}
+	\item (i)-(ii): Corollary to weak duality to weak duality lemma
+	\item (ii)-(iii): Contrapositive
+	\begin{itemize}
+		\item Suppose there exists an augmenting path, then we can improve flow by sending flow along path
+	\end{itemize}
+	\item (iii)-(i)
+	\begin{enumerate}
+		\item Let f be a flow with no augmenting path
+		\item Let A be set of vertices reachable from s in residual path
+		\item By definition of A, $s\in A$
+		\item By definition of f, $t\notin A$
+	\end{enumerate}
+\end{itemize}
+\subsubsection{Runtime}
+\begin{itemize}
+	\item All capacities are integers btw 1 and C
+	\item Every flow value f(e) and every residual capacity remains an integer throughout the algorithm
+	\item Algorithm terminates in at most $v(f^*)\leq nC$ iterations
+	\begin{itemize}
+		\item Each augmentation increase value by at least 1
+	\end{itemize}
+	\item If C = 1, Ford-Fulkerson runs in O(mn) time
+	\item If all capacities are integers, then there exists a max flow f for which every flow value f(e) is an integer.
+	\begin{itemize}
+		\item Since algorithm terminates, theorum follows from point 2
+	\end{itemize}
+\end{itemize}
 \end{multicols*}
 \end{document}
