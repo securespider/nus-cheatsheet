@@ -194,11 +194,8 @@ File Organisation = Arranging data records in a file that is stored on disk
 \subsubsection{Page Organisation} % (fold)
 \label{ssub:page_organisation}
 
-\\
 \includegraphics[scale=0.2]{fixed_length.png}
-Variable-length records
-\\
-\includegraphics[scale=0.2]{variable_length.png}
+\includegraphics[scale=0.16]{variable_length.png}
 \begin{itemize}
   \item Slotted page organisation splits pages into data vs free space
   \item RID references the position of pointer in the slot directory
@@ -256,23 +253,21 @@ Insertion with splits
 
 Deletion with merges
 \\
-\includegraphics[scale=0.3]{tree_delete1.png}
-\\
+\includegraphics[scale=0.169]{tree_delete1.png}
 \includegraphics[scale=0.2]{tree_delete2.png}
 \begin{itemize}
   \item Redistribute by taking from adjacent sibling node first
   \item Should only merge where adjacent sibling node has less than m entries
   \item Redistribution of internal entries attempted whenever possible
 \end{itemize}
-\\
-\includegraphics[scale=0.2]{tree_delete_pseudo.png}
+\includegraphics[scale=0.15]{tree_delete_pseudo.png}
 \\
 \begin{description}
   \item[Clustered index] Data is stored together with its RID
   \item[Unclustered index]{Relation is stored in a heap file referenced by this index}
 \end{description}
 
-Bulk loading of B\+ Tree
+Bulk loading of B+ Tree
 \begin{itemize}
   \item Sort the indices and place them in 2*d buckets
   \item Take first number of each bucket as the separator of internal node
