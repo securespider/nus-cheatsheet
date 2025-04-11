@@ -1,0 +1,100 @@
+% tightcenter
+\newenvironment{tightcenter}{%
+  \setlength\topsep{0pt}
+  \setlength\parskip{0pt}
+  \begin{center}
+    }{%
+  \end{center}
+}
+
+% boxed
+\newenvironment{tightbox}{%
+  \setlength\topsep{0pt}
+  \setlength\parskip{0pt}
+  \begin{center}
+    \begin{tabular}{|@{\hspace{\dimexpr\fboxsep+0.5\arrayrulewidth}}c@{\hspace{\dimexpr\fboxsep+0.5\arrayrulewidth}}|}
+      \hline
+    }
+    {%
+    \\ \hline
+    \end{tabular}
+  \end{center}
+}
+
+% fixed width box
+\newenvironment{fixedbox}[1][0.7]{
+  \setlength\topsep{0pt}
+  \setlength\parskip{0pt}
+  \begin{center}
+    \begin{tabular}{|>{\centering\arraybackslash}m{#1\linewidth}|}
+    \hline
+  }{
+  \\ \hline
+  \end{tabular}
+  \end{center}
+}
+
+% definition of a new term
+\usepackage{soul}
+\definecolor{paleyellow}{RGB}{251,243,218}
+\newcommand{\definition}[2][]{\sethlcolor{paleyellow}\hl{\textbf{#2}} #1  $\rightarrow$}
+% inline definition
+\newcommand{\ildefinition}[1]{\sethlcolor{paleyellow}\hl{\textbf{#1}}}
+
+% important note (attention)
+\newcommand{\attention}{{\color{red}\textbf{! }}}
+
+% nice proof
+\newenvironment{niceproof}[1][Proof]
+{%
+  \sbox0{\textit{#1}. }%
+  \list{}{\labelwidth\wd0 \leftmargin\wd0 \labelsep 0pt }
+\item[\usebox0]}
+  {\endlist}
+
+\makeatletter
+\newcommand*{\xdashrightarrow}[2][]{%
+  \mathrel{%
+    \mathpalette{\da@xarrow{#1}{#2}{}\da@rightarrow{\,}{}}{}%
+  }%
+}
+\newcommand*{\da@rightarrow}{\mathchar"0\hexnumber@\symAMSa 4B }
+\newcommand*{\da@xarrow}[7]{%
+  % #1: below
+  % #2: above
+  % #3: arrow left
+  % #4: arrow right
+  % #5: space left 
+  % #6: space right
+  % #7: math style 
+  \sbox0{$\ifx#7\scriptstyle\scriptscriptstyle\else\scriptstyle\fi#5#1#6\m@th$}%
+  \sbox2{$\ifx#7\scriptstyle\scriptscriptstyle\else\scriptstyle\fi#5#2#6\m@th$}%
+  \sbox4{$#7\dabar@\m@th$}%
+  \dimen@=\wd0 %
+  \ifdim\wd2 >\dimen@
+    \dimen@=\wd2 %   
+  \fi
+  \count@=2 %
+  \def\da@bars{\dabar@\dabar@}%
+  \@whiledim\count@\wd4<\dimen@\do{%
+    \advance\count@\@ne
+    \expandafter\def\expandafter\da@bars\expandafter{%
+      \da@bars
+      \dabar@ 
+    }%
+  }%  
+  \mathrel{#3}%
+  \mathrel{%   
+    \mathop{\da@bars}\limits
+    \ifx\\#1\\%
+    \else
+      _{\copy0}%
+    \fi
+    \ifx\\#2\\%
+    \else
+      ^{\copy2}%
+    \fi
+  }%   
+  \mathrel{#4}%
+}
+\makeatother
