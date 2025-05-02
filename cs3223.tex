@@ -32,15 +32,15 @@
 \renewcommand{\section}{\@startsection{section}{1}{0mm}%
     {-1ex plus -.5ex minus -.2ex}%
     {0.5ex plus .2ex}%x
-{\normalfont\large\bfseries}}
+{\normalfont\small\bfseries}}
 \renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
     {-1explus -.5ex minus -.2ex}%
     {0.5ex plus .2ex}%
-{\normalfont\normalsize\bfseries}}
+{\normalfont\footnotesize\bfseries}}
 \renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
     {-1ex plus -.5ex minus -.2ex}%
     {1ex plus .2ex}%
-{\normalfont\tiny\bfseries}}%
+{\normalfont\bfseries}}%
 \makeatother
 
 % Adjust spacing for all itemize/enumerate
@@ -86,18 +86,8 @@
 \footnotesize
 \begin{multicols*}{4}
   % multicol parameters
-  \setlength{\columnseprule}{0.25pt}
-
-  \begin{center}
-    \fbox{%
-      \parbox{0.8\linewidth}{\centering \textcolor{black}{
-          {\Large\textbf{CS3223}}
-        \\ \normalsize{AY22/23 SEM 2}}
-        \\ {\footnotesize \textcolor{gray}{github/jovyntls}}
-      }%
-    }
-  \end{center}
-
+  \setlength{\columnseprule}{0.15pt}
+  \begin{scriptsize}
   \includegraphics[width=0.97\linewidth]{cs3223-notation.png} 
   \vspace{-0.1cm}
   \textbf{Data entry formats}: \textbf{1.} actual data record; 
@@ -127,7 +117,6 @@
         \item merging sorted runs: $2N \times \lceil \log_{B-1}N_0 \rceil $
       \end{itemize}
   \end{itemize}
-
   \subsubsection{optimisation with blocked I/O}
 
   \begin{itemize}
@@ -870,6 +859,7 @@
     \item P is updated \& not in DPT: create entry (recLSN=r.LSN)
     \item when P is flushed to disk: remove P's \textbf{DPT} entry
   \end{itemize}
+\end{scriptsize}
 \end{multicols*}
 
 \end{document}
